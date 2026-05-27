@@ -427,8 +427,8 @@ export default function OnboardingPage() {
   const [error, setError]     = useState('')
   const [ob, setOb]           = useState<ObData>(EMPTY)
 
-  const v = T[ob.lang]
-  const labels = STEP_LABELS[ob.lang]
+  const v = T[ob.lang] ?? T.en
+  const labels = STEP_LABELS[ob.lang] ?? STEP_LABELS.en
 
   function set<K extends keyof ObData>(key: K, val: ObData[K]) {
     setOb(prev => ({ ...prev, [key]: val }))
@@ -442,7 +442,17 @@ export default function OnboardingPage() {
   }
 
   function canNext(): boolean {
-    if (step === 3) return !!(ob.bName.trim() && ob.bUnits.trim() && ob.bCity.trim())
+    if (step === 3) {
+      const nameOk  = ob.bName.trim().length > 0 && ob.bName.trim().length <= 100
+      const cityOk  = ob.bCity.trim().length > 0 && ob.bCity.trim().length <= 100
+      const unitsOk = !!ob.bUnits.trim()
+      return nameOk && cityOk && unitsOk
+    }
+    if (step === 5 && ob.hasBankAccount === 'yes' && ob.bankIban.trim()) {
+      const iban = ob.bankIban.replace(/\s/g, '').toUpperCase()
+      const ibanOk = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/.test(iban)
+      return ibanOk
+    }
     return true
   }
 
@@ -507,7 +517,8 @@ export default function OnboardingPage() {
       })
 
       navigate('/', { replace: true })
-    } catch {
+    } catch (err) {
+      console.error('[onboarding] handleFinish failed:', err)
       setError('Something went wrong. Please try again.')
       setSaving(false)
     }
@@ -569,7 +580,9 @@ export default function OnboardingPage() {
             {/* STEP 1 — Language */}
             {step === 1 && (
               <div>
-                <h2 style={css.title} dangerouslySetInnerHTML={{ __html: v.langTitle.replace('SyndicSage', 'Syndic<span style="color:#F59E0B">Sage</span>') }} />
+                <h2 style={css.title}>
+                  {v.langTitle.replace('SyndicSage', '')}Syndic<span style={{ color: '#F59E0B' }}>Sage</span>
+                </h2>
                 <p style={css.sub}>{v.langSub}</p>
 
                 {/* Warning notice */}

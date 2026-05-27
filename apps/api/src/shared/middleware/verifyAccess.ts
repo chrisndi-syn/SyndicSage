@@ -17,7 +17,14 @@ export async function verifyAccess(c: Context, next: Next) {
   if (!userId) throw Errors.unauthorized()
 
   if (!buildingId) {
-    // Org-level route — just ensure user has a profile
+    // Org-level route — verify user has a profile (belongs to an org)
+    const supabase = getSupabaseAdmin()
+    const { data: profile, error: profileErr } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', userId)
+      .single()
+    if (profileErr || !profile) throw Errors.forbidden()
     return next()
   }
 

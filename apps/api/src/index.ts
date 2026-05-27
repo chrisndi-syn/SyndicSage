@@ -41,10 +41,11 @@ app.onError((err, c) => {
 })
 
 // ── Start server ──────────────────────────────────────────────
-const PORT = Number(process.env['PORT'] ?? 3001)
+const rawPort = parseInt(process.env['PORT'] ?? '3001', 10)
+const PORT = isNaN(rawPort) || rawPort < 1 || rawPort > 65535 ? 3001 : rawPort
 
 serve({ fetch: app.fetch, port: PORT }, () => {
-  console.warn(`API running on http://localhost:${PORT}`)
+  console.log(`API running on http://localhost:${PORT}`)
 })
 
 export default app

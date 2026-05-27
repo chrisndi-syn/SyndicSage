@@ -28,7 +28,11 @@ export function Sidebar() {
   ]
 
   async function handleLogout() {
-    await supabase.auth.signOut()
+    try {
+      await supabase.auth.signOut()
+    } catch (err) {
+      console.error('[sidebar] signOut failed:', err)
+    }
     navigate('/login', { replace: true })
   }
 
