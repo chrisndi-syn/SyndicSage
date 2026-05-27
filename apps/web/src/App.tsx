@@ -14,7 +14,7 @@ export default function App() {
           <Route path="/login"      element={<LoginPage />} />
 
           {/* Semi-public — requires auth, but no full app shell */}
-          <Route path="/onboarding" element={<OnboardingPage />} />
+          <Route path="/onboarding" element={<AuthGuard><OnboardingPage /></AuthGuard>} />
 
           {/* Protected app — catches all other routes */}
           <Route path="/*" element={
