@@ -1,0 +1,50 @@
+import { Hono } from 'hono'
+import { serve } from '@hono/node-server'
+import { attachContext }  from './shared/middleware/attachContext.js'
+import { resolveTenant }  from './shared/middleware/resolveTenant.js'
+import { verifyAccess }   from './shared/middleware/verifyAccess.js'
+import { AppError }       from './shared/errors.js'
+
+const app = new Hono()
+
+// ── Health check (no auth) ────────────────────────────────────
+app.get('/healthz', (c) => c.json({ status: 'ok' }))
+
+// ── Authenticated routes ──────────────────────────────────────
+// Middleware chain: attachContext → resolveTenant → verifyAccess
+// Every route below this line has a verified user + building context.
+const api = new Hono()
+
+api.use('*', attachContext)
+api.use('*', resolveTenant)
+api.use('*', verifyAccess)
+
+// ── Feature routes (added as phases are built) ────────────────
+// api.route('/buildings', buildingsRouter)
+// api.route('/owners',    ownersRouter)
+// api.route('/charges',   chargesRouter)
+
+app.route('/api', api)
+
+// ── Global error handler ──────────────────────────────────────
+app.onError((err, c) => {
+  if (err instanceof AppError) {
+    return c.json(
+      { code: err.code, message: err.message, details: err.details },
+      err.status as 400 | 401 | 403 | 404 | 409 | 500,
+    )
+  }
+
+  // Unexpected error — log internally, never expose details to client
+  console.error('[unhandled error]', err)
+  return c.json({ code: 'INTERNAL_ERROR', message: 'An unexpected error occurred' }, 500)
+})
+
+// ── Start server ──────────────────────────────────────────────
+const PORT = Number(process.env['PORT'] ?? 3001)
+
+serve({ fetch: app.fetch, port: PORT }, () => {
+  console.warn(`API running on http://localhost:${PORT}`)
+})
+
+export default app

@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # ── 1. Secret scanning ───────────────────────────────────────
+  secrets:
+    name: Secret scan (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── 2. Static analysis (SAST) ────────────────────────────────
+  sast:
+    name: SAST (Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: semgrep/semgrep-action@v1
+        with:
+          config: >-
+            p/typescript
+            p/react
+            p/security-audit
+            p/owasp-top-ten
+
+  # ── 3. Dependency audit ───────────────────────────────────────
+  audit:
+    name: Dependency audit (npm audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit dependencies
+        # Fail on high or critical CVEs. Moderate accepted until patched upstream.
+        run: pnpm audit --audit-level=high
+
+  # ── 4. Typecheck + lint + tests + build ──────────────────────
+  ci:
+    name: Typecheck · Lint · Test · Build
+    runs-on: ubuntu-latest
+    needs: [secrets, sast, audit]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm turbo typecheck
+
+      - name: Lint (includes ESLint import isolation rules)
+        run: pnpm turbo lint
+
+      - name: Unit tests
+        run: pnpm turbo test
+
+      - name: Tenant isolation tests
+        run: pnpm turbo test:isolation
+        # Tests that verify cross-building data leakage is impossible.
+        # A failure here blocks the deploy — no exceptions.
+
+      - name: Build
+        run: pnpm turbo build
+
+      - name: Build Docker images
+        run: |
+          docker build -t syndicsage-api:${{ github.sha }} -f apps/api/Dockerfile .
+          docker build -t syndicsage-worker:${{ github.sha }} -f apps/worker/Dockerfile .
+
+      - name: Scan Docker images (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: syndicsage-api:${{ github.sha }}
+          format: table
+          exit-code: '1'
+          severity: HIGH,CRITICAL
+          # Fail on HIGH or CRITICAL — OS CVEs and secrets baked into images
+
+      - name: Scan worker image (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: syndicsage-worker:${{ github.sha }}
+          format: table
+          exit-code: '1'
+          severity: HIGH,CRITICAL

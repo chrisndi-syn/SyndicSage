@@ -7,15 +7,20 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
     "preview": "vite preview"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",
     "@syndicsage/types": "workspace:*",
     "@syndicsage/ui": "workspace:*",
+    "@tanstack/react-query": "^5.100.14",
+    "i18next": "^26.3.0",
     "lucide-react": "^0.469.0",
+    "qrcode.react": "^4.2.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-i18next": "^17.0.8",
     "react-router-dom": "^6.22.0"
   },
   "devDependencies": {

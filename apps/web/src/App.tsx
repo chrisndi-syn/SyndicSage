@@ -1,27 +1,27 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './shared/auth/AuthContext'
+import { AuthGuard }   from './shared/auth/AuthGuard'
+import LoginPage       from './features/auth/LoginPage'
+import OnboardingPage  from './features/onboarding/OnboardingPage'
+import DashboardPage   from './features/dashboard/DashboardPage'
+
 export default function App() {
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: '#F2F2F7',
-      fontFamily: "'Inter', sans-serif",
-    }}>
-      <div style={{ textAlign: 'center' }}>
-        <h1 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 48,
-          fontWeight: 700,
-          color: '#1E3A5F',
-          lineHeight: 1,
-        }}>
-          Syndic<span style={{ color: '#F59E0B' }}>Sage</span>
-        </h1>
-        <p style={{ color: '#6E6E73', marginTop: 8, fontSize: 14 }}>
-          Foundation ready. Building features next.
-        </p>
-      </div>
-    </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* Public */}
+          <Route path="/login"      element={<LoginPage />} />
+
+          {/* Semi-public — requires auth, but no full app shell */}
+          <Route path="/onboarding" element={<OnboardingPage />} />
+
+          {/* Protected app — catches all other routes */}
+          <Route path="/*" element={
+            <AuthGuard><DashboardPage /></AuthGuard>
+          } />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }

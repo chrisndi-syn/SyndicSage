@@ -1,13 +1,22 @@
 {
   "name": "syndicsage",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev:web": "pnpm --filter @syndicsage/web dev",
-    "dev:mobile": "pnpm --filter @syndicsage/mobile start",
+    "dev:api": "pnpm --filter @syndicsage/api dev",
+    "dev:worker": "pnpm --filter @syndicsage/worker dev",
     "build:web": "pnpm --filter @syndicsage/web build",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm turbo typecheck",
+    "lint": "pnpm turbo lint",
+    "test": "pnpm turbo test",
+    "supabase:types": "supabase gen types typescript --project-id wdtnjjdkvddfinfgkucl > packages/types/src/database.types.ts"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.60.0",
+    "@typescript-eslint/parser": "^8.60.0",
+    "eslint": "^10.4.0",
+    "globals": "^17.6.0",
     "turbo": "^2.0.0",
     "typescript": "~5.4.0"
   },

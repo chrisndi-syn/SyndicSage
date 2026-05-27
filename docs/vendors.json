@@ -1,0 +1,59 @@
+{
+  "last_reviewed": "2026-05-27",
+  "vendors": [
+    {
+      "name": "Supabase",
+      "service": "Database, Auth, Storage",
+      "data_access": "high",
+      "processing_location": "AWS eu-west-1 (Ireland)",
+      "gdpr_dpa_signed": false,
+      "dpa_url": "https://supabase.com/legal/dpa",
+      "notes": "Sign DPA before going live with real user data"
+    },
+    {
+      "name": "Vercel",
+      "service": "Frontend hosting, CDN",
+      "data_access": "low",
+      "processing_location": "EU edge nodes available",
+      "gdpr_dpa_signed": false,
+      "dpa_url": "https://vercel.com/legal/dpa",
+      "notes": "Sign DPA before go-live. Enable EU-only edge config if needed."
+    },
+    {
+      "name": "Railway",
+      "service": "API server, Worker, Redis",
+      "data_access": "high",
+      "processing_location": "EU region available (select on deploy)",
+      "gdpr_dpa_signed": false,
+      "dpa_url": "https://railway.app/legal/privacy",
+      "notes": "Deploy to EU region. Sign DPA before go-live."
+    },
+    {
+      "name": "Resend",
+      "service": "Transactional email",
+      "data_access": "medium",
+      "processing_location": "US (check EU option)",
+      "gdpr_dpa_signed": false,
+      "dpa_url": "https://resend.com/legal/dpa",
+      "notes": "Email contains user names + building info. Sign DPA before sending."
+    },
+    {
+      "name": "Anthropic",
+      "service": "AI Sage (LLM API)",
+      "data_access": "medium",
+      "processing_location": "US",
+      "gdpr_dpa_signed": false,
+      "dpa_url": "https://www.anthropic.com/legal/privacy",
+      "notes": "Building + owner data sent in context. Minimize PII in prompts. Check DPA availability."
+    },
+    {
+      "name": "Google Workspace",
+      "service": "hello@syndicsage.com email",
+      "data_access": "low",
+      "processing_location": "EU available",
+      "gdpr_dpa_signed": false,
+      "dpa_url": "https://workspace.google.com/terms/dpa_terms.html",
+      "notes": "Standard Google Workspace DPA covers this."
+    }
+  ]
+}

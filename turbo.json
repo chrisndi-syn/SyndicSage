@@ -11,6 +11,16 @@
     },
     "typecheck": {
       "dependsOn": ["^build"]
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"]
+    },
+    "test:isolation": {
+      "dependsOn": ["^build"]
     }
   }
 }
