@@ -54,7 +54,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.verifyOtp({
       email: email.trim().toLowerCase(),
       token: code,
-      type:  'email',
+      type:  'magiclink',
     })
 
     if (error) {
@@ -97,21 +97,21 @@ export default function LoginPage() {
   async function handleGoogle() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options:  { redirectTo: `${window.location.origin}/` },
+      options:  { redirectTo: `${window.location.origin}/auth/callback` },
     })
   }
 
   async function handleMicrosoft() {
     await supabase.auth.signInWithOAuth({
       provider: 'azure',
-      options:  { redirectTo: `${window.location.origin}/` },
+      options:  { redirectTo: `${window.location.origin}/auth/callback` },
     })
   }
 
   async function handleApple() {
     await supabase.auth.signInWithOAuth({
       provider: 'apple',
-      options:  { redirectTo: `${window.location.origin}/` },
+      options:  { redirectTo: `${window.location.origin}/auth/callback` },
     })
   }
 
@@ -242,10 +242,11 @@ export default function LoginPage() {
           <>
             {/* ── Email form ─────────────────────────────────── */}
             <form onSubmit={handleSendCode}>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#1E3A5F', marginBottom: 6, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+              <label htmlFor="email-input" style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#1E3A5F', marginBottom: 6, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
                 {t('auth.emailLabel')}
               </label>
               <input
+                id="email-input"
                 type="email"
                 className="input"
                 value={email}

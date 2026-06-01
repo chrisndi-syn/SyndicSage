@@ -30,7 +30,8 @@
     "address":     "Adres",
     "notes":       "Notities",
     "createdAt":   "Aangemaakt",
-    "updatedAt":   "Bijgewerkt"
+    "updatedAt":      "Bijgewerkt",
+    "selectBuilding": "Selecteer een gebouw om gegevens te bekijken."
   },
   "auth": {
     "signIn":            "Aanmelden",
@@ -93,33 +94,55 @@
     "city":           "Stad",
     "unitCount":      "Aantal kavels",
     "empty":          "Nog geen gebouwen. Voeg uw eerste gebouw toe.",
-    "deleteConfirm":  "{{name}} verwijderen? Dit kan niet ongedaan worden gemaakt."
+    "deleteConfirm":  "{{name}} verwijderen? Dit kan niet ongedaan worden gemaakt.",
+    "unitCountError": "Het aantal kavels moet een positief getal zijn."
   },
   "owners": {
     "title":          "Mede-eigenaars & huurders",
     "add":            "Mede-eigenaar toevoegen",
-    "edit":           "Bewerken",
+    "edit":           "Mede-eigenaar bewerken",
     "fullName":       "Volledige naam",
     "unit":           "Kavel",
+    "unitNumber":     "Kavelnummer",
+    "unitType":       "Type kavel",
+    "ownershipShare": "Aandeel (tantièmes)",
+    "unitSection":    "Kavel",
+    "contactSection": "Contactgegevens",
     "isRenter":       "Huurder (geen eigenaar)",
+    "renter":         "Huurder",
+    "owner":          "Mede-eigenaar",
     "invitePortal":   "Uitnodigen voor portaal",
-    "empty":          "Nog geen mede-eigenaars voor dit gebouw."
+    "empty":          "Nog geen mede-eigenaars voor dit gebouw.",
+    "shareError":     "Het aandeel moet een positief getal zijn.",
+    "unitTypes": {
+      "apartment":  "Appartement",
+      "parking":    "Parking",
+      "storage":    "Berging",
+      "commercial": "Commercieel",
+      "other":      "Overige"
+    }
   },
   "charges": {
-    "title":          "Kosten",
-    "add":            "Kost toevoegen",
-    "markPaid":       "Markeren als betaald",
-    "period":         "Periode",
-    "dueDate":        "Vervaldatum",
-    "paidDate":       "Betaald op",
-    "pending":        "Openstaand",
-    "paid":           "Betaald",
-    "overdue":        "Achterstallig",
-    "monthly":        "Maandelijks",
-    "quarterly":      "Driemaandelijks",
-    "annual":         "Jaarlijks",
-    "oneTime":        "Eenmalig",
-    "empty":          "Nog geen kosten."
+    "title":            "Kosten",
+    "add":              "Kost toevoegen",
+    "edit":             "Kost bewerken",
+    "markPaid":         "Markeren als betaald",
+    "period":           "Periode",
+    "dueDate":          "Vervaldatum",
+    "paidDate":         "Betaald op",
+    "pending":          "Openstaand",
+    "paid":             "Betaald",
+    "overdue":          "Achterstallig",
+    "all":              "Alles",
+    "monthly":          "Maandelijks",
+    "quarterly":        "Driemaandelijks",
+    "annual":           "Jaarlijks",
+    "oneTime":          "Eenmalig",
+    "empty":            "Nog geen kosten.",
+    "owner":            "Mede-eigenaar / kavel",
+    "noOwner":          "Geen eigenaar (algemene kost)",
+    "titlePlaceholder": "bijv. Q2 gemeenschappelijke kosten",
+    "amountError":      "Het bedrag moet een positief getal zijn."
   },
   "documents": {
     "title":          "Documenten",
@@ -185,6 +208,23 @@
     "fullNameLabel":      "Volledige naam",
     "fullNamePlaceholder":"Jan Janssen",
     "finish":             "Account aanmaken"
+  },
+  "dashboard": {
+    "welcome":     "Welkom bij SyndicSage",
+    "welcomeDesc": "Voeg uw eerste gebouw toe om te beginnen.",
+    "activity":    "Gebouwactiviteit",
+    "noActivity":  "Nog geen recente activiteit.",
+    "events": {
+      "chargeCreated":      "Kost aangemaakt:",
+      "chargePaid":         "Kost gemarkeerd als betaald",
+      "chargeDeleted":      "Kost verwijderd",
+      "ownerAdded":         "Mede-eigenaar toegevoegd:",
+      "ownerRemoved":       "Mede-eigenaar verwijderd",
+      "documentUploaded":   "Document geüpload",
+      "documentDownloaded": "Document gedownload",
+      "buildingUpdated":    "Gebouwgegevens bijgewerkt",
+      "memberRemoved":      "Lid verwijderd"
+    }
   },
   "errors": {
     "unauthorized":   "U heeft geen toestemming voor deze actie.",

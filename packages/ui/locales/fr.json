@@ -30,7 +30,8 @@
     "address":     "Adresse",
     "notes":       "Notes",
     "createdAt":   "Créé le",
-    "updatedAt":   "Modifié le"
+    "updatedAt":      "Modifié le",
+    "selectBuilding": "Sélectionnez un immeuble pour afficher les données."
   },
   "auth": {
     "signIn":            "Se connecter",
@@ -93,33 +94,55 @@
     "city":           "Ville",
     "unitCount":      "Nombre de lots",
     "empty":          "Aucun immeuble. Ajoutez votre premier immeuble.",
-    "deleteConfirm":  "Supprimer {{name}} ? Cette action est irréversible."
+    "deleteConfirm":  "Supprimer {{name}} ? Cette action est irréversible.",
+    "unitCountError": "Le nombre de lots doit être un nombre positif."
   },
   "owners": {
     "title":          "Copropriétaires & locataires",
     "add":            "Ajouter un copropriétaire",
-    "edit":           "Modifier",
+    "edit":           "Modifier le copropriétaire",
     "fullName":       "Nom complet",
     "unit":           "Lot",
+    "unitNumber":     "Numéro de lot",
+    "unitType":       "Type de lot",
+    "ownershipShare": "Quote-part (tantièmes)",
+    "unitSection":    "Lot",
+    "contactSection": "Coordonnées",
     "isRenter":       "Locataire (pas propriétaire)",
+    "renter":         "Locataire",
+    "owner":          "Copropriétaire",
     "invitePortal":   "Inviter au portail",
-    "empty":          "Aucun copropriétaire pour cet immeuble."
+    "empty":          "Aucun copropriétaire pour cet immeuble.",
+    "shareError":     "La quote-part doit être un nombre positif.",
+    "unitTypes": {
+      "apartment":  "Appartement",
+      "parking":    "Parking",
+      "storage":    "Cave / box",
+      "commercial": "Commerce",
+      "other":      "Autre"
+    }
   },
   "charges": {
-    "title":          "Charges",
-    "add":            "Ajouter une charge",
-    "markPaid":       "Marquer comme payé",
-    "period":         "Période",
-    "dueDate":        "Date d'échéance",
-    "paidDate":       "Payé le",
-    "pending":        "En attente",
-    "paid":           "Payé",
-    "overdue":        "En retard",
-    "monthly":        "Mensuel",
-    "quarterly":      "Trimestriel",
-    "annual":         "Annuel",
-    "oneTime":        "Ponctuel",
-    "empty":          "Aucune charge."
+    "title":            "Charges",
+    "add":              "Ajouter une charge",
+    "edit":             "Modifier la charge",
+    "markPaid":         "Marquer comme payé",
+    "period":           "Période",
+    "dueDate":          "Date d'échéance",
+    "paidDate":         "Payé le",
+    "pending":          "En attente",
+    "paid":             "Payé",
+    "overdue":          "En retard",
+    "all":              "Tout",
+    "monthly":          "Mensuel",
+    "quarterly":        "Trimestriel",
+    "annual":           "Annuel",
+    "oneTime":          "Ponctuel",
+    "empty":            "Aucune charge.",
+    "owner":            "Copropriétaire / lot",
+    "noOwner":          "Aucun (charge générale)",
+    "titlePlaceholder": "ex. Appel de charges T2",
+    "amountError":      "Le montant doit être un nombre positif."
   },
   "documents": {
     "title":          "Documents",
@@ -185,6 +208,23 @@
     "fullNameLabel":      "Nom complet",
     "fullNamePlaceholder":"Jean Dupont",
     "finish":             "Créer mon compte"
+  },
+  "dashboard": {
+    "welcome":     "Bienvenue sur SyndicSage",
+    "welcomeDesc": "Ajoutez votre premier immeuble pour commencer.",
+    "activity":    "Activité de l'immeuble",
+    "noActivity":  "Aucune activité récente.",
+    "events": {
+      "chargeCreated":      "Charge créée :",
+      "chargePaid":         "Charge marquée comme payée",
+      "chargeDeleted":      "Charge supprimée",
+      "ownerAdded":         "Copropriétaire ajouté :",
+      "ownerRemoved":       "Copropriétaire retiré",
+      "documentUploaded":   "Document téléversé",
+      "documentDownloaded": "Document téléchargé",
+      "buildingUpdated":    "Informations immeuble mises à jour",
+      "memberRemoved":      "Membre retiré"
+    }
   },
   "errors": {
     "unauthorized":   "Vous n'avez pas la permission d'effectuer cette action.",

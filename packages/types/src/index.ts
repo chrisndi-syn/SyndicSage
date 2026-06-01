@@ -73,6 +73,7 @@ export const BuildingSchema = z.object({
   address:         z.string().min(1),
   city:            z.string().min(1),
   unit_count:      z.number().int().nonnegative(),
+  vme_number:      z.string().optional(),
   created_at:      isoDate,
   updated_at:      isoDate,
   deleted_at:      optDate,
