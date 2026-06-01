@@ -3,6 +3,7 @@
 import { useState }       from 'react'
 import { useTranslation } from 'react-i18next'
 import { Building2 }      from 'lucide-react'
+import { useNavigate }    from 'react-router-dom'
 import { Shell }          from '../../components/layout/Shell'
 import { Topbar }         from '../../components/layout/Topbar'
 import { useBuildings, useDeleteBuilding } from './useBuildings'
@@ -16,6 +17,7 @@ export default function BuildingsPage() {
   const deleteBuilding = useDeleteBuilding()
   const { setSelected } = useBuilding()
 
+  const navigate = useNavigate()
   const [showModal,     setShowModal]     = useState(false)
   const [editBuilding,  setEditBuilding]  = useState<Building | undefined>()
   const [confirmDelete, setConfirmDelete] = useState<Building | null>(null)
@@ -98,6 +100,7 @@ export default function BuildingsPage() {
               onSelect={() => setSelected(building)}
               onEdit={() => handleEdit(building)}
               onDelete={() => setConfirmDelete(building)}
+              onView={() => navigate(`/buildings/${building.id}`)}
               t={t}
             />
           ))}
@@ -129,11 +132,12 @@ export default function BuildingsPage() {
 
 // ── Building card ──────────────────────────────────────────────
 
-function BuildingCard({ building, onSelect, onEdit, onDelete, t }: {
+function BuildingCard({ building, onSelect, onEdit, onDelete, onView, t }: {
   building: Building
   onSelect: () => void
   onEdit:   () => void
   onDelete: () => void
+  onView:   () => void
   t:        (key: string, opts?: Record<string, unknown>) => string
 }) {
   return (
@@ -164,6 +168,7 @@ function BuildingCard({ building, onSelect, onEdit, onDelete, t }: {
         </div>
         {/* Actions */}
         <div style={{ display: 'flex', gap: 6, marginLeft: 12, flexShrink: 0 }}>
+          <ActionBtn onClick={e => { e.stopPropagation(); onView() }} label={t('buildings.view')} />
           <ActionBtn onClick={e => { e.stopPropagation(); onEdit() }} label={t('common.edit')} />
           <ActionBtn onClick={e => { e.stopPropagation(); onDelete() }} label={t('common.delete')} danger />
         </div>

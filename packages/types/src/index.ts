@@ -66,17 +66,32 @@ export const BuildingMemberSchema = z.object({
 export type BuildingMember = z.infer<typeof BuildingMemberSchema>
 
 // ── Building ──────────────────────────────────────────────────
+export const BuildingTypeSchema = z.enum(['apartment', 'mixed', 'commercial', 'other'])
+export type BuildingType = z.infer<typeof BuildingTypeSchema>
+
 export const BuildingSchema = z.object({
-  id:              uuid,
-  organization_id: uuid,
-  name:            z.string().min(1).max(200),
-  address:         z.string().min(1),
-  city:            z.string().min(1),
-  unit_count:      z.number().int().nonnegative(),
-  vme_number:      z.string().optional(),
-  created_at:      isoDate,
-  updated_at:      isoDate,
-  deleted_at:      optDate,
+  id:                   uuid,
+  organization_id:      uuid,
+  name:                 z.string().min(1).max(200),
+  address:              z.string().min(1),
+  city:                 z.string().min(1),
+  unit_count:           z.number().int().nonnegative(),
+  vme_number:           z.string().optional(),
+  building_type:        BuildingTypeSchema.optional(),
+  year_built:           z.number().int().optional(),
+  floors:               z.number().int().optional(),
+  ag_date:              z.string().nullable().optional(),
+  mandate_start:        z.string().nullable().optional(),
+  mandate_expiry:       z.string().nullable().optional(),
+  annual_budget:        z.number().nonnegative().nullable().optional(),
+  reserve_fund_balance: z.number().nonnegative().nullable().optional(),
+  bank_iban:            z.string().nullable().optional(),
+  bank_name:            z.string().nullable().optional(),
+  auto_remind_enabled:  z.boolean().optional(),
+  auto_remind_days:     z.number().int().optional(),
+  created_at:           isoDate,
+  updated_at:           isoDate,
+  deleted_at:           optDate,
 })
 export type Building = z.infer<typeof BuildingSchema>
 
@@ -98,16 +113,20 @@ export type Unit = z.infer<typeof UnitSchema>
 
 // ── Owner ─────────────────────────────────────────────────────
 export const OwnerSchema = z.object({
-  id:          uuid,
-  building_id: uuid,
-  unit_id:     uuid,
-  member_id:   uuid.optional(),
-  full_name:   z.string().min(1).max(100),
-  email:       z.string().email(),
-  phone:       z.string().optional(),
-  is_renter:   z.boolean(),
-  created_at:  isoDate,
-  deleted_at:  optDate,
+  id:                 uuid,
+  building_id:        uuid,
+  unit_id:            uuid,
+  member_id:          uuid.optional(),
+  full_name:          z.string().min(1).max(100),
+  email:              z.string().email(),
+  phone:              z.string().optional(),
+  is_renter:          z.boolean(),
+  bank_account:       z.string().nullable().optional(),
+  preferred_language: z.enum(['en', 'fr', 'nl']).optional(),
+  mailing_address:    z.string().nullable().optional(),
+  has_no_email:       z.boolean().optional(),
+  created_at:         isoDate,
+  deleted_at:         optDate,
 })
 export type Owner = z.infer<typeof OwnerSchema>
 

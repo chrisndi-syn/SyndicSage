@@ -1,7 +1,8 @@
 // ── Charges client API ────────────────────────────────────────
 
-import { supabase }  from '../../lib/supabase'
-import { apiFetch }  from '../../lib/api'
+import { supabase }     from '../../lib/supabase'
+import { apiFetch }     from '../../lib/api'
+import { MOCK_CHARGES } from '../../lib/mockData'
 
 export interface ChargeWithOwner {
   id:          string
@@ -26,6 +27,14 @@ export async function fetchCharges(
   buildingId:    string,
   statusFilter?: StatusFilter,
 ): Promise<ChargeWithOwner[]> {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) {
+    const rows = MOCK_CHARGES[buildingId] ?? []
+    return statusFilter && statusFilter !== 'all'
+      ? rows.filter(c => c.status === statusFilter)
+      : rows
+  }
+
   let query = supabase
     .from('charges')
     .select(`

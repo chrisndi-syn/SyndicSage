@@ -26,13 +26,24 @@ const UNIT_TYPES = ['apartment', 'parking', 'storage', 'commercial', 'other'] as
 
 // ── POST / ────────────────────────────────────────────────────
 const CreateOwnerSchema = z.object({
-  unit_number:     z.string().min(1).max(20),
-  unit_type:       z.enum(UNIT_TYPES),
-  ownership_share: z.number().positive(),
-  full_name:       z.string().min(1).max(100),
-  email:           z.string().email(),
-  phone:           z.string().optional(),
-  is_renter:       z.boolean(),
+  unit_number:        z.string().min(1).max(20),
+  unit_type:          z.enum(UNIT_TYPES),
+  ownership_share:    z.number().positive(),
+  full_name:          z.string().min(1).max(100),
+  email:              z.string().max(254).optional(),
+  phone:              z.string().optional(),
+  is_renter:          z.boolean(),
+  has_no_email:       z.boolean().optional(),
+  bank_account:       z.string().max(34).nullable().optional(),
+  preferred_language: z.enum(['en', 'fr', 'nl']).optional(),
+  mailing_address:    z.string().nullable().optional(),
+}).superRefine((data, ctx) => {
+  if (!data.has_no_email && !data.email) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['email'], message: 'Email required unless has_no_email is true' })
+  }
+  if (data.email && data.email.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['email'], message: 'Invalid email address' })
+  }
 })
 
 router.post('/', async (c) => {
@@ -64,10 +75,21 @@ router.post('/', async (c) => {
 
 // ── PATCH /:ownerId ───────────────────────────────────────────
 const UpdateOwnerSchema = z.object({
-  full_name: z.string().min(1).max(100).optional(),
-  email:     z.string().email().optional(),
-  phone:     z.string().nullable().optional(),
-  is_renter: z.boolean().optional(),
+  full_name:          z.string().min(1).max(100).optional(),
+  email:              z.string().max(254).optional(),
+  phone:              z.string().nullable().optional(),
+  is_renter:          z.boolean().optional(),
+  bank_account:       z.string().max(34).nullable().optional(),
+  preferred_language: z.enum(['en','fr','nl']).optional(),
+  mailing_address:    z.string().nullable().optional(),
+  has_no_email:       z.boolean().optional(),
+}).superRefine((data, ctx) => {
+  if (data.has_no_email === false && data.email !== undefined && data.email.length === 0) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['email'], message: 'Email required when has_no_email is false' })
+  }
+  if (data.email && data.email.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['email'], message: 'Invalid email address' })
+  }
 })
 
 router.patch('/:ownerId', async (c) => {

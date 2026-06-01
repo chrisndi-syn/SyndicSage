@@ -1,0 +1,160 @@
+// ── DEV MOCK DATA — remove before launch ──────────────────────
+import type { Building }       from '@syndicsage/types'
+import type { OwnerWithUnit }  from '../features/owners/owners.api'
+import type { ChargeWithOwner } from '../features/charges/charges.api'
+
+export const MOCK_BUILDINGS: Building[] = [
+  {
+    id:              'mock-building-1',
+    organization_id: 'mock-org-1',
+    name:            'Résidence les Acacias',
+    address:         'Rue des Acacias 12',
+    city:            'Bruxelles',
+    unit_count:      24,
+    vme_number:      'BE0123456789',
+    building_type:   'apartment',
+    year_built:      1978,
+    floors:          6,
+    ag_date:         '2026-09-15',
+    mandate_start:   '2024-01-01',
+    mandate_expiry:  '2027-01-01',
+    annual_budget:   48000,
+    reserve_fund_balance: 12400,
+    bank_iban:       'BE68 5390 0754 7034',
+    bank_name:       'ING',
+    auto_remind_enabled: true,
+    auto_remind_days: 7,
+    created_at:      '2026-01-01T00:00:00Z',
+    updated_at:      '2026-01-01T00:00:00Z',
+    deleted_at:      null,
+  },
+  {
+    id:              'mock-building-2',
+    organization_id: 'mock-org-1',
+    name:            'Copropriété du Parc',
+    address:         'Avenue du Parc 7',
+    city:            'Liège',
+    unit_count:      12,
+    vme_number:      undefined,
+    building_type:   'mixed',
+    year_built:      1995,
+    floors:          4,
+    ag_date:         '2026-11-20',
+    mandate_start:   '2025-01-01',
+    mandate_expiry:  '2028-01-01',
+    annual_budget:   24000,
+    reserve_fund_balance: 3200,
+    bank_iban:       'BE43 0689 9999 8765',
+    bank_name:       'KBC',
+    auto_remind_enabled: false,
+    auto_remind_days: 7,
+    created_at:      '2026-02-01T00:00:00Z',
+    updated_at:      '2026-02-01T00:00:00Z',
+    deleted_at:      null,
+  },
+]
+
+export const MOCK_OWNERS: Record<string, OwnerWithUnit[]> = {
+  'mock-building-1': [
+    {
+      id: 'mock-owner-1', building_id: 'mock-building-1', unit_id: 'mock-unit-1',
+      full_name: 'Jean Dupont', email: 'jean.dupont@example.com', phone: '+32 471 11 22 33',
+      is_renter: false, bank_account: 'BE68 5390 0754 7034',
+      preferred_language: 'fr', mailing_address: null, has_no_email: false,
+      created_at: '2026-01-10T00:00:00Z',
+      units: { id: 'mock-unit-1', unit_number: 'A01', unit_type: 'apartment', ownership_share: 250 },
+    },
+    {
+      id: 'mock-owner-2', building_id: 'mock-building-1', unit_id: 'mock-unit-2',
+      full_name: 'Marie Lambert', email: 'marie.lambert@example.com', phone: null,
+      is_renter: false, bank_account: null,
+      preferred_language: 'nl', mailing_address: null, has_no_email: false,
+      created_at: '2026-01-11T00:00:00Z',
+      units: { id: 'mock-unit-2', unit_number: 'A02', unit_type: 'apartment', ownership_share: 260 },
+    },
+    {
+      id: 'mock-owner-3', building_id: 'mock-building-1', unit_id: 'mock-unit-3',
+      full_name: 'Pierre Martin', email: 'pierre.martin@example.com', phone: '+32 495 44 55 66',
+      is_renter: true, bank_account: null,
+      preferred_language: 'fr', mailing_address: 'Rue de la Paix 3, 1000 Bruxelles', has_no_email: false,
+      created_at: '2026-02-01T00:00:00Z',
+      units: { id: 'mock-unit-3', unit_number: 'B01', unit_type: 'apartment', ownership_share: 240 },
+    },
+    {
+      id: 'mock-owner-4', building_id: 'mock-building-1', unit_id: 'mock-unit-4',
+      full_name: 'Sophie Lecomte', email: '', phone: '+32 478 77 88 99',
+      is_renter: false, bank_account: 'BE43 0689 9999 8765',
+      preferred_language: 'en', mailing_address: null, has_no_email: true,
+      created_at: '2026-02-15T00:00:00Z',
+      units: { id: 'mock-unit-4', unit_number: 'P01', unit_type: 'parking', ownership_share: 50 },
+    },
+    {
+      id: 'mock-owner-5', building_id: 'mock-building-1', unit_id: 'mock-unit-5',
+      full_name: 'Thomas Renard', email: 'thomas.renard@example.com', phone: null,
+      is_renter: false, bank_account: null,
+      preferred_language: 'fr', mailing_address: null, has_no_email: false,
+      created_at: '2026-03-01T00:00:00Z',
+      units: { id: 'mock-unit-5', unit_number: 'C01', unit_type: 'apartment', ownership_share: 200 },
+    },
+  ],
+  'mock-building-2': [
+    {
+      id: 'mock-owner-6', building_id: 'mock-building-2', unit_id: 'mock-unit-6',
+      full_name: 'Luc Fontaine', email: 'luc.fontaine@example.com', phone: null,
+      is_renter: false, bank_account: 'BE68 3200 1234 5678',
+      preferred_language: 'fr', mailing_address: null, has_no_email: false,
+      created_at: '2026-02-05T00:00:00Z',
+      units: { id: 'mock-unit-6', unit_number: '101', unit_type: 'apartment', ownership_share: 500 },
+    },
+    {
+      id: 'mock-owner-7', building_id: 'mock-building-2', unit_id: 'mock-unit-7',
+      full_name: 'Anne Renard', email: 'anne.renard@example.com', phone: '+32 486 12 34 56',
+      is_renter: false, bank_account: null,
+      preferred_language: 'nl', mailing_address: null, has_no_email: false,
+      created_at: '2026-02-06T00:00:00Z',
+      units: { id: 'mock-unit-7', unit_number: '102', unit_type: 'apartment', ownership_share: 500 },
+    },
+  ],
+}
+
+export const MOCK_CHARGES: Record<string, ChargeWithOwner[]> = {
+  'mock-building-1': [
+    {
+      id: 'mock-charge-1', building_id: 'mock-building-1', owner_id: 'mock-owner-1',
+      title: 'Q2 2026 — Common area charges', amount: 385.00, status: 'pending',
+      period: 'quarterly', due_date: '2026-06-30', paid_date: null,
+      notes: null, created_at: '2026-05-01T00:00:00Z',
+      owners: { full_name: 'Jean Dupont', units: { unit_number: 'A01' } },
+    },
+    {
+      id: 'mock-charge-2', building_id: 'mock-building-1', owner_id: 'mock-owner-2',
+      title: 'Q2 2026 — Common area charges', amount: 400.00, status: 'paid',
+      period: 'quarterly', due_date: '2026-06-30', paid_date: '2026-05-15',
+      notes: null, created_at: '2026-05-01T00:00:00Z',
+      owners: { full_name: 'Marie Lambert', units: { unit_number: 'A02' } },
+    },
+    {
+      id: 'mock-charge-3', building_id: 'mock-building-1', owner_id: 'mock-owner-1',
+      title: 'Q1 2026 — Common area charges', amount: 385.00, status: 'overdue',
+      period: 'quarterly', due_date: '2026-03-31', paid_date: null,
+      notes: 'Second reminder sent', created_at: '2026-02-01T00:00:00Z',
+      owners: { full_name: 'Jean Dupont', units: { unit_number: 'A01' } },
+    },
+    {
+      id: 'mock-charge-4', building_id: 'mock-building-1', owner_id: null,
+      title: 'Lift maintenance contract 2026', amount: 1200.00, status: 'paid',
+      period: 'annual', due_date: '2026-01-31', paid_date: '2026-01-20',
+      notes: 'Otis contract renewal', created_at: '2026-01-01T00:00:00Z',
+      owners: null,
+    },
+  ],
+  'mock-building-2': [
+    {
+      id: 'mock-charge-5', building_id: 'mock-building-2', owner_id: 'mock-owner-6',
+      title: 'May 2026 — Monthly charges', amount: 210.00, status: 'pending',
+      period: 'monthly', due_date: '2026-05-31', paid_date: null,
+      notes: null, created_at: '2026-05-01T00:00:00Z',
+      owners: { full_name: 'Luc Fontaine', units: { unit_number: '101' } },
+    },
+  ],
+}

@@ -64,11 +64,23 @@ router.post('/', async (c) => {
 
 // ── PATCH /:buildingId — update building ──────────────────────
 const UpdateBuildingSchema = z.object({
-  name:       z.string().min(1).max(200).optional(),
-  address:    z.string().min(1).optional(),
-  city:       z.string().min(1).optional(),
-  unit_count: z.number().int().positive().optional(),
-  vme_number: z.string().nullable().optional(),
+  name:                 z.string().min(1).max(200).optional(),
+  address:              z.string().min(1).optional(),
+  city:                 z.string().min(1).optional(),
+  unit_count:           z.number().int().positive().optional(),
+  vme_number:           z.string().nullable().optional(),
+  building_type:        z.enum(['apartment','mixed','commercial','other']).nullable().optional(),
+  year_built:           z.number().int().min(1800).max(2100).nullable().optional(),
+  floors:               z.number().int().min(1).max(200).nullable().optional(),
+  ag_date:              z.string().nullable().optional(),
+  mandate_start:        z.string().nullable().optional(),
+  mandate_expiry:       z.string().nullable().optional(),
+  annual_budget:        z.number().nonnegative().nullable().optional(),
+  reserve_fund_balance: z.number().nonnegative().nullable().optional(),
+  bank_iban:            z.string().max(34).nullable().optional(),
+  bank_name:            z.string().max(100).nullable().optional(),
+  auto_remind_enabled:  z.boolean().optional(),
+  auto_remind_days:     z.number().int().min(1).max(90).optional(),
 })
 
 router.patch('/:buildingId', async (c) => {

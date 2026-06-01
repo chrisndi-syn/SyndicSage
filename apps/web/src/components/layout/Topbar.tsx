@@ -1,5 +1,6 @@
 import { useAuth }     from '../../shared/auth/AuthContext'
 import { useBuilding } from '../../shared/building/BuildingContext'
+import { theme }       from '../../lib/theme'
 import { ChevronDown } from 'lucide-react'
 import { useState }    from 'react'
 
@@ -9,46 +10,46 @@ interface Props {
 }
 
 export function Topbar({ title, subtitle }: Props) {
-  const { user }                    = useAuth()
+  const { user }                             = useAuth()
   const { buildings, selected, setSelected } = useBuilding()
-  const [showSwitcher, setShowSwitcher] = useState(false)
+  const [showSwitcher, setShowSwitcher]      = useState(false)
 
   const initials = user?.email
     ? user.email.slice(0, 2).toUpperCase()
-    : '?'
+    : '??'
 
-  // Show switcher only when there are multiple buildings
   const hasSwitcher = buildings.length > 1
 
   return (
     <header style={{
-      height:         56,
-      background:     '#FFFFFF',
-      borderBottom:   '1px solid rgba(60,60,67,0.08)',
+      height:         theme.topbarH,
+      background:     theme.colors.surface,
+      borderBottom:   `1px solid ${theme.colors.border}`,
       display:        'flex',
       alignItems:     'center',
       justifyContent: 'space-between',
-      padding:        '0 24px',
+      padding:        '0 20px',
       flexShrink:     0,
-      position:       'relative',
-      zIndex:         50,
+      position:       'sticky',
+      top:            0,
+      zIndex:         90,
     }}>
-      <div>
-        <h2 style={{
-          fontFamily: "'Cormorant Garamond', Georgia, serif",
-          fontSize:   20, fontWeight: 700, color: '#1E3A5F',
-          margin:     0, lineHeight: 1,
-        }}>
-          {title}
-        </h2>
+
+      {/* Breadcrumb / title */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <span style={{ color: theme.colors.textMuted, fontSize: 13 }}>SyndicSage</span>
+        <span style={{ color: theme.colors.textMuted, opacity: 0.4, fontSize: 13 }}>/</span>
+        <span style={{ color: theme.colors.text, fontSize: 13, fontWeight: 600 }}>{title}</span>
         {subtitle && (
-          <p style={{ color: '#6E6E73', fontSize: 12, margin: '2px 0 0' }}>
-            {subtitle}
-          </p>
+          <>
+            <span style={{ color: theme.colors.textMuted, opacity: 0.4, fontSize: 13 }}>/</span>
+            <span style={{ color: theme.colors.textMuted, fontSize: 13 }}>{subtitle}</span>
+          </>
         )}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      {/* Right side */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
 
         {/* Building switcher */}
         {hasSwitcher && selected && (
@@ -56,51 +57,62 @@ export function Topbar({ title, subtitle }: Props) {
             <button
               onClick={() => setShowSwitcher(s => !s)}
               style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                padding: '5px 10px',
-                background: '#F2F2F7',
-                border: '1px solid rgba(60,60,67,0.10)',
-                borderRadius: 7,
-                fontSize: 12, color: '#1E3A5F', cursor: 'pointer',
-                fontWeight: 500,
+                display:      'flex',
+                alignItems:   'center',
+                gap:          6,
+                padding:      '5px 10px',
+                background:   theme.colors.bgLight,
+                border:       `1px solid ${theme.colors.border}`,
+                borderRadius: theme.radiusSm,
+                fontSize:     12,
+                color:        theme.colors.text,
+                cursor:       'pointer',
+                fontWeight:   500,
+                fontFamily:   'inherit',
+                transition:   'border-color 0.15s',
               }}
             >
-              <span style={{
-                maxWidth: 140, overflow: 'hidden',
-                textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              }}>
+              <span style={{ maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {selected.name}
               </span>
-              <ChevronDown size={14} />
+              <ChevronDown size={13} />
             </button>
 
             {showSwitcher && (
               <>
-                {/* Backdrop */}
                 <div
                   style={{ position: 'fixed', inset: 0, zIndex: 40 }}
                   onClick={() => setShowSwitcher(false)}
                 />
-                {/* Dropdown */}
                 <div style={{
-                  position: 'absolute', top: 'calc(100% + 6px)', right: 0,
-                  background: '#FFFFFF',
-                  border: '1px solid rgba(60,60,67,0.10)',
-                  borderRadius: 8, padding: '4px 0',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
-                  minWidth: 200, zIndex: 50,
+                  position:     'absolute',
+                  top:          'calc(100% + 6px)',
+                  right:        0,
+                  background:   theme.colors.surface,
+                  border:       `1px solid ${theme.colors.border}`,
+                  borderRadius: theme.radiusSm,
+                  padding:      '4px 0',
+                  boxShadow:    theme.shadow,
+                  minWidth:     200,
+                  zIndex:       50,
                 }}>
                   {buildings.map(b => (
                     <button
                       key={b.id}
                       onClick={() => { setSelected(b); setShowSwitcher(false) }}
                       style={{
-                        display: 'block', width: '100%',
-                        padding: '8px 14px', textAlign: 'left',
-                        background: b.id === selected.id ? '#F2F2F7' : 'transparent',
-                        border: 'none',
-                        fontSize: 13, color: '#1E3A5F', cursor: 'pointer',
+                        display:    'block',
+                        width:      '100%',
+                        padding:    '8px 14px',
+                        textAlign:  'left',
+                        background: b.id === selected.id ? theme.colors.amberDim : 'transparent',
+                        border:     'none',
+                        fontSize:   13,
+                        color:      b.id === selected.id ? theme.colors.amber : theme.colors.text,
+                        cursor:     'pointer',
                         fontWeight: b.id === selected.id ? 600 : 400,
+                        fontFamily: 'inherit',
+                        transition: 'background 0.12s',
                       }}
                     >
                       {b.name}
@@ -114,10 +126,18 @@ export function Topbar({ title, subtitle }: Props) {
 
         {/* User avatar */}
         <div style={{
-          width: 32, height: 32, borderRadius: '50%',
-          background: '#1E3A5F', color: '#FFFFFF',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 12, fontWeight: 600, flexShrink: 0,
+          width:           32,
+          height:          32,
+          borderRadius:    '50%',
+          background:      `linear-gradient(135deg, ${theme.colors.amber}, #D97706)`,
+          color:           theme.colors.navy,
+          display:         'flex',
+          alignItems:      'center',
+          justifyContent:  'center',
+          fontSize:        11,
+          fontWeight:      700,
+          flexShrink:      0,
+          cursor:          'default',
         }}>
           {initials}
         </div>

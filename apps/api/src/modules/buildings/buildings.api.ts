@@ -81,11 +81,23 @@ export async function createBuilding(
 }
 
 export interface UpdateBuildingInput {
-  name?:       string
-  address?:    string
-  city?:       string
-  unit_count?: number
-  vme_number?: string | null
+  name?:                 string
+  address?:              string
+  city?:                 string
+  unit_count?:           number
+  vme_number?:           string | null
+  building_type?:        string | null
+  year_built?:           number | null
+  floors?:               number | null
+  ag_date?:              string | null
+  mandate_start?:        string | null
+  mandate_expiry?:       string | null
+  annual_budget?:        number | null
+  reserve_fund_balance?: number | null
+  bank_iban?:            string | null
+  bank_name?:            string | null
+  auto_remind_enabled?:  boolean
+  auto_remind_days?:     number
 }
 
 export async function updateBuilding(

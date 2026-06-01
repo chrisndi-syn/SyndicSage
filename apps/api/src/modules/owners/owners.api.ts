@@ -24,14 +24,18 @@ export interface OwnerRow {
 }
 
 export interface CreateOwnerInput {
-  building_id:     string
-  unit_number:     string
-  unit_type:       string
-  ownership_share: number
-  full_name:       string
-  email:           string
-  phone?:          string
-  is_renter:       boolean
+  building_id:        string
+  unit_number:        string
+  unit_type:          string
+  ownership_share:    number
+  full_name:          string
+  email?:             string
+  phone?:             string
+  is_renter:          boolean
+  bank_account?:      string | null
+  preferred_language?: string
+  mailing_address?:   string | null
+  has_no_email?:      boolean
 }
 
 // Creates unit + owner in one logical operation.
@@ -62,12 +66,16 @@ export async function createOwnerWithUnit(input: CreateOwnerInput): Promise<Owne
   const { data: owner, error: ownerErr } = await supabase
     .from('owners')
     .insert({
-      building_id: input.building_id,
-      unit_id:     (unit as UnitRow).id,
-      full_name:   input.full_name,
-      email:       input.email,
-      phone:       input.phone ?? null,
-      is_renter:   input.is_renter,
+      building_id:        input.building_id,
+      unit_id:            (unit as UnitRow).id,
+      full_name:          input.full_name,
+      email:              input.email,
+      phone:              input.phone ?? null,
+      is_renter:          input.is_renter,
+      bank_account:       input.bank_account ?? null,
+      preferred_language: input.preferred_language ?? 'fr',
+      mailing_address:    input.mailing_address ?? null,
+      has_no_email:       input.has_no_email ?? false,
     })
     .select()
     .single()
@@ -82,10 +90,14 @@ export async function createOwnerWithUnit(input: CreateOwnerInput): Promise<Owne
 }
 
 export interface UpdateOwnerInput {
-  full_name?: string
-  email?:     string
-  phone?:     string | null
-  is_renter?: boolean
+  full_name?:          string
+  email?:              string
+  phone?:              string | null
+  is_renter?:          boolean
+  bank_account?:       string | null
+  preferred_language?: string
+  mailing_address?:    string | null
+  has_no_email?:       boolean
 }
 
 export async function updateOwner(

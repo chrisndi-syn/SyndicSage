@@ -9,6 +9,7 @@ import {
 } from 'react'
 import type { Building } from '@syndicsage/types'
 import { supabase } from '../../lib/supabase'
+import { MOCK_BUILDINGS } from '../../lib/mockData'
 
 const STORAGE_KEY = 'syndicsage_selected_building'
 
@@ -35,13 +36,18 @@ export function BuildingProvider({ children }: { children: ReactNode }) {
 
   const loadBuildings = useCallback(async () => {
     setLoading(true)
-    const { data } = await supabase
-      .from('buildings')
-      .select('*')
-      .is('deleted_at', null)
-      .order('name')
-
-    const rows = (data ?? []) as Building[]
+    const { data: { session } } = await supabase.auth.getSession()
+    let rows: Building[]
+    if (!session) {
+      rows = MOCK_BUILDINGS
+    } else {
+      const { data } = await supabase
+        .from('buildings')
+        .select('*')
+        .is('deleted_at', null)
+        .order('name')
+      rows = (data ?? []) as Building[]
+    }
     setBuildings(rows)
 
     // Restore persisted selection, or auto-select if single building

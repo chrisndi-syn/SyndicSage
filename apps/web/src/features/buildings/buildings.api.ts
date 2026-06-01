@@ -5,10 +5,14 @@
 import type { Building } from '@syndicsage/types'
 import { supabase }       from '../../lib/supabase'
 import { apiFetch }       from '../../lib/api'
+import { MOCK_BUILDINGS }  from '../../lib/mockData'
 
 // ── Reads (Supabase direct) ────────────────────────────────────
 
 export async function fetchBuildings(): Promise<Building[]> {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return MOCK_BUILDINGS
+
   const { data, error } = await supabase
     .from('buildings')
     .select('*')
@@ -22,10 +26,23 @@ export async function fetchBuildings(): Promise<Building[]> {
 // ── Writes (Hono API) ─────────────────────────────────────────
 
 export interface CreateBuildingBody {
-  name:       string
-  address:    string
-  city:       string
-  unit_count: number
+  name:                  string
+  address:               string
+  city:                  string
+  unit_count:            number
+  vme_number?:           string
+  building_type?:        string
+  year_built?:           number
+  floors?:               number
+  ag_date?:              string
+  mandate_start?:        string
+  mandate_expiry?:       string
+  annual_budget?:        number
+  reserve_fund_balance?: number
+  bank_iban?:            string
+  bank_name?:            string
+  auto_remind_enabled?:  boolean
+  auto_remind_days?:     number
 }
 
 export async function apiCreateBuilding(token: string, body: CreateBuildingBody): Promise<Building> {
@@ -36,11 +53,23 @@ export async function apiCreateBuilding(token: string, body: CreateBuildingBody)
 }
 
 export interface UpdateBuildingBody {
-  name?:       string
-  address?:    string
-  city?:       string
-  unit_count?: number
-  vme_number?: string | null
+  name?:                 string
+  address?:              string
+  city?:                 string
+  unit_count?:           number
+  vme_number?:           string | null
+  building_type?:        string | null
+  year_built?:           number | null
+  floors?:               number | null
+  ag_date?:              string | null
+  mandate_start?:        string | null
+  mandate_expiry?:       string | null
+  annual_budget?:        number | null
+  reserve_fund_balance?: number | null
+  bank_iban?:            string | null
+  bank_name?:            string | null
+  auto_remind_enabled?:  boolean
+  auto_remind_days?:     number
 }
 
 export async function apiUpdateBuilding(

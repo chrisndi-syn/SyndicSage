@@ -7,6 +7,7 @@ import AuthCallbackPage     from './features/auth/AuthCallbackPage'
 import OnboardingPage       from './features/onboarding/OnboardingPage'
 import DashboardPage        from './features/dashboard/DashboardPage'
 import BuildingsPage        from './features/buildings/BuildingsPage'
+import BuildingProfilePage  from './features/buildings/BuildingProfilePage'
 import OwnersPage           from './features/owners/OwnersPage'
 import ChargesPage          from './features/charges/ChargesPage'
 import SettingsPage         from './features/settings/SettingsPage'
@@ -26,7 +27,8 @@ export default function App() {
 
             {/* Protected app */}
             <Route path="/"          element={<AuthGuard><DashboardPage /></AuthGuard>} />
-            <Route path="/buildings" element={<AuthGuard><BuildingsPage /></AuthGuard>} />
+            <Route path="/buildings"     element={<AuthGuard><BuildingsPage /></AuthGuard>} />
+            <Route path="/buildings/:id" element={<AuthGuard><BuildingProfilePage /></AuthGuard>} />
             <Route path="/owners"    element={<AuthGuard><OwnersPage /></AuthGuard>} />
             <Route path="/charges"   element={<AuthGuard><ChargesPage /></AuthGuard>} />
             <Route path="/settings"  element={<AuthGuard><SettingsPage /></AuthGuard>} />

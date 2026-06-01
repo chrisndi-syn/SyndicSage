@@ -75,62 +75,86 @@ export default function OwnersPage() {
 
         {/* Owners table */}
         {owners.length > 0 && (
-          <div style={{
-            background: '#FFFFFF', borderRadius: 10,
-            border: '1px solid rgba(60,60,67,0.10)', overflow: 'hidden',
-          }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ background: '#F9F9FB' }}>
-                  {[t('owners.unit'), t('owners.fullName'), t('common.email'), t('common.phone'), t('common.status'), t('common.actions')].map(h => (
-                    <th key={h} style={{
-                      padding: '10px 16px', textAlign: 'left',
-                      fontSize: 11, fontWeight: 600, color: '#6E6E73',
-                      textTransform: 'uppercase', letterSpacing: '0.06em',
-                      borderBottom: '1px solid rgba(60,60,67,0.08)',
-                    }}>
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {owners.map((owner, i) => (
-                  <tr key={owner.id} style={{
-                    borderBottom: i < owners.length - 1 ? '1px solid rgba(60,60,67,0.06)' : 'none',
-                  }}>
-                    <td style={tdStyle}>
-                      <span style={{ fontWeight: 500, color: '#1E3A5F' }}>
-                        {owner.units.unit_number}
-                      </span>
-                      <span style={{ fontSize: 11, color: '#6E6E73', marginLeft: 6 }}>
-                        {t(`owners.unitTypes.${owner.units.unit_type}`)}
-                      </span>
-                    </td>
-                    <td style={tdStyle}>{owner.full_name}</td>
-                    <td style={tdStyle}>{owner.email}</td>
-                    <td style={tdStyle}>{owner.phone ?? '—'}</td>
-                    <td style={tdStyle}>
-                      <span style={{
-                        fontSize: 11, fontWeight: 600,
-                        padding: '2px 8px', borderRadius: 4,
-                        background: owner.is_renter ? '#FEF9C3' : '#EFF6FF',
-                        color: owner.is_renter ? '#854D0E' : '#1E40AF',
+          <>
+            <div style={{
+              background: '#FFFFFF', borderRadius: 10,
+              border: '1px solid rgba(60,60,67,0.10)', overflow: 'hidden',
+            }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ background: '#F9F9FB' }}>
+                    {[t('owners.unit'), t('owners.fullName'), t('common.email'), t('common.phone'), t('owners.language'), t('owners.iban'), t('common.status'), t('common.actions')].map(h => (
+                      <th key={h} style={{
+                        padding: '10px 16px', textAlign: 'left',
+                        fontSize: 11, fontWeight: 600, color: '#6E6E73',
+                        textTransform: 'uppercase', letterSpacing: '0.06em',
+                        borderBottom: '1px solid rgba(60,60,67,0.08)',
                       }}>
-                        {owner.is_renter ? t('owners.renter') : t('owners.owner')}
-                      </span>
-                    </td>
-                    <td style={tdStyle}>
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        <SmallBtn onClick={() => { setEditOwner(owner); setShowModal(true) }} label={t('common.edit')} />
-                        <SmallBtn onClick={() => setConfirmDelete(owner)} label={t('common.delete')} danger />
-                      </div>
-                    </td>
+                        {h}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {owners.map((owner, i) => (
+                    <tr key={owner.id} style={{
+                      borderBottom: i < owners.length - 1 ? '1px solid rgba(60,60,67,0.06)' : 'none',
+                    }}>
+                      <td style={tdStyle}>
+                        <span style={{ fontWeight: 500, color: '#1E3A5F' }}>
+                          {owner.units.unit_number}
+                        </span>
+                        <span style={{ fontSize: 11, color: '#6E6E73', marginLeft: 6 }}>
+                          {t(`owners.unitTypes.${owner.units.unit_type}`)}
+                        </span>
+                      </td>
+                      <td style={tdStyle}>{owner.full_name}</td>
+                      <td style={tdStyle}>
+                        {owner.has_no_email
+                          ? <span style={{ fontSize: 11, color: '#9CA3AF', fontStyle: 'italic' }}>{t('owners.hasNoEmail')}</span>
+                          : owner.email}
+                      </td>
+                      <td style={tdStyle}>{owner.phone ?? '—'}</td>
+                      <td style={tdStyle}>
+                        <span style={{
+                          fontSize: 11, fontWeight: 600,
+                          padding: '2px 7px', borderRadius: 4,
+                          background: '#F1F5F9', color: '#475569',
+                          textTransform: 'uppercase',
+                        }}>
+                          {owner.preferred_language ?? 'fr'}
+                        </span>
+                      </td>
+                      <td style={tdStyle}>
+                        {owner.bank_account
+                          ? <span style={{ fontFamily: 'monospace', fontSize: 12 }}>{truncateIban(owner.bank_account)}</span>
+                          : <span style={{ color: '#9CA3AF' }}>—</span>}
+                      </td>
+                      <td style={tdStyle}>
+                        <span style={{
+                          fontSize: 11, fontWeight: 600,
+                          padding: '2px 8px', borderRadius: 4,
+                          background: owner.is_renter ? '#FEF9C3' : '#EFF6FF',
+                          color: owner.is_renter ? '#854D0E' : '#1E40AF',
+                        }}>
+                          {owner.is_renter ? t('owners.renter') : t('owners.owner')}
+                        </span>
+                      </td>
+                      <td style={tdStyle}>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <SmallBtn onClick={() => { setEditOwner(owner); setShowModal(true) }} label={t('common.edit')} />
+                          <SmallBtn onClick={() => setConfirmDelete(owner)} label={t('common.delete')} danger />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Quotité / tantièmes footer */}
+            <QuotiteFooter owners={owners} t={t} />
+          </>
         )}
       </div>
 
@@ -152,6 +176,49 @@ export default function OwnersPage() {
         />
       )}
     </Shell>
+  )
+}
+
+function truncateIban(iban: string): string {
+  const clean = iban.replace(/\s/g, '')
+  if (clean.length <= 8) return iban
+  return `${clean.slice(0, 4)} ${clean.slice(4, 8)}…${clean.slice(-4)}`
+}
+
+function QuotiteFooter({ owners, t }: {
+  owners: OwnerWithUnit[]
+  t: (key: string, opts?: Record<string, unknown>) => string
+}) {
+  const total = owners.reduce((sum, o) => sum + (o.units.ownership_share ?? 0), 0)
+  const rounded = Math.round(total * 10) / 10
+  const diff = Math.round((rounded - 1000) * 10) / 10
+  const isOk = Math.abs(diff) < 0.1
+
+  return (
+    <div style={{
+      marginTop: 8,
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      padding: '10px 16px',
+      background: '#FFFFFF', borderRadius: 8,
+      border: `1px solid ${isOk ? 'rgba(60,60,67,0.10)' : 'rgba(220,38,38,0.20)'}`,
+    }}>
+      <span style={{ fontSize: 12, color: '#6E6E73' }}>
+        {t('owners.totalShare')} — {t('owners.shareWarning')}
+      </span>
+      <span style={{
+        fontSize: 13, fontWeight: 700,
+        color: isOk ? '#16A34A' : '#DC2626',
+      }}>
+        {rounded}‰
+        {!isOk && (
+          <span style={{ fontSize: 11, fontWeight: 400, marginLeft: 6 }}>
+            {diff > 0
+              ? t('owners.shareOver',  { gap: diff })
+              : t('owners.shareMissing', { gap: Math.abs(diff) })}
+          </span>
+        )}
+      </span>
+    </div>
   )
 }
 
