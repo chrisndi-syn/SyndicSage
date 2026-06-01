@@ -164,7 +164,17 @@
     "plan":           "Subscription plan",
     "inviteCoSyndic": "Invite co-syndic",
     "removeMember":   "Remove member",
-    "removeMemberConfirm": "Remove {{name}} from all buildings? Their access will be revoked immediately."
+    "removeMemberConfirm": "Remove {{name}} from all buildings? Their access will be revoked immediately.",
+    "sessions": {
+      "title":        "Active sessions",
+      "subtitle":     "Devices and browsers currently signed in to your account.",
+      "current":      "This device",
+      "signedIn":     "Signed in",
+      "lastActive":   "Last active",
+      "expiresOn":    "Expires",
+      "revokeSession":"Sign out",
+      "revokeOthers": "Sign out all other sessions"
+    }
   },
   "onboarding": {
     "step":               "Step",

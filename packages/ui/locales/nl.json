@@ -164,7 +164,17 @@
     "plan":           "Abonnement",
     "inviteCoSyndic": "Co-syndicus uitnodigen",
     "removeMember":   "Lid verwijderen",
-    "removeMemberConfirm": "{{name}} uit alle gebouwen verwijderen? Toegang wordt onmiddellijk ingetrokken."
+    "removeMemberConfirm": "{{name}} uit alle gebouwen verwijderen? Toegang wordt onmiddellijk ingetrokken.",
+    "sessions": {
+      "title":        "Actieve sessies",
+      "subtitle":     "Apparaten en browsers die momenteel zijn aangemeld bij uw account.",
+      "current":      "Dit apparaat",
+      "signedIn":     "Aangemeld op",
+      "lastActive":   "Laatst actief",
+      "expiresOn":    "Verloopt op",
+      "revokeSession":"Afmelden",
+      "revokeOthers": "Alle andere sessies afmelden"
+    }
   },
   "onboarding": {
     "step":               "Stap",

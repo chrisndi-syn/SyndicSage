@@ -4,6 +4,7 @@ import { attachContext }  from './shared/middleware/attachContext.js'
 import { resolveTenant }  from './shared/middleware/resolveTenant.js'
 import { verifyAccess }   from './shared/middleware/verifyAccess.js'
 import { AppError }       from './shared/errors.js'
+import { sessionsRouter } from './modules/sessions/sessions.routes.js'
 
 const app = new Hono()
 
@@ -20,11 +21,12 @@ api.use('*', resolveTenant)
 api.use('*', verifyAccess)
 
 // ── Feature routes (added as phases are built) ────────────────
+api.route('/sessions', sessionsRouter)
 // api.route('/buildings', buildingsRouter)
 // api.route('/owners',    ownersRouter)
 // api.route('/charges',   chargesRouter)
 
-app.route('/api', api)
+app.route('/api/v1', api)
 
 // ── Global error handler ──────────────────────────────────────
 app.onError((err, c) => {

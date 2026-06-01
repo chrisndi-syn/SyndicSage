@@ -164,7 +164,17 @@
     "plan":           "Abonnement",
     "inviteCoSyndic": "Inviter un co-syndic",
     "removeMember":   "Retirer un membre",
-    "removeMemberConfirm": "Retirer {{name}} de tous les immeubles ? L'accès sera révoqué immédiatement."
+    "removeMemberConfirm": "Retirer {{name}} de tous les immeubles ? L'accès sera révoqué immédiatement.",
+    "sessions": {
+      "title":        "Sessions actives",
+      "subtitle":     "Appareils et navigateurs actuellement connectés à votre compte.",
+      "current":      "Cet appareil",
+      "signedIn":     "Connecté le",
+      "lastActive":   "Dernière activité",
+      "expiresOn":    "Expire le",
+      "revokeSession":"Déconnecter",
+      "revokeOthers": "Déconnecter toutes les autres sessions"
+    }
   },
   "onboarding": {
     "step":               "Étape",
