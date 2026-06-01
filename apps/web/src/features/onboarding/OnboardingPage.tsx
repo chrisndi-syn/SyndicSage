@@ -486,7 +486,7 @@ export default function OnboardingPage() {
           name:            ob.bName.trim(),
           address:         ob.bAddress.trim() || 'TBD',
           city:            ob.bCity.trim(),
-          unit_count:      parseInt(ob.bUnits, 10) || 1,
+          unit_count:      (() => { const n = parseInt(ob.bUnits, 10); return isNaN(n) ? 1 : n })(),
         })
         .select('id').single()
       if (buildingErr || !building) throw new Error(buildingErr?.message)

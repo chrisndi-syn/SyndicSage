@@ -15,7 +15,7 @@ i18n
     },
     lng:           'fr',          // default — Belgium is primarily French
     fallbackLng:   'en',
-    interpolation: { escapeValue: false },
+    // escapeValue: react-i18next escapes by default via JSX; no override needed
   })
 
 export default i18n

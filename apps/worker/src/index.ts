@@ -34,7 +34,9 @@ const worker = new Worker(
       case 'ai_summarize':       return handleAiSummarize(job.data)
       case 'ai_embed':           return handleAiEmbed(job.data)
       default:
-        console.warn(`[worker] Unknown job type: ${type as string}`)
+        // Throw so BullMQ marks the job as failed and retries/dead-letters it
+        // rather than silently completing and losing the job.
+        throw new Error(`Unknown job type: ${type as string}`)
     }
   },
   { connection },

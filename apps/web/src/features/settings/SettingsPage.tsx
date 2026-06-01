@@ -64,7 +64,7 @@ export default function SettingsPage() {
     setRevokingId(sessionId)
     try {
       await apiFetch(`/api/v1/sessions/${sessionId}`, session.access_token, { method: 'DELETE' })
-      setSessions(prev => prev.filter(s => s.id !== sessionId))
+      await loadSessions()
     } catch {
       setErrorMsg(t('common.error'))
     } finally {
@@ -77,7 +77,7 @@ export default function SettingsPage() {
     setRevokingOthers(true)
     try {
       await apiFetch('/api/v1/sessions/others', session.access_token, { method: 'DELETE' })
-      setSessions(prev => prev.filter(s => s.is_current))
+      await loadSessions()
     } catch {
       setErrorMsg(t('common.error'))
     } finally {
