@@ -23,6 +23,10 @@ import { aiRouter }               from './modules/ai/ai.routes.js'
 import { roadmapRouter }          from './modules/roadmap/roadmap.routes.js'
 import { meetingsRouter }         from './modules/meetings/meetings.routes.js'
 import { reportsRouter }          from './modules/reports/reports.routes.js'
+import { invitationsRouter }      from './modules/invitations/invitations.routes.js'
+import { messagesRouter }         from './modules/messages/messages.routes.js'
+import { paymentsRouter }         from './modules/payments/payments.routes.js'
+import { portalRouter }           from './modules/portal/portal.routes.js'
 
 const app = new Hono()
 
@@ -58,6 +62,10 @@ api.route('/ai',                aiRouter)
 api.route('/roadmap',           roadmapRouter)
 api.route('/meetings',          meetingsRouter)
 api.route('/reports',           reportsRouter)
+api.route('/invitations',       invitationsRouter)
+api.route('/messages',          messagesRouter)
+api.route('/payments',          paymentsRouter)
+api.route('/portal',            portalRouter)
 
 app.route('/api/v1', api)
 

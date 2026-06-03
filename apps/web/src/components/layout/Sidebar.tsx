@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { useBuilding } from '../../shared/building/BuildingContext'
 import { useUnreadCount } from '../../features/inbox/useInbox'
+import type { MemberRole } from '../../shared/building/BuildingContext'
 import { theme } from '../../lib/theme'
 import {
   LayoutDashboard, Building2, Users, CreditCard,
@@ -45,10 +46,27 @@ export function Sidebar() {
   const navigate   = useNavigate()
   const [expanded, setExpanded]         = useState(false)
   const [buildingOpen, setBuildingOpen] = useState(false)
-  const { buildings, selected, setSelected } = useBuilding()
+  const { buildings, selected, setSelected, myRole } = useBuilding()
   const unreadCount = useUnreadCount()
+  const isResident = myRole === 'co_owner' || myRole === 'renter'
 
-  const groups: NavGroup[] = [
+  // ── Resident nav (co_owner / renter) ────────────────────────
+  const residentGroups: NavGroup[] = [
+    {
+      label: 'Portal',
+      items: [
+        { to: '/portal',          icon: <LayoutDashboard size={17} />, label: t('portal.home') },
+        { to: '/portal/charges',  icon: <CreditCard      size={17} />, label: t('portal.myCharges') },
+        { to: '/portal/messages', icon: <Bell            size={17} />, label: t('portal.messages'), badge: unreadCount || undefined },
+        { to: '/portal/requests', icon: <Ticket          size={17} />, label: t('portal.requests') },
+        { to: '/portal/documents',icon: <FileText        size={17} />, label: t('nav.documents') },
+        { to: '/meetings',        icon: <CalendarDays    size={17} />, label: t('nav.meetings') },
+      ],
+    },
+  ]
+
+  // ── Syndic nav ────────────────────────────────────────────────
+  const syndicGroups: NavGroup[] = [
     {
       label: 'Management',
       items: [
@@ -83,14 +101,16 @@ export function Sidebar() {
     {
       label: 'Governance',
       items: [
-        { to: '/votes',     icon: <Vote            size={17} />, label: t('nav.votes')      },
-        { to: '/meetings',  icon: <CalendarDays    size={17} />, label: t('nav.meetings')   },
-        { to: '/reports',   icon: <BarChart2       size={17} />, label: t('nav.reports')    },
-        { to: '/portal',    icon: <Globe           size={17} />, label: t('nav.portal')     },
-        { to: '/ai',        icon: <Sparkles        size={17} />, label: t('nav.ai')         },
+        { to: '/votes',       icon: <Vote         size={17} />, label: t('nav.votes')      },
+        { to: '/meetings',    icon: <CalendarDays size={17} />, label: t('nav.meetings')   },
+        { to: '/reports',     icon: <BarChart2    size={17} />, label: t('nav.reports')    },
+        { to: '/invitations', icon: <Globe        size={17} />, label: t('nav.invitations')},
+        { to: '/ai',          icon: <Sparkles     size={17} />, label: t('nav.ai')         },
       ],
     },
   ]
+
+  const groups = isResident ? residentGroups : syndicGroups
 
   async function handleLogout() {
     try { await supabase.auth.signOut() } catch { /* ignore */ }

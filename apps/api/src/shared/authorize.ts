@@ -143,6 +143,14 @@ const PERMISSIONS: Record<string, UserRole[]> = {
 
   // Timeline
   'timeline.read': ['syndic', 'co_syndic'],
+
+  // Messages
+  'message.read':  ['syndic', 'co_syndic', 'co_owner', 'renter'],
+  'message.send':  ['syndic', 'co_syndic', 'co_owner', 'renter'],
+
+  // Payments
+  'payment.create': ['syndic', 'co_syndic', 'co_owner', 'renter'],
+  'payment.read':   ['syndic', 'co_syndic', 'co_owner', 'renter'],
 }
 
 // ── 3-layer authorization ─────────────────────────────────────

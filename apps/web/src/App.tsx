@@ -26,6 +26,10 @@ import RoadmapPage          from './features/roadmap/RoadmapPage'
 import MeetingsPage         from './features/meetings/MeetingsPage'
 import MeetingRoomPage      from './features/meetings/MeetingRoomPage'
 import ReportsPage          from './features/reports/ReportsPage'
+import InvitationsPage      from './features/invitations/InvitationsPage'
+import PortalPage           from './features/portal/PortalPage'
+import MessagesPage         from './features/portal/MessagesPage'
+import AcceptInvitePage     from './features/portal/AcceptInvitePage'
 
 export default function App() {
   return (
@@ -62,6 +66,12 @@ export default function App() {
             <Route path="/meetings"      element={<AuthGuard><MeetingsPage /></AuthGuard>} />
             <Route path="/meetings/:id/room" element={<AuthGuard><MeetingRoomPage /></AuthGuard>} />
             <Route path="/reports"       element={<AuthGuard><ReportsPage /></AuthGuard>} />
+            <Route path="/invitations"   element={<AuthGuard><InvitationsPage /></AuthGuard>} />
+            <Route path="/portal"        element={<AuthGuard><PortalPage /></AuthGuard>} />
+            <Route path="/portal/messages" element={<AuthGuard><MessagesPage /></AuthGuard>} />
+
+            {/* Public — no AuthGuard (token validates identity) */}
+            <Route path="/invite/accept" element={<AcceptInvitePage />} />
           </Routes>
         </BuildingProvider>
       </AuthProvider>

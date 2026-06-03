@@ -13,12 +13,15 @@ import { MOCK_BUILDINGS } from '../../lib/mockData'
 
 const STORAGE_KEY = 'syndicsage_selected_building'
 
+export type MemberRole = 'syndic' | 'co_syndic' | 'co_owner' | 'renter' | null
+
 interface BuildingContextValue {
   buildings:   Building[]
   selected:    Building | null
   setSelected: (b: Building) => void
   loading:     boolean
   refetch:     () => void
+  myRole:      MemberRole
 }
 
 const BuildingContext = createContext<BuildingContextValue>({
@@ -27,12 +30,14 @@ const BuildingContext = createContext<BuildingContextValue>({
   setSelected: () => {},
   loading:     true,
   refetch:     () => {},
+  myRole:      null,
 })
 
 export function BuildingProvider({ children }: { children: ReactNode }) {
   const [buildings, setBuildings] = useState<Building[]>([])
   const [selected,  setSelectedState] = useState<Building | null>(null)
   const [loading,   setLoading]  = useState(true)
+  const [myRole,    setMyRole]   = useState<MemberRole>(null)
 
   const loadBuildings = useCallback(async () => {
     setLoading(true)
@@ -69,13 +74,30 @@ export function BuildingProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => { loadBuildings() }, [loadBuildings])
 
+  // Load the current user's role in the selected building
+  useEffect(() => {
+    if (!selected) { setMyRole(null); return }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) { setMyRole('syndic'); return } // mock/dev: assume syndic
+      supabase
+        .from('building_members')
+        .select('role')
+        .eq('building_id', selected.id)
+        .eq('user_id', session.user.id)
+        .single()
+        .then(({ data }) => {
+          setMyRole((data as { role: MemberRole } | null)?.role ?? null)
+        })
+    })
+  }, [selected])
+
   function setSelected(b: Building) {
     setSelectedState(b)
     localStorage.setItem(STORAGE_KEY, b.id)
   }
 
   return (
-    <BuildingContext.Provider value={{ buildings, selected, setSelected, loading, refetch: loadBuildings }}>
+    <BuildingContext.Provider value={{ buildings, selected, setSelected, loading, refetch: loadBuildings, myRole }}>
       {children}
     </BuildingContext.Provider>
   )
