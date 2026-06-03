@@ -15,6 +15,10 @@ import IncomePage           from './features/accounting/IncomePage'
 import BilanPage            from './features/accounting/BilanPage'
 import BudgetPage           from './features/accounting/BudgetPage'
 import SettingsPage         from './features/settings/SettingsPage'
+import TicketsPage          from './features/tickets/TicketsPage'
+import InsurancePage        from './features/insurance/InsurancePage'
+import ContractorsPage      from './features/contractors/ContractorsPage'
+import LetterTemplatesPage  from './features/letter-templates/LetterTemplatesPage'
 
 export default function App() {
   return (
@@ -39,7 +43,11 @@ export default function App() {
             <Route path="/income"    element={<AuthGuard><IncomePage /></AuthGuard>} />
             <Route path="/bilan"     element={<AuthGuard><BilanPage /></AuthGuard>} />
             <Route path="/budget"    element={<AuthGuard><BudgetPage /></AuthGuard>} />
-            <Route path="/settings"  element={<AuthGuard><SettingsPage /></AuthGuard>} />
+            <Route path="/settings"      element={<AuthGuard><SettingsPage /></AuthGuard>} />
+            <Route path="/tickets"       element={<AuthGuard><TicketsPage /></AuthGuard>} />
+            <Route path="/insurance"     element={<AuthGuard><InsurancePage /></AuthGuard>} />
+            <Route path="/contractors"   element={<AuthGuard><ContractorsPage /></AuthGuard>} />
+            <Route path="/templates"     element={<AuthGuard><LetterTemplatesPage /></AuthGuard>} />
           </Routes>
         </BuildingProvider>
       </AuthProvider>

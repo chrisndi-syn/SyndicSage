@@ -10,6 +10,7 @@ import {
   CalendarDays, BarChart2, Globe, Sparkles,
   Settings, LogOut, ChevronDown, Check, Plus,
   Receipt, TrendingUp, PieChart,
+  Shield, HardHat, FileEdit,
 } from 'lucide-react'
 
 // Deterministic colour from building name
@@ -52,8 +53,11 @@ export function Sidebar() {
         { to: '/buildings', icon: <Building2       size={17} />, label: t('nav.buildings')  },
         { to: '/owners',    icon: <Users           size={17} />, label: t('nav.owners')     },
         { to: '/charges',   icon: <CreditCard      size={17} />, label: t('nav.charges')    },
-        { to: '/documents', icon: <FileText        size={17} />, label: t('nav.documents')  },
-        { to: '/tickets',   icon: <Ticket          size={17} />, label: t('nav.tickets')    },
+        { to: '/documents',  icon: <FileText  size={17} />, label: t('nav.documents')  },
+        { to: '/tickets',    icon: <Ticket    size={17} />, label: t('nav.tickets')    },
+        { to: '/insurance',  icon: <Shield    size={17} />, label: t('nav.insurance')  },
+        { to: '/contractors',icon: <HardHat   size={17} />, label: t('nav.contractors')},
+        { to: '/templates',  icon: <FileEdit  size={17} />, label: t('nav.templates')  },
       ],
     },
     {

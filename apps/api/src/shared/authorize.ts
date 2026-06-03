@@ -110,6 +110,38 @@ const PERMISSIONS: Record<string, UserRole[]> = {
   'budget_line.update':    ['syndic', 'co_syndic'],
   'budget_line.delete':    ['syndic', 'co_syndic'],
   'bilan.read':            ['syndic', 'co_syndic'],
+
+  // Insurance
+  'insurance_policy.read':   ['syndic', 'co_syndic', 'co_owner'],
+  'insurance_policy.create': ['syndic', 'co_syndic'],
+  'insurance_policy.update': ['syndic', 'co_syndic'],
+  'insurance_policy.delete': ['syndic', 'co_syndic'],
+  'insurance_claim.read':    ['syndic', 'co_syndic'],
+  'insurance_claim.create':  ['syndic', 'co_syndic'],
+  'insurance_claim.update':  ['syndic', 'co_syndic'],
+  'insurance_claim.delete':  ['syndic', 'co_syndic'],
+
+  // Contractors
+  'contractor.read':   ['syndic', 'co_syndic'],
+  'contractor.create': ['syndic', 'co_syndic'],
+  'contractor.update': ['syndic', 'co_syndic'],
+  'contractor.delete': ['syndic', 'co_syndic'],
+
+  // Supplier contracts
+  'supplier_contract.read':   ['syndic', 'co_syndic', 'co_owner'],
+  'supplier_contract.create': ['syndic', 'co_syndic'],
+  'supplier_contract.update': ['syndic', 'co_syndic'],
+  'supplier_contract.delete': ['syndic', 'co_syndic'],
+
+  // Letter templates
+  'letter_template.read':   ['syndic', 'co_syndic'],
+  'letter_template.create': ['syndic', 'co_syndic'],
+  'letter_template.update': ['syndic', 'co_syndic'],
+  'letter_template.delete': ['syndic', 'co_syndic'],
+  'letter_template.render': ['syndic', 'co_syndic'],
+
+  // Timeline
+  'timeline.read': ['syndic', 'co_syndic'],
 }
 
 // ── 3-layer authorization ─────────────────────────────────────

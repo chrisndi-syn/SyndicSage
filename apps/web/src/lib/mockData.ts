@@ -6,6 +6,10 @@ import type { Expense }         from '../features/accounting/expenses.api'
 import type { Income }          from '../features/accounting/income.api'
 import type { BudgetLineWithActual } from '../features/accounting/budgetLines.api'
 import type { BilanSummary }    from '../features/accounting/bilan.api'
+import type { Ticket }          from '../features/tickets/tickets.api'
+import type { InsurancePolicy, InsuranceClaim } from '../features/insurance/insurance.api'
+import type { Contractor, SupplierContract }    from '../features/contractors/contractors.api'
+import type { LetterTemplate }  from '../features/letter-templates/letterTemplates.api'
 
 export const MOCK_BUILDINGS: Building[] = [
   {
@@ -318,6 +322,185 @@ export const MOCK_CHARGES: Record<string, ChargeWithOwner[]> = {
       period: 'monthly', due_date: '2026-05-31', paid_date: null,
       notes: null, created_at: '2026-05-01T00:00:00Z',
       owners: { full_name: 'Luc Fontaine', units: { unit_number: '101' } },
+    },
+  ],
+}
+
+export const MOCK_TICKETS: Record<string, Ticket[]> = {
+  'mock-building-1': [
+    {
+      id: 'mock-ticket-1', building_id: 'mock-building-1', organization_id: 'mock-org-1',
+      unit_id: 'mock-unit-1', owner_id: 'mock-owner-1',
+      submitted_by: 'mock-owner-1',
+      type: 'complaint', title: 'Water leak in corridor near A01',
+      description: 'There is a persistent water leak near apartment A01 on the ground floor. The ceiling shows visible water damage.',
+      status: 'open',
+      created_at: '2026-05-28T09:15:00Z', updated_at: '2026-05-28T09:15:00Z',
+    },
+    {
+      id: 'mock-ticket-2', building_id: 'mock-building-1', organization_id: 'mock-org-1',
+      unit_id: 'mock-unit-2', owner_id: 'mock-owner-2',
+      submitted_by: 'mock-owner-2',
+      type: 'charge_dispute', title: 'Dispute on Q1 2026 provision amount',
+      description: 'I believe the Q1 2026 provision of €400 was calculated incorrectly. My ownership share is 260/1000, not the 270/1000 used in the calculation.',
+      status: 'in_progress',
+      created_at: '2026-05-20T14:30:00Z', updated_at: '2026-05-21T10:00:00Z',
+    },
+    {
+      id: 'mock-ticket-3', building_id: 'mock-building-1', organization_id: 'mock-org-1',
+      unit_id: null, owner_id: 'mock-owner-3',
+      submitted_by: 'mock-owner-3',
+      type: 'document_request', title: 'Request for 2025 annual accounts',
+      description: 'Please provide a copy of the 2025 annual accounts and audit report for my records.',
+      status: 'resolved',
+      created_at: '2026-05-10T08:00:00Z', updated_at: '2026-05-12T11:00:00Z',
+    },
+  ],
+}
+
+export const MOCK_INSURANCE_POLICIES: Record<string, InsurancePolicy[]> = {
+  'mock-building-1': [
+    {
+      id: 'mock-policy-1', building_id: 'mock-building-1', organization_id: 'mock-org-1',
+      insurer_name: 'AXA Belgium', policy_number: 'AXA-2026-B1-FIRE',
+      type: 'fire', description: 'Comprehensive fire and water damage coverage for the building',
+      premium_annual: 1840.00, start_date: '2026-01-01', end_date: '2026-12-31',
+      renewal_reminder_days: 30,
+      document_id: null,
+      contact_name: 'Sophie Mortier', contact_email: 'sophie.mortier@axa.be', contact_phone: '+32 2 678 61 11',
+      notes: 'Policy renewed annually. Includes common areas and structure.',
+      created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-01T00:00:00Z',
+    },
+    {
+      id: 'mock-policy-2', building_id: 'mock-building-1', organization_id: 'mock-org-1',
+      insurer_name: 'Ethias', policy_number: 'ETH-VME-2026-0042',
+      type: 'omnium', description: 'All-risk omnium coverage including liability and legal assistance',
+      premium_annual: 620.00, start_date: '2026-03-01', end_date: '2027-02-28',
+      renewal_reminder_days: 60,
+      document_id: null,
+      contact_name: null, contact_email: 'pro@ethias.be', contact_phone: '+32 4 220 31 11',
+      notes: null,
+      created_at: '2026-03-01T00:00:00Z', updated_at: '2026-03-01T00:00:00Z',
+    },
+  ],
+}
+
+export const MOCK_INSURANCE_CLAIMS: Record<string, InsuranceClaim[]> = {
+  'mock-building-1': [
+    {
+      id: 'mock-claim-1', building_id: 'mock-building-1', organization_id: 'mock-org-1',
+      policy_id: 'mock-policy-1',
+      date: '2026-03-20', description: 'Water damage from roof leak after storm on March 18',
+      amount_claimed: 2200.00, amount_received: 1650.00,
+      status: 'settled',
+      reference: 'AXA-CLAIM-0042',
+      notes: 'Partial reimbursement — deductible of €550 applied.',
+      created_at: '2026-03-22T00:00:00Z', updated_at: '2026-04-05T00:00:00Z',
+    },
+  ],
+}
+
+export const MOCK_CONTRACTORS: Record<string, Contractor[]> = {
+  'mock-org-1': [
+    {
+      id: 'mock-contractor-1', organization_id: 'mock-org-1',
+      name: 'Otis Belgium', trade: 'elevator',
+      phone: '+32 2 728 80 00', email: 'service.be@otis.com',
+      vat_number: 'BE0400.212.172', address: 'Rue Colonel Bourg 105, 1030 Bruxelles',
+      notes: 'Annual maintenance contract. 24/7 emergency line: +32 800 14 082',
+      rating: 4,
+      created_at: '2026-01-01T00:00:00Z',
+    },
+    {
+      id: 'mock-contractor-2', organization_id: 'mock-org-1',
+      name: 'CleanPro SPRL', trade: 'cleaning',
+      phone: '+32 2 345 67 89', email: 'info@cleanpro.be',
+      vat_number: 'BE0678.901.234', address: 'Chaussée de Wavre 200, 1050 Bruxelles',
+      notes: null,
+      rating: 5,
+      created_at: '2026-01-15T00:00:00Z',
+    },
+    {
+      id: 'mock-contractor-3', organization_id: 'mock-org-1',
+      name: 'Electro Dubois', trade: 'electrician',
+      phone: '+32 471 22 33 44', email: 'dubois.electro@gmail.com',
+      vat_number: null, address: 'Rue de la Station 12, 1300 Wavre',
+      notes: 'Freelance electrician. Good for small jobs.',
+      rating: 3,
+      created_at: '2026-02-01T00:00:00Z',
+    },
+  ],
+}
+
+export const MOCK_SUPPLIER_CONTRACTS: Record<string, SupplierContract[]> = {
+  'mock-building-1': [
+    {
+      id: 'mock-sc-1', building_id: 'mock-building-1', organization_id: 'mock-org-1',
+      contractor_id: 'mock-contractor-1',
+      title: 'Lift maintenance contract 2026',
+      description: 'Monthly inspection + 2 major services per year. Includes parts up to €500.',
+      start_date: '2026-01-01', end_date: '2026-12-31',
+      amount_annual: 3420.00,
+      status: 'active',
+      document_id: null,
+      renewal_reminder_days: 60,
+      notes: 'Contract auto-renews unless cancelled 3 months before end date.',
+      created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-01T00:00:00Z',
+    },
+    {
+      id: 'mock-sc-2', building_id: 'mock-building-1', organization_id: 'mock-org-1',
+      contractor_id: 'mock-contractor-2',
+      title: 'Weekly cleaning service 2026',
+      description: 'Every Monday morning: stairwells, lobby, bike room, bins.',
+      start_date: '2026-01-01', end_date: '2026-12-31',
+      amount_annual: 7680.00,
+      status: 'active',
+      document_id: null,
+      renewal_reminder_days: 30,
+      notes: null,
+      created_at: '2026-01-05T00:00:00Z', updated_at: '2026-01-05T00:00:00Z',
+    },
+  ],
+}
+
+export const MOCK_LETTER_TEMPLATES: Record<string, LetterTemplate[]> = {
+  'mock-org-1': [
+    {
+      id: 'mock-tpl-1', organization_id: 'mock-org-1', building_id: null,
+      name: 'Quarterly provision notice',
+      category: 'financial',
+      body_html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+  <p>Dear {{owner_name}},</p>
+  <p>Please find below your quarterly provision notice for <strong>{{building_name}}</strong>.</p>
+  <table style="width:100%; border-collapse:collapse; margin: 16px 0;">
+    <tr style="background:#f3f4f6;"><th style="padding:8px; text-align:left;">Period</th><th style="padding:8px; text-align:right;">Amount</th></tr>
+    <tr><td style="padding:8px;">{{period}}</td><td style="padding:8px; text-align:right;">€{{amount}}</td></tr>
+  </table>
+  <p>Payment is due by <strong>{{due_date}}</strong>.</p>
+  <p>Kind regards,<br/>{{syndic_name}}</p>
+</div>`,
+      variables: ['owner_name', 'building_name', 'period', 'amount', 'due_date', 'syndic_name'],
+      is_default: true,
+      created_at: '2026-01-01T00:00:00Z', updated_at: '2026-01-01T00:00:00Z',
+    },
+    {
+      id: 'mock-tpl-2', organization_id: 'mock-org-1', building_id: null,
+      name: 'General Assembly convocation',
+      category: 'governance',
+      body_html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+  <p>Dear {{owner_name}},</p>
+  <p>You are hereby convened to the <strong>Ordinary General Assembly</strong> of <strong>{{building_name}}</strong>.</p>
+  <ul>
+    <li><strong>Date:</strong> {{ag_date}}</li>
+    <li><strong>Time:</strong> {{ag_time}}</li>
+    <li><strong>Location:</strong> {{ag_location}}</li>
+  </ul>
+  <p>The agenda is attached. Please confirm your attendance by {{rsvp_date}}.</p>
+  <p>Kind regards,<br/>{{syndic_name}}</p>
+</div>`,
+      variables: ['owner_name', 'building_name', 'ag_date', 'ag_time', 'ag_location', 'rsvp_date', 'syndic_name'],
+      is_default: false,
+      created_at: '2026-02-01T00:00:00Z', updated_at: '2026-02-01T00:00:00Z',
     },
   ],
 }

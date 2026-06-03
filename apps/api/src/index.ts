@@ -11,7 +11,12 @@ import { chargesRouter }     from './modules/charges/charges.routes.js'
 import { expensesRouter }    from './modules/expenses/expenses.routes.js'
 import { incomeRouter }      from './modules/income/income.routes.js'
 import { budgetLinesRouter } from './modules/budget-lines/budgetLines.routes.js'
-import { bilanRouter }       from './modules/bilan/bilan.routes.js'
+import { bilanRouter }            from './modules/bilan/bilan.routes.js'
+import { ticketsRouter }          from './modules/tickets/tickets.routes.js'
+import { insuranceRouter }        from './modules/insurance/insurance.routes.js'
+import { contractorsRouter }      from './modules/contractors/contractors.routes.js'
+import { supplierContractsRouter } from './modules/supplier-contracts/supplierContracts.routes.js'
+import { letterTemplatesRouter }  from './modules/letter-templates/letterTemplates.routes.js'
 
 const app = new Hono()
 
@@ -35,7 +40,12 @@ api.route('/charges',      chargesRouter)
 api.route('/expenses',     expensesRouter)
 api.route('/income',       incomeRouter)
 api.route('/budget-lines', budgetLinesRouter)
-api.route('/bilan',        bilanRouter)
+api.route('/bilan',             bilanRouter)
+api.route('/tickets',           ticketsRouter)
+api.route('/insurance',         insuranceRouter)
+api.route('/contractors',       contractorsRouter)
+api.route('/supplier-contracts', supplierContractsRouter)
+api.route('/letter-templates',  letterTemplatesRouter)
 
 app.route('/api/v1', api)
 

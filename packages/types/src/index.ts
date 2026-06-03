@@ -308,6 +308,129 @@ export const TicketSchema = z.object({
 })
 export type Ticket = z.infer<typeof TicketSchema>
 
+// ── Insurance Policy ──────────────────────────────────────────
+export const InsurancePolicyTypeSchema = z.enum([
+  'fire', 'liability', 'omnium', 'elevator', 'legal', 'other',
+])
+export type InsurancePolicyType = z.infer<typeof InsurancePolicyTypeSchema>
+
+export const InsurancePolicySchema = z.object({
+  id:                    uuid,
+  building_id:           uuid,
+  organization_id:       uuid,
+  insurer_name:          z.string().min(1).max(200),
+  policy_number:         z.string().max(100).nullable().optional(),
+  type:                  InsurancePolicyTypeSchema,
+  description:           z.string().nullable().optional(),
+  premium_annual:        z.number().nonnegative().nullable().optional(),
+  start_date:            z.string().nullable().optional(),   // YYYY-MM-DD
+  end_date:              z.string().nullable().optional(),
+  renewal_reminder_days: z.number().int().nonnegative(),
+  document_id:           uuid.nullable().optional(),
+  contact_name:          z.string().max(100).nullable().optional(),
+  contact_email:         z.string().max(200).nullable().optional(),
+  contact_phone:         z.string().max(50).nullable().optional(),
+  notes:                 z.string().nullable().optional(),
+  created_at:            isoDate,
+  updated_at:            isoDate,
+  deleted_at:            optDate,
+})
+export type InsurancePolicy = z.infer<typeof InsurancePolicySchema>
+
+// ── Insurance Claim ───────────────────────────────────────────
+export const InsuranceClaimStatusSchema = z.enum([
+  'open', 'submitted', 'in_review', 'settled', 'rejected',
+])
+export type InsuranceClaimStatus = z.infer<typeof InsuranceClaimStatusSchema>
+
+export const InsuranceClaimSchema = z.object({
+  id:              uuid,
+  building_id:     uuid,
+  organization_id: uuid,
+  policy_id:       uuid,
+  date:            z.string(),   // YYYY-MM-DD
+  description:     z.string().min(1),
+  amount_claimed:  z.number().nonnegative().nullable().optional(),
+  amount_received: z.number().nonnegative().nullable().optional(),
+  status:          InsuranceClaimStatusSchema,
+  reference:       z.string().max(100).nullable().optional(),
+  notes:           z.string().nullable().optional(),
+  created_at:      isoDate,
+  updated_at:      isoDate,
+  deleted_at:      optDate,
+})
+export type InsuranceClaim = z.infer<typeof InsuranceClaimSchema>
+
+// ── Contractor ────────────────────────────────────────────────
+export const ContractorTradeSchema = z.enum([
+  'plumber', 'electrician', 'elevator', 'cleaning', 'landscaping',
+  'painting', 'hvac', 'locksmith', 'general', 'other',
+])
+export type ContractorTrade = z.infer<typeof ContractorTradeSchema>
+
+export const ContractorSchema = z.object({
+  id:              uuid,
+  organization_id: uuid,
+  name:            z.string().min(1).max(200),
+  trade:           ContractorTradeSchema,
+  phone:           z.string().max(50).nullable().optional(),
+  email:           z.string().max(200).nullable().optional(),
+  vat_number:      z.string().max(30).nullable().optional(),
+  address:         z.string().nullable().optional(),
+  notes:           z.string().nullable().optional(),
+  rating:          z.number().int().min(1).max(5).nullable().optional(),
+  created_at:      isoDate,
+  deleted_at:      optDate,
+})
+export type Contractor = z.infer<typeof ContractorSchema>
+
+// ── Supplier Contract ─────────────────────────────────────────
+export const SupplierContractStatusSchema = z.enum([
+  'active', 'expired', 'cancelled', 'pending',
+])
+export type SupplierContractStatus = z.infer<typeof SupplierContractStatusSchema>
+
+export const SupplierContractSchema = z.object({
+  id:                    uuid,
+  building_id:           uuid,
+  organization_id:       uuid,
+  contractor_id:         uuid,
+  title:                 z.string().min(1).max(200),
+  description:           z.string().nullable().optional(),
+  start_date:            z.string().nullable().optional(),   // YYYY-MM-DD
+  end_date:              z.string().nullable().optional(),
+  amount_annual:         z.number().nonnegative().nullable().optional(),
+  status:                SupplierContractStatusSchema,
+  document_id:           uuid.nullable().optional(),
+  renewal_reminder_days: z.number().int().nonnegative(),
+  notes:                 z.string().nullable().optional(),
+  created_at:            isoDate,
+  updated_at:            isoDate,
+  deleted_at:            optDate,
+})
+export type SupplierContract = z.infer<typeof SupplierContractSchema>
+
+// ── Letter Template ───────────────────────────────────────────
+export const LetterTemplateCategorySchema = z.enum([
+  'financial', 'governance', 'maintenance', 'communication', 'legal',
+])
+export type LetterTemplateCategory = z.infer<typeof LetterTemplateCategorySchema>
+
+export const LetterTemplateSchema = z.object({
+  id:              uuid,
+  organization_id: uuid,
+  building_id:     uuid.nullable().optional(),   // NULL = org-wide
+  name:            z.string().min(1).max(200),
+  category:        LetterTemplateCategorySchema,
+  body_html:       z.string().min(1),
+  variables:       z.array(z.string()),
+  is_default:      z.boolean(),
+  created_at:      isoDate,
+  updated_at:      isoDate,
+  deleted_at:      optDate,
+})
+export type LetterTemplate = z.infer<typeof LetterTemplateSchema>
+
 // ── Notification ──────────────────────────────────────────────
 export const NotificationTypeSchema = z.enum([
   'charge_overdue', 'charge_paid', 'new_document', 'maintenance_request',
