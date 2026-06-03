@@ -27,6 +27,7 @@ import { invitationsRouter }      from './modules/invitations/invitations.routes
 import { messagesRouter }         from './modules/messages/messages.routes.js'
 import { paymentsRouter }         from './modules/payments/payments.routes.js'
 import { portalRouter }           from './modules/portal/portal.routes.js'
+import { settingsRouter }         from './modules/settings/settings.routes.js'
 
 const app = new Hono()
 
@@ -66,6 +67,7 @@ api.route('/invitations',       invitationsRouter)
 api.route('/messages',          messagesRouter)
 api.route('/payments',          paymentsRouter)
 api.route('/portal',            portalRouter)
+api.route('/settings',          settingsRouter)
 
 app.route('/api/v1', api)
 
