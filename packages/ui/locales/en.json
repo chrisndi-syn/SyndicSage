@@ -432,6 +432,15 @@
     "category_Works":       "Works",
     "category_Other":       "Other"
   },
+  "inbox": {
+    "title":       "Notifications",
+    "empty":       "You're all caught up — no notifications.",
+    "markAllRead": "Mark all as read"
+  },
+  "timeline": {
+    "title": "Building Timeline",
+    "empty": "No activity recorded yet for this building."
+  },
   "errors": {
     "unauthorized":   "You don't have permission to do that.",
     "notFound":       "This resource was not found.",

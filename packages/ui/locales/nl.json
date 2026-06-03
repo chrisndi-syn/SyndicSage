@@ -432,6 +432,15 @@
     "category_Works":       "Werken",
     "category_Other":       "Overige"
   },
+  "inbox": {
+    "title":       "Meldingen",
+    "empty":       "Alles bijgewerkt — geen meldingen.",
+    "markAllRead": "Alles markeren als gelezen"
+  },
+  "timeline": {
+    "title": "Gebouw tijdlijn",
+    "empty": "Nog geen activiteit geregistreerd voor dit gebouw."
+  },
   "errors": {
     "unauthorized":   "U heeft geen toestemming voor deze actie.",
     "notFound":       "Deze resource werd niet gevonden.",

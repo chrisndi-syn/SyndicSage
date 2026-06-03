@@ -432,6 +432,15 @@
     "category_Works":       "Travaux",
     "category_Other":       "Autre"
   },
+  "inbox": {
+    "title":       "Notifications",
+    "empty":       "Vous êtes à jour — aucune notification.",
+    "markAllRead": "Tout marquer comme lu"
+  },
+  "timeline": {
+    "title": "Historique de l'immeuble",
+    "empty": "Aucune activité enregistrée pour cet immeuble."
+  },
   "errors": {
     "unauthorized":   "Vous n'avez pas la permission d'effectuer cette action.",
     "notFound":       "Ressource introuvable.",

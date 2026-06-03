@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { useBuilding } from '../../shared/building/BuildingContext'
+import { useUnreadCount } from '../../features/inbox/useInbox'
 import { theme } from '../../lib/theme'
 import {
   LayoutDashboard, Building2, Users, CreditCard,
@@ -29,6 +30,7 @@ interface NavItem {
   to:    string
   icon:  React.ReactNode
   label: string
+  badge?: number
 }
 
 interface NavGroup {
@@ -44,6 +46,7 @@ export function Sidebar() {
   const [expanded, setExpanded]         = useState(false)
   const [buildingOpen, setBuildingOpen] = useState(false)
   const { buildings, selected, setSelected } = useBuilding()
+  const unreadCount = useUnreadCount()
 
   const groups: NavGroup[] = [
     {
@@ -63,9 +66,9 @@ export function Sidebar() {
     {
       label: 'Communication',
       items: [
-        { to: '/inbox',     icon: <Bell            size={17} />, label: t('nav.inbox')      },
-        { to: '/timeline',  icon: <Clock           size={17} />, label: t('nav.timeline')   },
-        { to: '/roadmap',   icon: <Map             size={17} />, label: t('nav.roadmap')    },
+        { to: '/inbox',     icon: <Bell            size={17} />, label: t('nav.inbox'),    badge: unreadCount || undefined },
+        { to: '/timeline',  icon: <Clock           size={17} />, label: t('nav.timeline') },
+        { to: '/roadmap',   icon: <Map             size={17} />, label: t('nav.roadmap')  },
       ],
     },
     {
@@ -352,8 +355,18 @@ export function Sidebar() {
                       justifyContent: 'center',
                       color:      isActive ? theme.colors.amber : 'rgba(255,255,255,0.55)',
                       transition: 'color 0.15s',
+                      position:   'relative',
                     }}>
                       {item.icon}
+                      {/* Unread badge — visible even when sidebar is collapsed */}
+                      {item.badge && item.badge > 0 && (
+                        <span style={{
+                          position:   'absolute', top: 2, right: 2,
+                          width: 7, height: 7, borderRadius: '50%',
+                          background: '#ef4444',
+                          border: '1.5px solid #1E3A5F',
+                        }} />
+                      )}
                     </span>
                     <span style={{
                       fontSize:   13,
@@ -363,8 +376,18 @@ export function Sidebar() {
                       maxWidth:   expanded ? 160 : 0,
                       overflow:   'hidden',
                       transition: `opacity ${theme.transition}, max-width ${theme.transition}`,
+                      display:    'flex', alignItems: 'center', gap: 6,
                     }}>
                       {item.label}
+                      {expanded && item.badge && item.badge > 0 && (
+                        <span style={{
+                          background: '#ef4444', color: '#fff',
+                          borderRadius: 99, fontSize: 10, fontWeight: 700,
+                          padding: '0 5px', lineHeight: '16px', flexShrink: 0,
+                        }}>
+                          {item.badge}
+                        </span>
+                      )}
                     </span>
                   </>
                 )}

@@ -19,6 +19,9 @@ import TicketsPage          from './features/tickets/TicketsPage'
 import InsurancePage        from './features/insurance/InsurancePage'
 import ContractorsPage      from './features/contractors/ContractorsPage'
 import LetterTemplatesPage  from './features/letter-templates/LetterTemplatesPage'
+import DocumentsPage        from './features/documents/DocumentsPage'
+import InboxPage            from './features/inbox/InboxPage'
+import TimelinePage         from './features/timeline/TimelinePage'
 
 export default function App() {
   return (
@@ -48,6 +51,9 @@ export default function App() {
             <Route path="/insurance"     element={<AuthGuard><InsurancePage /></AuthGuard>} />
             <Route path="/contractors"   element={<AuthGuard><ContractorsPage /></AuthGuard>} />
             <Route path="/templates"     element={<AuthGuard><LetterTemplatesPage /></AuthGuard>} />
+            <Route path="/documents"     element={<AuthGuard><DocumentsPage /></AuthGuard>} />
+            <Route path="/inbox"         element={<AuthGuard><InboxPage /></AuthGuard>} />
+            <Route path="/timeline"      element={<AuthGuard><TimelinePage /></AuthGuard>} />
           </Routes>
         </BuildingProvider>
       </AuthProvider>
