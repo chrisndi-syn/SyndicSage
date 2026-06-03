@@ -516,7 +516,7 @@ export default function OnboardingPage() {
         },
       })
 
-      navigate('/', { replace: true })
+      navigate('/subscribe', { replace: true })
     } catch (err) {
       console.error('[onboarding] handleFinish failed:', err)
       setError('Something went wrong. Please try again.')

@@ -30,6 +30,9 @@ import InvitationsPage      from './features/invitations/InvitationsPage'
 import PortalPage           from './features/portal/PortalPage'
 import MessagesPage         from './features/portal/MessagesPage'
 import AcceptInvitePage     from './features/portal/AcceptInvitePage'
+import SubscribePage        from './features/billing/SubscribePage'
+import SubscribeSuccessPage from './features/billing/SubscribeSuccessPage'
+import CustomersPage        from './features/admin/CustomersPage'
 
 export default function App() {
   return (
@@ -43,6 +46,13 @@ export default function App() {
 
             {/* Semi-public — requires auth, no app shell */}
             <Route path="/onboarding" element={<AuthGuard><OnboardingPage /></AuthGuard>} />
+
+            {/* Billing — requires auth, shown before app access is granted */}
+            <Route path="/subscribe"         element={<AuthGuard><SubscribePage /></AuthGuard>} />
+            <Route path="/subscribe/success" element={<AuthGuard><SubscribeSuccessPage /></AuthGuard>} />
+
+            {/* Admin — requires auth + API enforces ADMIN_USER_ID check */}
+            <Route path="/admin/customers" element={<AuthGuard><CustomersPage /></AuthGuard>} />
 
             {/* Protected app */}
             <Route path="/"          element={<AuthGuard><DashboardPage /></AuthGuard>} />

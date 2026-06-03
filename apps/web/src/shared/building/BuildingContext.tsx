@@ -22,6 +22,7 @@ interface BuildingContextValue {
   loading:     boolean
   refetch:     () => void
   myRole:      MemberRole
+  orgPlan:     string | null   // null = not yet loaded; 'free' | 'starter' | 'pro' | 'enterprise'
 }
 
 const BuildingContext = createContext<BuildingContextValue>({
@@ -31,6 +32,7 @@ const BuildingContext = createContext<BuildingContextValue>({
   loading:     true,
   refetch:     () => {},
   myRole:      null,
+  orgPlan:     null,
 })
 
 export function BuildingProvider({ children }: { children: ReactNode }) {
@@ -38,6 +40,7 @@ export function BuildingProvider({ children }: { children: ReactNode }) {
   const [selected,  setSelectedState] = useState<Building | null>(null)
   const [loading,   setLoading]  = useState(true)
   const [myRole,    setMyRole]   = useState<MemberRole>(null)
+  const [orgPlan,   setOrgPlan]  = useState<string | null>(null)
 
   const loadBuildings = useCallback(async () => {
     setLoading(true)
@@ -45,6 +48,7 @@ export function BuildingProvider({ children }: { children: ReactNode }) {
     let rows: Building[]
     if (!session) {
       rows = MOCK_BUILDINGS
+      setOrgPlan('pro') // mock/dev: bypass paywall
     } else {
       const { data } = await supabase
         .from('buildings')
@@ -52,6 +56,17 @@ export function BuildingProvider({ children }: { children: ReactNode }) {
         .is('deleted_at', null)
         .order('name')
       rows = (data ?? []) as Building[]
+
+      // Load org plan via profile → organization
+      supabase
+        .from('profiles')
+        .select('organization_id, organizations(plan)')
+        .eq('id', session.user.id)
+        .single()
+        .then(({ data: profileRow }) => {
+          const plan = (profileRow as { organizations?: { plan?: string } } | null)?.organizations?.plan ?? null
+          setOrgPlan(plan)
+        })
     }
     setBuildings(rows)
 
@@ -97,7 +112,7 @@ export function BuildingProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <BuildingContext.Provider value={{ buildings, selected, setSelected, loading, refetch: loadBuildings, myRole }}>
+    <BuildingContext.Provider value={{ buildings, selected, setSelected, loading, refetch: loadBuildings, myRole, orgPlan }}>
       {children}
     </BuildingContext.Provider>
   )

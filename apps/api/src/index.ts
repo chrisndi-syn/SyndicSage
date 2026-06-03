@@ -27,12 +27,20 @@ import { invitationsRouter }      from './modules/invitations/invitations.routes
 import { messagesRouter }         from './modules/messages/messages.routes.js'
 import { paymentsRouter }         from './modules/payments/payments.routes.js'
 import { portalRouter }           from './modules/portal/portal.routes.js'
-import { settingsRouter }         from './modules/settings/settings.routes.js'
+import { settingsRouter }              from './modules/settings/settings.routes.js'
+import { billingRouter, handleStripeWebhook } from './modules/billing/billing.routes.js'
 
 const app = new Hono()
 
 // ── Health check (no auth) ────────────────────────────────────
 app.get('/healthz', (c) => c.json({ status: 'ok' }))
+
+// ── Stripe webhook (no auth — raw body required for sig check) ─
+app.post('/api/v1/billing/webhook', async (c) => {
+  const res = await handleStripeWebhook(c.req.raw)
+  const body = await res.json() as unknown
+  return c.json(body, res.status as 200 | 400)
+})
 
 // ── Authenticated routes ──────────────────────────────────────
 // Middleware chain: attachContext → resolveTenant → verifyAccess
@@ -68,6 +76,7 @@ api.route('/messages',          messagesRouter)
 api.route('/payments',          paymentsRouter)
 api.route('/portal',            portalRouter)
 api.route('/settings',          settingsRouter)
+api.route('/billing',           billingRouter)
 
 app.route('/api/v1', api)
 
