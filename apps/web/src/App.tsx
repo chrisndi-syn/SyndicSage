@@ -22,6 +22,10 @@ import LetterTemplatesPage  from './features/letter-templates/LetterTemplatesPag
 import DocumentsPage        from './features/documents/DocumentsPage'
 import InboxPage            from './features/inbox/InboxPage'
 import TimelinePage         from './features/timeline/TimelinePage'
+import RoadmapPage          from './features/roadmap/RoadmapPage'
+import MeetingsPage         from './features/meetings/MeetingsPage'
+import MeetingRoomPage      from './features/meetings/MeetingRoomPage'
+import ReportsPage          from './features/reports/ReportsPage'
 
 export default function App() {
   return (
@@ -54,6 +58,10 @@ export default function App() {
             <Route path="/documents"     element={<AuthGuard><DocumentsPage /></AuthGuard>} />
             <Route path="/inbox"         element={<AuthGuard><InboxPage /></AuthGuard>} />
             <Route path="/timeline"      element={<AuthGuard><TimelinePage /></AuthGuard>} />
+            <Route path="/roadmap"       element={<AuthGuard><RoadmapPage /></AuthGuard>} />
+            <Route path="/meetings"      element={<AuthGuard><MeetingsPage /></AuthGuard>} />
+            <Route path="/meetings/:id/room" element={<AuthGuard><MeetingRoomPage /></AuthGuard>} />
+            <Route path="/reports"       element={<AuthGuard><ReportsPage /></AuthGuard>} />
           </Routes>
         </BuildingProvider>
       </AuthProvider>

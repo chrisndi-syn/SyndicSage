@@ -20,6 +20,9 @@ import { letterTemplatesRouter }  from './modules/letter-templates/letterTemplat
 import { documentsRouter }        from './modules/documents/documents.routes.js'
 import { timelineRouter }         from './modules/timeline/timeline.routes.js'
 import { aiRouter }               from './modules/ai/ai.routes.js'
+import { roadmapRouter }          from './modules/roadmap/roadmap.routes.js'
+import { meetingsRouter }         from './modules/meetings/meetings.routes.js'
+import { reportsRouter }          from './modules/reports/reports.routes.js'
 
 const app = new Hono()
 
@@ -52,6 +55,9 @@ api.route('/letter-templates',  letterTemplatesRouter)
 api.route('/documents',         documentsRouter)
 api.route('/timeline',          timelineRouter)
 api.route('/ai',                aiRouter)
+api.route('/roadmap',           roadmapRouter)
+api.route('/meetings',          meetingsRouter)
+api.route('/reports',           reportsRouter)
 
 app.route('/api/v1', api)
 
