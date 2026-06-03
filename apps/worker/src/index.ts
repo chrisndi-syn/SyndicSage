@@ -1,13 +1,14 @@
 import { Worker, Queue } from 'bullmq'
 import type { WorkerJobType } from '@syndicsage/types'
-import { handleSendEmail }       from './jobs/sendEmail.js'
-import { handleScanFile }        from './jobs/scanFile.js'
-import { handleSendNotification }from './jobs/sendNotification.js'
-import { handleGeneratePdf }     from './jobs/generatePdf.js'
-import { handleProcessExport }   from './jobs/processExport.js'
-import { handleAiExtract }       from './jobs/aiExtract.js'
-import { handleAiSummarize }     from './jobs/aiSummarize.js'
-import { handleAiEmbed }         from './jobs/aiEmbed.js'
+import { handleSendEmail }        from './jobs/sendEmail.js'
+import { handleScanFile }         from './jobs/scanFile.js'
+import { handleSendNotification } from './jobs/sendNotification.js'
+import { handleGeneratePdf }      from './jobs/generatePdf.js'
+import { handleProcessExport }    from './jobs/processExport.js'
+import { handleAiExtract }        from './jobs/aiExtract.js'
+import { handleAiSummarize }      from './jobs/aiSummarize.js'
+import { handleAiEmbed }          from './jobs/aiEmbed.js'
+import { handleAnomalyDetection } from './jobs/anomalyDetection.js'
 
 const REDIS_URL  = process.env['REDIS_URL'] ?? 'redis://localhost:6379'
 const QUEUE_NAME = 'syndicsage'
@@ -33,6 +34,7 @@ const worker = new Worker(
       case 'ai_extract':         return handleAiExtract(job.data)
       case 'ai_summarize':       return handleAiSummarize(job.data)
       case 'ai_embed':           return handleAiEmbed(job.data)
+      case 'anomaly_detection':  return handleAnomalyDetection(job.data)
       default:
         // Throw so BullMQ marks the job as failed and retries/dead-letters it
         // rather than silently completing and losing the job.
@@ -54,3 +56,17 @@ console.log(`[worker] Listening on queue "${QUEUE_NAME}" — ${REDIS_URL}`)
 
 // ── Queue helper (used by apps/api to enqueue jobs) ───────────
 export const queue = new Queue(QUEUE_NAME, { connection })
+
+// ── Scheduled jobs ────────────────────────────────────────────
+// Anomaly detection runs every hour on the hour.
+// BullMQ deduplicates repeat jobs by jobId — safe to call on every worker start.
+void queue.add(
+  'anomaly_detection',
+  {},
+  {
+    repeat:  { pattern: '0 * * * *' },  // every hour
+    jobId:   'anomaly_detection_hourly', // stable ID prevents duplicates on restart
+  },
+)
+
+console.log('[worker] Scheduled: anomaly_detection (hourly)')

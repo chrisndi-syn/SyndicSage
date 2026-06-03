@@ -4,10 +4,14 @@ import { attachContext }  from './shared/middleware/attachContext.js'
 import { resolveTenant }  from './shared/middleware/resolveTenant.js'
 import { verifyAccess }   from './shared/middleware/verifyAccess.js'
 import { AppError }       from './shared/errors.js'
-import { sessionsRouter }  from './modules/sessions/sessions.routes.js'
-import { buildingsRouter } from './modules/buildings/buildings.routes.js'
-import { ownersRouter }    from './modules/owners/owners.routes.js'
-import { chargesRouter }   from './modules/charges/charges.routes.js'
+import { sessionsRouter }    from './modules/sessions/sessions.routes.js'
+import { buildingsRouter }   from './modules/buildings/buildings.routes.js'
+import { ownersRouter }      from './modules/owners/owners.routes.js'
+import { chargesRouter }     from './modules/charges/charges.routes.js'
+import { expensesRouter }    from './modules/expenses/expenses.routes.js'
+import { incomeRouter }      from './modules/income/income.routes.js'
+import { budgetLinesRouter } from './modules/budget-lines/budgetLines.routes.js'
+import { bilanRouter }       from './modules/bilan/bilan.routes.js'
 
 const app = new Hono()
 
@@ -24,10 +28,14 @@ api.use('*', resolveTenant)
 api.use('*', verifyAccess)
 
 // ── Feature routes ────────────────────────────────────────────
-api.route('/sessions',  sessionsRouter)
-api.route('/buildings', buildingsRouter)
-api.route('/owners',    ownersRouter)
-api.route('/charges',   chargesRouter)
+api.route('/sessions',     sessionsRouter)
+api.route('/buildings',    buildingsRouter)
+api.route('/owners',       ownersRouter)
+api.route('/charges',      chargesRouter)
+api.route('/expenses',     expensesRouter)
+api.route('/income',       incomeRouter)
+api.route('/budget-lines', budgetLinesRouter)
+api.route('/bilan',        bilanRouter)
 
 app.route('/api/v1', api)
 

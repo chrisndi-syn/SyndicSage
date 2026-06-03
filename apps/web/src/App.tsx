@@ -10,6 +10,10 @@ import BuildingsPage        from './features/buildings/BuildingsPage'
 import BuildingProfilePage  from './features/buildings/BuildingProfilePage'
 import OwnersPage           from './features/owners/OwnersPage'
 import ChargesPage          from './features/charges/ChargesPage'
+import ExpensesPage         from './features/accounting/ExpensesPage'
+import IncomePage           from './features/accounting/IncomePage'
+import BilanPage            from './features/accounting/BilanPage'
+import BudgetPage           from './features/accounting/BudgetPage'
 import SettingsPage         from './features/settings/SettingsPage'
 
 export default function App() {
@@ -31,6 +35,10 @@ export default function App() {
             <Route path="/buildings/:id" element={<AuthGuard><BuildingProfilePage /></AuthGuard>} />
             <Route path="/owners"    element={<AuthGuard><OwnersPage /></AuthGuard>} />
             <Route path="/charges"   element={<AuthGuard><ChargesPage /></AuthGuard>} />
+            <Route path="/expenses"  element={<AuthGuard><ExpensesPage /></AuthGuard>} />
+            <Route path="/income"    element={<AuthGuard><IncomePage /></AuthGuard>} />
+            <Route path="/bilan"     element={<AuthGuard><BilanPage /></AuthGuard>} />
+            <Route path="/budget"    element={<AuthGuard><BudgetPage /></AuthGuard>} />
             <Route path="/settings"  element={<AuthGuard><SettingsPage /></AuthGuard>} />
           </Routes>
         </BuildingProvider>

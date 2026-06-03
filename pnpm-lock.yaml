@@ -35,6 +35,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.106.1
         version: 2.106.1
+      '@syndicsage/crypto':
+        specifier: workspace:*
+        version: link:../../packages/crypto
       '@syndicsage/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -143,6 +146,19 @@ importers:
       tsx:
         specifier: ^4.7.0
         version: 4.22.3
+      typescript:
+        specifier: ~5.4.0
+        version: 5.4.5
+
+  packages/crypto:
+    dependencies:
+      '@syndicsage/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.41
       typescript:
         specifier: ~5.4.0
         version: 5.4.5

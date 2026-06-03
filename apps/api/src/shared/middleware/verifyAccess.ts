@@ -30,18 +30,30 @@ export async function verifyAccess(c: Context, next: Next) {
 
   const supabase = getSupabaseAdmin()
 
-  const { data: member, error } = await supabase
-    .from('building_members')
-    .select('id, role, unit_id, building_id')
-    .eq('building_id', buildingId)
-    .eq('user_id', userId)
-    .is('deleted_at', null)
-    .single()
+  // Fetch member + organization_id in parallel — org_id needed by routes that insert
+  // records requiring it (expenses, income, budget_lines, etc.)
+  const [memberResult, profileResult] = await Promise.all([
+    supabase
+      .from('building_members')
+      .select('id, role, unit_id, building_id')
+      .eq('building_id', buildingId)
+      .eq('user_id', userId)
+      .is('deleted_at', null)
+      .single(),
+    supabase
+      .from('profiles')
+      .select('organization_id')
+      .eq('id', userId)
+      .single(),
+  ])
 
-  if (error || !member) {
+  if (memberResult.error || !memberResult.data) {
     throw Errors.tenantMismatch()
   }
 
-  c.set('member', member)
+  c.set('member', {
+    ...memberResult.data,
+    organization_id: profileResult.data?.organization_id ?? null,
+  })
   return next()
 }

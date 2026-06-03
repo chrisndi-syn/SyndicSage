@@ -32,9 +32,10 @@ const CreateOwnerSchema = z.object({
   full_name:          z.string().min(1).max(100),
   email:              z.string().max(254).optional(),
   phone:              z.string().optional(),
+  national_id:        z.string().max(20).nullable().optional(),   // Belgian eID number
   is_renter:          z.boolean(),
   has_no_email:       z.boolean().optional(),
-  bank_account:       z.string().max(34).nullable().optional(),
+  bank_account:       z.string().max(34).nullable().optional(),   // IBAN
   preferred_language: z.enum(['en', 'fr', 'nl']).optional(),
   mailing_address:    z.string().nullable().optional(),
 }).superRefine((data, ctx) => {
@@ -78,8 +79,9 @@ const UpdateOwnerSchema = z.object({
   full_name:          z.string().min(1).max(100).optional(),
   email:              z.string().max(254).optional(),
   phone:              z.string().nullable().optional(),
+  national_id:        z.string().max(20).nullable().optional(),   // Belgian eID number
   is_renter:          z.boolean().optional(),
-  bank_account:       z.string().max(34).nullable().optional(),
+  bank_account:       z.string().max(34).nullable().optional(),   // IBAN
   preferred_language: z.enum(['en','fr','nl']).optional(),
   mailing_address:    z.string().nullable().optional(),
   has_no_email:       z.boolean().optional(),

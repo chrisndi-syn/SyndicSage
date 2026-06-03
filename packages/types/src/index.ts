@@ -5,6 +5,13 @@ const uuid     = z.string().uuid()
 const isoDate  = z.string().datetime({ offset: true })
 const optDate  = isoDate.nullable().optional()
 
+// ── Field-level encryption ────────────────────────────────────
+// Branded type for values encrypted by packages/crypto.
+// TypeScript will refuse to assign a plain string where EncryptedString
+// is required — enforces that raw values never reach the DB unencrypted.
+export const EncryptedStringSchema = z.string().brand<'EncryptedString'>()
+export type EncryptedString = z.infer<typeof EncryptedStringSchema>
+
 // ── Shared API types ──────────────────────────────────────────
 
 export const PaginatedResponseSchema = <T extends z.ZodTypeAny>(item: T) =>
@@ -34,6 +41,7 @@ export const ProfileSchema = z.object({
   full_name:  z.string().min(1).max(100),
   email:      z.string().email(),
   avatar_url: z.string().url().optional(),
+  phone:      EncryptedStringSchema.nullable().optional(),   // encrypted — decrypt before use
   created_at: isoDate,
 })
 export type Profile = z.infer<typeof ProfileSchema>
@@ -120,8 +128,9 @@ export const OwnerSchema = z.object({
   full_name:          z.string().min(1).max(100),
   email:              z.string().email(),
   phone:              z.string().optional(),
+  national_id:        EncryptedStringSchema.nullable().optional(),   // encrypted — decrypt before use
   is_renter:          z.boolean(),
-  bank_account:       z.string().nullable().optional(),
+  bank_account:       EncryptedStringSchema.nullable().optional(),   // encrypted — decrypt before use
   preferred_language: z.enum(['en', 'fr', 'nl']).optional(),
   mailing_address:    z.string().nullable().optional(),
   has_no_email:       z.boolean().optional(),
@@ -152,6 +161,101 @@ export const ChargeSchema = z.object({
   deleted_at:  optDate,
 })
 export type Charge = z.infer<typeof ChargeSchema>
+
+// ── Accounting ────────────────────────────────────────────────
+
+// Belgian PCMN accounting codes for VMEs — used in expense dropdown
+export const BELGIAN_ACCOUNTING_CODES: Record<string, string> = {
+  '61043': 'Électricité / Elektriciteit',
+  '61050': 'Eau / Water',
+  '61060': 'Gaz / Gas',
+  '61070': 'Télécommunications / Telecommunicatie',
+  '61100': 'Assurances / Verzekeringen',
+  '61210': 'Entretien parties communes / Onderhoud gemeenschappelijke delen',
+  '61220': 'Entretien ascenseur / Onderhoud lift',
+  '61230': 'Nettoyage / Schoonmaak',
+  '61240': 'Espaces verts / Groenaanleg',
+  '61300': 'Services administratifs / Administratieve diensten',
+  '61400': 'Honoraires syndic / Ereloon syndicus',
+  '61500': 'Comptable / Boekhouder',
+  '61600': 'Frais juridiques / Juridische kosten',
+  '61700': 'Sécurité / Beveiliging',
+  '61800': 'Réparations / Herstellingen',
+  '61900': 'Autres services / Andere diensten',
+  '6740':  'Frais bancaires / Bankkosten',
+  '6750':  'Charges d\'intérêts / Rentelasten',
+  '6800':  'Charges exceptionnelles / Uitzonderlijke lasten',
+  'other': 'Autre / Andere',
+}
+
+export const ExpenseSchema = z.object({
+  id:              uuid,
+  building_id:     uuid,
+  organization_id: uuid,
+  date:            z.string(),   // YYYY-MM-DD
+  description:     z.string().min(1).max(500),
+  amount:          z.number().positive(),
+  category:        z.string().min(1),
+  supplier:        z.string().nullable().optional(),
+  reference:       z.string().nullable().optional(),
+  accounting_code: z.string(),
+  notes:           z.string().nullable().optional(),
+  deleted_at:      optDate,
+  created_at:      isoDate,
+})
+export type Expense = z.infer<typeof ExpenseSchema>
+
+export const IncomeTypeSchema = z.enum([
+  'provision', 'subsidy', 'insurance_refund', 'interest', 'other',
+])
+export type IncomeType = z.infer<typeof IncomeTypeSchema>
+
+export const IncomeSchema = z.object({
+  id:              uuid,
+  building_id:     uuid,
+  organization_id: uuid,
+  date:            z.string(),   // YYYY-MM-DD
+  type:            IncomeTypeSchema,
+  description:     z.string().min(1).max(500),
+  amount:          z.number().positive(),
+  owner_id:        uuid.nullable().optional(),
+  reference:       z.string().nullable().optional(),
+  notes:           z.string().nullable().optional(),
+  deleted_at:      optDate,
+  created_at:      isoDate,
+})
+export type Income = z.infer<typeof IncomeSchema>
+
+export const BudgetLineSchema = z.object({
+  id:              uuid,
+  building_id:     uuid,
+  organization_id: uuid,
+  year:            z.number().int(),
+  category:        z.string().min(1),
+  description:     z.string().min(1).max(200),
+  amount_budgeted: z.number().nonnegative(),
+  created_at:      isoDate,
+})
+export type BudgetLine = z.infer<typeof BudgetLineSchema>
+
+export const BilanSummarySchema = z.object({
+  year:                   z.number().int(),
+  building_id:            uuid,
+  // ACTIF
+  bank_vue:               z.number(),
+  bank_epargne:           z.number(),
+  total_receivables:      z.number(),   // sum of unpaid charges
+  total_actif:            z.number(),
+  // PASSIF
+  reserve_fund_balance:   z.number(),
+  total_income:           z.number(),
+  total_expenses:         z.number(),
+  net_result:             z.number(),   // total_income - total_expenses
+  total_passif:           z.number(),
+  // Breakdown
+  expenses_by_code:       z.record(z.number()),   // accounting_code → total amount
+})
+export type BilanSummary = z.infer<typeof BilanSummarySchema>
 
 // ── Document ──────────────────────────────────────────────────
 export const DocumentCategorySchema = z.enum([
@@ -413,7 +517,7 @@ export const AuditLogSchema = z.object({
 export type AuditLog = z.infer<typeof AuditLogSchema>
 
 // ── GDPR Request ──────────────────────────────────────────────
-export const GdprRequestTypeSchema   = z.enum(['access', 'erasure', 'portability'])
+export const GdprRequestTypeSchema   = z.enum(['access', 'erasure', 'portability', 'rectification'])
 export const GdprRequestStatusSchema = z.enum(['pending', 'processing', 'completed', 'denied'])
 export type GdprRequestType   = z.infer<typeof GdprRequestTypeSchema>
 export type GdprRequestStatus = z.infer<typeof GdprRequestStatusSchema>
@@ -513,6 +617,7 @@ export type AIEmbedding = z.infer<typeof AIEmbeddingSchema>
 export const WorkerJobTypeSchema = z.enum([
   'send_email', 'scan_file', 'generate_pdf', 'send_notification',
   'process_export', 'ai_extract', 'ai_summarize', 'ai_embed',
+  'anomaly_detection',
 ])
 export type WorkerJobType = z.infer<typeof WorkerJobTypeSchema>
 

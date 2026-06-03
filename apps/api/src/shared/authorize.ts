@@ -95,6 +95,21 @@ const PERMISSIONS: Record<string, UserRole[]> = {
 
   // Notifications
   'notification.read.own': ['syndic', 'co_syndic', 'co_owner', 'renter'],
+
+  // Accounting
+  'expense.read':          ['syndic', 'co_syndic'],
+  'expense.create':        ['syndic', 'co_syndic'],
+  'expense.update':        ['syndic', 'co_syndic'],
+  'expense.delete':        ['syndic', 'co_syndic'],
+  'income.read':           ['syndic', 'co_syndic'],
+  'income.create':         ['syndic', 'co_syndic'],
+  'income.update':         ['syndic', 'co_syndic'],
+  'income.delete':         ['syndic', 'co_syndic'],
+  'budget_line.read':      ['syndic', 'co_syndic'],
+  'budget_line.create':    ['syndic', 'co_syndic'],
+  'budget_line.update':    ['syndic', 'co_syndic'],
+  'budget_line.delete':    ['syndic', 'co_syndic'],
+  'bilan.read':            ['syndic', 'co_syndic'],
 }
 
 // ── 3-layer authorization ─────────────────────────────────────

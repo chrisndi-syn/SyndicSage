@@ -9,6 +9,7 @@ import {
   FileText, Ticket, Bell, Clock, Map, Vote,
   CalendarDays, BarChart2, Globe, Sparkles,
   Settings, LogOut, ChevronDown, Check, Plus,
+  Receipt, TrendingUp, PieChart,
 } from 'lucide-react'
 
 // Deterministic colour from building name
@@ -61,6 +62,15 @@ export function Sidebar() {
         { to: '/inbox',     icon: <Bell            size={17} />, label: t('nav.inbox')      },
         { to: '/timeline',  icon: <Clock           size={17} />, label: t('nav.timeline')   },
         { to: '/roadmap',   icon: <Map             size={17} />, label: t('nav.roadmap')    },
+      ],
+    },
+    {
+      label: 'Accounting',
+      items: [
+        { to: '/expenses', icon: <Receipt    size={17} />, label: t('nav.expenses') },
+        { to: '/income',   icon: <TrendingUp size={17} />, label: t('nav.income')   },
+        { to: '/budget',   icon: <BarChart2  size={17} />, label: t('nav.budget')   },
+        { to: '/bilan',    icon: <PieChart   size={17} />, label: t('nav.bilan')    },
       ],
     },
     {

@@ -2,6 +2,10 @@
 import type { Building }       from '@syndicsage/types'
 import type { OwnerWithUnit }  from '../features/owners/owners.api'
 import type { ChargeWithOwner } from '../features/charges/charges.api'
+import type { Expense }         from '../features/accounting/expenses.api'
+import type { Income }          from '../features/accounting/income.api'
+import type { BudgetLineWithActual } from '../features/accounting/budgetLines.api'
+import type { BilanSummary }    from '../features/accounting/bilan.api'
 
 export const MOCK_BUILDINGS: Building[] = [
   {
@@ -113,6 +117,165 @@ export const MOCK_OWNERS: Record<string, OwnerWithUnit[]> = {
       preferred_language: 'nl', mailing_address: null, has_no_email: false,
       created_at: '2026-02-06T00:00:00Z',
       units: { id: 'mock-unit-7', unit_number: '102', unit_type: 'apartment', ownership_share: 500 },
+    },
+  ],
+}
+
+export const MOCK_EXPENSES: Record<string, Expense[]> = {
+  'mock-building-1': [
+    {
+      id: 'mock-exp-1', building_id: 'mock-building-1',
+      date: '2026-05-28', description: 'Electricity — common areas', amount: 412.50,
+      category: 'Utilities', accounting_code: '61043',
+      supplier: 'Engie', reference: 'INV-2026-0542', notes: null, created_at: '2026-05-28T00:00:00Z',
+    },
+    {
+      id: 'mock-exp-2', building_id: 'mock-building-1',
+      date: '2026-05-15', description: 'Lift maintenance — May', amount: 285.00,
+      category: 'Maintenance', accounting_code: '61011',
+      supplier: 'Otis Belgium', reference: 'OT-MAY-2026', notes: 'Monthly contract', created_at: '2026-05-15T00:00:00Z',
+    },
+    {
+      id: 'mock-exp-3', building_id: 'mock-building-1',
+      date: '2026-04-30', description: 'Cleaning service — April', amount: 640.00,
+      category: 'Cleaning', accounting_code: '61012',
+      supplier: 'CleanPro SPRL', reference: null, notes: null, created_at: '2026-04-30T00:00:00Z',
+    },
+    {
+      id: 'mock-exp-4', building_id: 'mock-building-1',
+      date: '2026-04-10', description: 'Building insurance renewal', amount: 1840.00,
+      category: 'Insurance', accounting_code: '61300',
+      supplier: 'AXA Belgium', reference: 'POL-2026-AXA', notes: 'Annual premium', created_at: '2026-04-10T00:00:00Z',
+    },
+    {
+      id: 'mock-exp-5', building_id: 'mock-building-1',
+      date: '2026-03-22', description: 'Roof repair — water damage', amount: 2200.00,
+      category: 'Repairs', accounting_code: '61022',
+      supplier: 'Toitures Lecomte', reference: 'TL-0298', notes: 'Storm damage March 18', created_at: '2026-03-22T00:00:00Z',
+    },
+    {
+      id: 'mock-exp-6', building_id: 'mock-building-1',
+      date: '2026-02-14', description: 'Accounting software subscription', amount: 99.00,
+      category: 'Admin', accounting_code: '61600',
+      supplier: null, reference: null, notes: null, created_at: '2026-02-14T00:00:00Z',
+    },
+  ],
+  'mock-building-2': [
+    {
+      id: 'mock-exp-7', building_id: 'mock-building-2',
+      date: '2026-05-20', description: 'Water — common areas', amount: 88.40,
+      category: 'Utilities', accounting_code: '61044',
+      supplier: 'SWDE', reference: 'SW-2026-0301', notes: null, created_at: '2026-05-20T00:00:00Z',
+    },
+  ],
+}
+
+export const MOCK_INCOME: Record<string, Income[]> = {
+  'mock-building-1': [
+    {
+      id: 'mock-inc-1', building_id: 'mock-building-1',
+      date: '2026-05-15', type: 'provision', description: 'Q2 provisions — all owners',
+      amount: 9240.00, owner_id: null, reference: 'PROV-Q2-2026', notes: null, created_at: '2026-05-15T00:00:00Z',
+    },
+    {
+      id: 'mock-inc-2', building_id: 'mock-building-1',
+      date: '2026-04-03', type: 'insurance_refund', description: 'AXA refund — roof claim',
+      amount: 1650.00, owner_id: null, reference: 'AXA-CLAIM-0042', notes: 'Partial refund', created_at: '2026-04-03T00:00:00Z',
+    },
+    {
+      id: 'mock-inc-3', building_id: 'mock-building-1',
+      date: '2026-02-28', type: 'interest', description: 'Savings account interest — Q1',
+      amount: 62.30, owner_id: null, reference: null, notes: null, created_at: '2026-02-28T00:00:00Z',
+    },
+    {
+      id: 'mock-inc-4', building_id: 'mock-building-1',
+      date: '2026-02-15', type: 'provision', description: 'Q1 provisions — all owners',
+      amount: 9240.00, owner_id: null, reference: 'PROV-Q1-2026', notes: null, created_at: '2026-02-15T00:00:00Z',
+    },
+  ],
+  'mock-building-2': [
+    {
+      id: 'mock-inc-5', building_id: 'mock-building-2',
+      date: '2026-05-01', type: 'provision', description: 'May provisions',
+      amount: 2520.00, owner_id: null, reference: 'PROV-MAY-2026', notes: null, created_at: '2026-05-01T00:00:00Z',
+    },
+  ],
+}
+
+export const MOCK_BILAN: Record<string, BilanSummary> = {
+  'mock-building-1': {
+    year: 2026, building_id: 'mock-building-1',
+    bank_vue:              8420.50,
+    bank_epargne:          12400.00,
+    total_receivables:     1155.00,
+    total_actif:           21975.50,
+    reserve_fund_balance:  12400.00,
+    total_income:          20192.30,
+    total_expenses:        5476.50,
+    net_result:            14715.80,
+    total_passif:          27115.80,
+    expenses_by_code: {
+      '61011': 285.00,
+      '61012': 640.00,
+      '61022': 2200.00,
+      '61043': 412.50,
+      '61300': 1840.00,
+      '61600': 99.00,
+    },
+  },
+  'mock-building-2': {
+    year: 2026, building_id: 'mock-building-2',
+    bank_vue:              1840.00,
+    bank_epargne:          3200.00,
+    total_receivables:     210.00,
+    total_actif:           5250.00,
+    reserve_fund_balance:  3200.00,
+    total_income:          2520.00,
+    total_expenses:        88.40,
+    net_result:            2431.60,
+    total_passif:          5631.60,
+    expenses_by_code: { '61044': 88.40 },
+  },
+}
+
+export const MOCK_BUDGET_LINES: Record<string, BudgetLineWithActual[]> = {
+  'mock-building-1': [
+    {
+      id: 'mock-bl-1', building_id: 'mock-building-1', year: 2026,
+      category: 'Utilities', description: 'Electricity & water — common areas',
+      amount_budgeted: 2400.00, amount_actual: 412.50, variance: 1987.50, created_at: '2026-01-01T00:00:00Z',
+    },
+    {
+      id: 'mock-bl-2', building_id: 'mock-building-1', year: 2026,
+      category: 'Maintenance', description: 'Lift maintenance contract',
+      amount_budgeted: 3420.00, amount_actual: 285.00, variance: 3135.00, created_at: '2026-01-01T00:00:00Z',
+    },
+    {
+      id: 'mock-bl-3', building_id: 'mock-building-1', year: 2026,
+      category: 'Cleaning', description: 'Cleaning service',
+      amount_budgeted: 7680.00, amount_actual: 640.00, variance: 7040.00, created_at: '2026-01-01T00:00:00Z',
+    },
+    {
+      id: 'mock-bl-4', building_id: 'mock-building-1', year: 2026,
+      category: 'Insurance', description: 'Building insurance',
+      amount_budgeted: 1800.00, amount_actual: 1840.00, variance: -40.00, created_at: '2026-01-01T00:00:00Z',
+    },
+    {
+      id: 'mock-bl-5', building_id: 'mock-building-1', year: 2026,
+      category: 'Repairs', description: 'Unplanned repairs reserve',
+      amount_budgeted: 2000.00, amount_actual: 2200.00, variance: -200.00, created_at: '2026-01-01T00:00:00Z',
+    },
+    {
+      id: 'mock-bl-6', building_id: 'mock-building-1', year: 2026,
+      category: 'Admin', description: 'Administrative costs',
+      amount_budgeted: 300.00, amount_actual: 99.00, variance: 201.00, created_at: '2026-01-01T00:00:00Z',
+    },
+  ],
+  'mock-building-2': [
+    {
+      id: 'mock-bl-7', building_id: 'mock-building-2', year: 2026,
+      category: 'Utilities', description: 'Water & electricity',
+      amount_budgeted: 1200.00, amount_actual: 88.40, variance: 1111.60, created_at: '2026-01-01T00:00:00Z',
     },
   ],
 }
