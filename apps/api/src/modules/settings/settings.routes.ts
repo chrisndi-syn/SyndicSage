@@ -218,8 +218,10 @@ router.get('/audit-log', async (c) => {
   await getOrgAndRole(userId, 'audit.read')
 
   const org = await getOrgForUser(userId)
-  const page  = Math.max(1, parseInt(c.req.query('page')  ?? '1',  10))
-  const limit = Math.min(100, parseInt(c.req.query('limit') ?? '50', 10))
+  const rawPage  = parseInt(c.req.query('page')  ?? '1',  10)
+  const rawLimit = parseInt(c.req.query('limit') ?? '50', 10)
+  const page  = Math.max(1,   isNaN(rawPage)  ? 1  : rawPage)
+  const limit = Math.min(100, isNaN(rawLimit) ? 50 : rawLimit)
   const offset = (page - 1) * limit
 
   const supabase = getSupabaseAdmin()

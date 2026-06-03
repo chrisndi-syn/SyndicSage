@@ -30,8 +30,11 @@ function getStripe(): Stripe | null {
 
 const STARTER_PRICE_ID = process.env['STRIPE_STARTER_PRICE_ID'] ?? ''
 const PRO_PRICE_ID     = process.env['STRIPE_PRO_PRICE_ID']     ?? ''
-const APP_URL          = process.env['APP_URL']                  ?? 'http://localhost:5173'
 const ADMIN_USER_ID    = process.env['ADMIN_USER_ID']            ?? ''
+
+// S7: validate APP_URL is an absolute http/https URL — never use raw env var in redirects
+const RAW_APP_URL = process.env['APP_URL'] ?? 'http://localhost:5173'
+const APP_URL = /^https?:\/\//.test(RAW_APP_URL) ? RAW_APP_URL.replace(/\/$/, '') : 'http://localhost:5173'
 
 // ── Plan name derived from Stripe price id ────────────────────
 function planFromPriceId(priceId: string): 'starter' | 'pro' {
@@ -194,11 +197,14 @@ export async function handleStripeWebhook(req: Request): Promise<Response> {
 
     if (!orgId) return new Response(JSON.stringify({ received: true }), { status: 200 })
 
-    const plan = planMeta === 'pro' ? 'pro' : (
+    const VALID_PLANS = ['starter', 'pro', 'enterprise'] as const
+    type ValidPlan = typeof VALID_PLANS[number]
+    const derivedPlan = planMeta === 'pro' ? 'pro' : (
       session.line_items
         ? planFromPriceId((session as unknown as { line_items?: { data?: { price?: { id?: string } }[] } }).line_items?.data?.[0]?.price?.id ?? '')
         : 'starter'
     )
+    const plan: ValidPlan = VALID_PLANS.includes(derivedPlan as ValidPlan) ? (derivedPlan as ValidPlan) : 'starter'
 
     const supabase = getSupabaseAdmin()
     await supabase
@@ -225,9 +231,13 @@ export async function handleStripeWebhook(req: Request): Promise<Response> {
     const resendKey   = process.env['RESEND_API_KEY']
     const resendFrom  = process.env['RESEND_FROM'] ?? 'SyndicSage <no-reply@syndicsage.com>'
     if (adminEmail && orgRow && resendKey) {
-      const { data: profile } = userId ? await supabase.from('profiles').select('full_name, email').eq('id', userId).single() : { data: null }
+      const { data: profile } = userId
+        ? await supabase.from('profiles').select('full_name, email').eq('id', userId).maybeSingle()
+        : { data: null }
       const resend = new Resend(resendKey)
-      const orgName = (orgRow as { name: string }).name
+      // S6: escape all user-controlled values before injecting into HTML
+      const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+      const orgName = esc((orgRow as { name: string }).name)
       await resend.emails.send({
         from:    resendFrom,
         to:      [adminEmail],
@@ -236,7 +246,7 @@ export async function handleStripeWebhook(req: Request): Promise<Response> {
           <p><strong>New paying customer on SyndicSage</strong></p>
           <ul>
             <li><strong>Org:</strong> ${orgName}</li>
-            ${profile ? `<li><strong>User:</strong> ${(profile as { full_name: string }).full_name} (${(profile as { email: string }).email})</li>` : ''}
+            ${profile ? `<li><strong>User:</strong> ${esc((profile as { full_name: string }).full_name)} (${esc((profile as { email: string }).email)})</li>` : ''}
             <li><strong>Plan:</strong> ${plan}</li>
             <li><strong>Time:</strong> ${new Date().toISOString()}</li>
           </ul>

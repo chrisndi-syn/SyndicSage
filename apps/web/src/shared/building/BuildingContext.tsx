@@ -58,15 +58,20 @@ export function BuildingProvider({ children }: { children: ReactNode }) {
       rows = (data ?? []) as Building[]
 
       // Load org plan via profile → organization
-      supabase
-        .from('profiles')
-        .select('organization_id, organizations(plan)')
-        .eq('id', session.user.id)
-        .single()
-        .then(({ data: profileRow }) => {
-          const plan = (profileRow as { organizations?: { plan?: string } } | null)?.organizations?.plan ?? null
-          setOrgPlan(plan)
-        })
+      Promise.resolve(
+        supabase
+          .from('profiles')
+          .select('organization_id, organizations(plan)')
+          .eq('id', session.user.id)
+          .single()
+      ).then(({ data: profileRow }) => {
+        const plan = (profileRow as { organizations?: { plan?: string } } | null)?.organizations?.plan ?? null
+        setOrgPlan(plan)
+      }).catch(() => {
+        // Query failed — default to 'free' so the paywall gate still activates
+        // rather than silently bypassing it with null
+        setOrgPlan('free')
+      })
     }
     setBuildings(rows)
 

@@ -85,6 +85,8 @@ export default function SubscribePage() {
       })
       if (!res.ok) throw new Error('Checkout failed')
       const { url } = await res.json() as { url: string }
+      // S7: only follow http/https URLs — never protocol-relative or javascript: URLs
+      if (typeof url !== 'string' || !/^https?:\/\//.test(url)) throw new Error('Invalid redirect URL')
       window.location.href = url
     } catch {
       setError(t('common.error'))
