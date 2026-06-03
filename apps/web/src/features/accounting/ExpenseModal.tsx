@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useTranslation }      from 'react-i18next'
+import { Sparkles }            from 'lucide-react'
 import { BELGIAN_ACCOUNTING_CODES } from '@syndicsage/types'
 import type { Expense }         from './useExpenses'
+import { suggestAccountingCode } from '../ai/ai.api'
 
 export const VME_CATEGORIES = [
   'Cleaning',
@@ -21,11 +23,12 @@ export const VME_CATEGORIES = [
 ] as const
 
 interface Props {
-  expense?:   Expense
-  year:       number
-  onSave:     (data: ExpenseFormData) => void
-  onClose:    () => void
-  saving:     boolean
+  expense?:    Expense
+  year:        number
+  buildingId:  string
+  onSave:      (data: ExpenseFormData) => void
+  onClose:     () => void
+  saving:      boolean
 }
 
 export interface ExpenseFormData {
@@ -56,8 +59,10 @@ const INPUT: React.CSSProperties = {
 const ROW: React.CSSProperties  = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }
 const FIELD: React.CSSProperties = { marginBottom: 14 }
 
-export function ExpenseModal({ expense, year, onSave, onClose, saving }: Props) {
+export function ExpenseModal({ expense, year, buildingId, onSave, onClose, saving }: Props) {
   const { t } = useTranslation()
+  const [aiSuggesting, setAiSuggesting] = useState(false)
+  const [aiSuggestion, setAiSuggestion] = useState<{ code: string; label: string; confidence: number } | null>(null)
   const [form, setForm] = useState<ExpenseFormData>({
     date:            expense?.date            ?? `${year}-01-01`,
     description:     expense?.description     ?? '',
@@ -87,6 +92,26 @@ export function ExpenseModal({ expense, year, onSave, onClose, saving }: Props) 
 
   function set(key: keyof ExpenseFormData, value: string | number | null) {
     setForm(f => ({ ...f, [key]: value }))
+  }
+
+  async function handleAiSuggest() {
+    if (!form.description.trim() || aiSuggesting) return
+    setAiSuggesting(true)
+    setAiSuggestion(null)
+    try {
+      const suggestion = await suggestAccountingCode(form.description, form.supplier ?? '', buildingId)
+      setAiSuggestion(suggestion)
+    } catch {
+      // silent — AI suggestion is non-critical
+    } finally {
+      setAiSuggesting(false)
+    }
+  }
+
+  function acceptSuggestion() {
+    if (!aiSuggestion) return
+    set('accounting_code', aiSuggestion.code)
+    setAiSuggestion(null)
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -133,12 +158,62 @@ export function ExpenseModal({ expense, year, onSave, onClose, saving }: Props) 
               </select>
             </div>
             <div style={FIELD}>
-              <label style={LABEL}>{t('accounting.accountingCode')}</label>
-              <select style={INPUT} value={form.accounting_code} onChange={e => set('accounting_code', e.target.value)}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                <label style={{ ...LABEL, margin: 0 }}>{t('accounting.accountingCode')}</label>
+                <button
+                  type="button"
+                  onClick={handleAiSuggest}
+                  disabled={aiSuggesting || !form.description.trim()}
+                  title={t('ai.suggestCode')}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    background: 'none', border: 'none', cursor: aiSuggesting || !form.description.trim() ? 'not-allowed' : 'pointer',
+                    fontSize: 11, color: aiSuggesting ? '#9CA3AF' : '#F59E0B', padding: '0 2px',
+                    opacity: !form.description.trim() ? 0.4 : 1,
+                  }}
+                >
+                  <Sparkles size={11} />
+                  {aiSuggesting ? t('ai.suggesting') : t('ai.suggest')}
+                </button>
+              </div>
+              <select style={INPUT} value={form.accounting_code} onChange={e => { set('accounting_code', e.target.value); setAiSuggestion(null) }}>
                 {Object.entries(BELGIAN_ACCOUNTING_CODES).map(([code, label]) => (
                   <option key={code} value={code}>{code} — {label}</option>
                 ))}
               </select>
+              {/* AI suggestion chip */}
+              {aiSuggestion && (
+                <div style={{
+                  marginTop: 6, display: 'flex', alignItems: 'center', gap: 8,
+                  background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.3)',
+                  borderRadius: 7, padding: '6px 10px',
+                }}>
+                  <Sparkles size={11} color="#F59E0B" style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, color: '#92400e', flex: 1 }}>
+                    <strong>{aiSuggestion.code}</strong> — {aiSuggestion.label}
+                    <span style={{ color: '#9CA3AF', marginLeft: 4 }}>
+                      ({Math.round(aiSuggestion.confidence * 100)}% {t('ai.confidence')})
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={acceptSuggestion}
+                    style={{
+                      padding: '2px 8px', borderRadius: 5, fontSize: 11, fontWeight: 600,
+                      background: '#F59E0B', color: '#fff', border: 'none', cursor: 'pointer',
+                    }}
+                  >
+                    {t('ai.accept')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAiSuggestion(null)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, color: '#9CA3AF', padding: '0 2px' }}
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

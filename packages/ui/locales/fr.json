@@ -432,6 +432,17 @@
     "category_Works":       "Travaux",
     "category_Other":       "Autre"
   },
+  "ai": {
+    "openSage":         "Ouvrir AI Sage",
+    "emptyHint":        "Posez-moi des questions sur votre immeuble, la législation VME, les charges ou les documents.",
+    "inputPlaceholder": "Demandez à AI Sage…",
+    "suggest":          "Suggérer avec l'IA",
+    "suggesting":       "En cours…",
+    "suggestCode":      "Laisser l'IA suggérer un code comptable",
+    "confidence":       "confiance",
+    "accept":           "Appliquer",
+    "disclaimer":       "Suggestion IA uniquement — veuillez vérifier"
+  },
   "inbox": {
     "title":       "Notifications",
     "empty":       "Vous êtes à jour — aucune notification.",

@@ -432,6 +432,17 @@
     "category_Works":       "Works",
     "category_Other":       "Other"
   },
+  "ai": {
+    "openSage":       "Open AI Sage",
+    "emptyHint":      "Ask me anything about your building, VME law, charges, or documents.",
+    "inputPlaceholder": "Ask AI Sage…",
+    "suggest":        "AI suggest",
+    "suggesting":     "Suggesting…",
+    "suggestCode":    "Let AI suggest an accounting code",
+    "confidence":     "confidence",
+    "accept":         "Apply",
+    "disclaimer":     "AI suggestion only — please verify"
+  },
   "inbox": {
     "title":       "Notifications",
     "empty":       "You're all caught up — no notifications.",

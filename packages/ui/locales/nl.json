@@ -432,6 +432,17 @@
     "category_Works":       "Werken",
     "category_Other":       "Overige"
   },
+  "ai": {
+    "openSage":         "AI Sage openen",
+    "emptyHint":        "Stel mij vragen over uw gebouw, VME-wetgeving, lasten of documenten.",
+    "inputPlaceholder": "Vraag AI Sage…",
+    "suggest":          "AI suggestie",
+    "suggesting":       "Bezig…",
+    "suggestCode":      "AI boekhoudcode laten voorstellen",
+    "confidence":       "zekerheid",
+    "accept":           "Toepassen",
+    "disclaimer":       "Alleen AI-suggestie — gelieve te verifiëren"
+  },
   "inbox": {
     "title":       "Meldingen",
     "empty":       "Alles bijgewerkt — geen meldingen.",

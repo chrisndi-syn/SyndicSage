@@ -19,6 +19,7 @@ import { supplierContractsRouter } from './modules/supplier-contracts/supplierCo
 import { letterTemplatesRouter }  from './modules/letter-templates/letterTemplates.routes.js'
 import { documentsRouter }        from './modules/documents/documents.routes.js'
 import { timelineRouter }         from './modules/timeline/timeline.routes.js'
+import { aiRouter }               from './modules/ai/ai.routes.js'
 
 const app = new Hono()
 
@@ -50,6 +51,7 @@ api.route('/supplier-contracts', supplierContractsRouter)
 api.route('/letter-templates',  letterTemplatesRouter)
 api.route('/documents',         documentsRouter)
 api.route('/timeline',          timelineRouter)
+api.route('/ai',                aiRouter)
 
 app.route('/api/v1', api)
 

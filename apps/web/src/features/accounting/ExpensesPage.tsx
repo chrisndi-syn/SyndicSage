@@ -157,6 +157,7 @@ export default function ExpensesPage() {
         <ExpenseModal
           expense={editExpense}
           year={year}
+          buildingId={building.id}
           onSave={handleSave}
           onClose={() => { setShowModal(false); setEditExpense(undefined) }}
           saving={isSaving}

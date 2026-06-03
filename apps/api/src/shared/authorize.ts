@@ -82,6 +82,7 @@ const PERMISSIONS: Record<string, UserRole[]> = {
   // AI
   'ai.chat':    ['syndic', 'co_syndic'],
   'ai.extract': ['syndic', 'co_syndic'],
+  'ai.suggest': ['syndic', 'co_syndic'],
 
   // GDPR
   'gdpr.request': ['syndic', 'co_syndic', 'co_owner', 'renter'],

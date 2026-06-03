@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
-import { Sidebar } from './Sidebar'
-import { theme }   from '../../lib/theme'
+import { Sidebar }      from './Sidebar'
+import { AiSagePanel } from '../../features/ai/AiSagePanel'
+import { theme }        from '../../lib/theme'
 
 interface Props {
   children: ReactNode
@@ -23,6 +24,7 @@ export function Shell({ children }: Props) {
       }}>
         {children}
       </main>
+      <AiSagePanel />
     </div>
   )
 }
