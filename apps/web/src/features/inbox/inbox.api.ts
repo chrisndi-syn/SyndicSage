@@ -13,9 +13,9 @@ export interface Notification {
   created_at:  string
 }
 
-export async function fetchNotifications(): Promise<Notification[]> {
+export async function fetchNotifications(isMock = false): Promise<Notification[]> {
   const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return MOCK_NOTIFICATIONS
+  if (!session || isMock) return MOCK_NOTIFICATIONS
 
   const { data, error } = await supabase
     .from('notifications')
@@ -24,7 +24,10 @@ export async function fetchNotifications(): Promise<Notification[]> {
     .order('created_at', { ascending: false })
     .limit(100)
 
-  if (error) throw new Error(error.message)
+  if (error) {
+    console.warn('[inbox] notifications query failed:', error.message)
+    return []
+  }
   return (data ?? []) as Notification[]
 }
 
