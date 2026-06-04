@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18n from '../../lib/i18n'
 import { Shell }   from '../../components/layout/Shell'
@@ -12,6 +12,7 @@ interface ProfileData {
   full_name:          string
   email:              string
   preferred_language: 'en' | 'fr' | 'nl'
+  avatar_url:         string | null
 }
 
 // ── API helper ────────────────────────────────────────────────
@@ -40,6 +41,7 @@ const MOCK_PROFILE: ProfileData = {
   full_name:          'Chris Ndiyalama',
   email:              'chris@syndicsage.com',
   preferred_language: 'fr',
+  avatar_url:         null,
 }
 
 // ── Component ─────────────────────────────────────────────────
@@ -51,6 +53,11 @@ export default function ProfilePage() {
   const [profile,  setProfile]  = useState<ProfileData | null>(null)
   const [loading,  setLoading]  = useState(true)
   const [errorMsg, setErrorMsg] = useState('')
+
+  // Avatar section
+  const fileInputRef             = useRef<HTMLInputElement>(null)
+  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [avatarError,     setAvatarError]     = useState('')
 
   // Name section
   const [nameEditing, setNameEditing] = useState(false)
@@ -132,6 +139,46 @@ export default function ProfilePage() {
     }
   }
 
+  // ── Upload avatar ──────────────────────────────────────────
+
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !profile) return
+
+    const allowed = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
+    if (!allowed.has(file.type)) { setAvatarError(t('profile.avatarBadType')); return }
+    if (file.size > 2 * 1024 * 1024) { setAvatarError(t('profile.avatarTooLarge')); return }
+
+    setAvatarError('')
+
+    // Dev mode: show preview locally without calling the API
+    if (!session) {
+      const url = URL.createObjectURL(file)
+      setProfile({ ...profile, avatar_url: url })
+      return
+    }
+
+    setAvatarUploading(true)
+    try {
+      const form = new FormData()
+      form.append('avatar', file)
+      const res = await fetch(`${API_URL}/api/v1/profile/avatar`, {
+        method:  'POST',
+        headers: { 'Authorization': `Bearer ${session.access_token}` },
+        body:    form,
+      })
+      if (!res.ok) throw new Error('Upload failed')
+      const updated = await res.json() as ProfileData
+      setProfile(updated)
+    } catch {
+      setAvatarError(t('common.error'))
+    } finally {
+      setAvatarUploading(false)
+      // Reset file input so the same file can be re-selected
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
   // ── Change password ────────────────────────────────────────
 
   async function handleChangePassword() {
@@ -205,6 +252,66 @@ export default function ProfilePage() {
           <div style={{ padding: '40px', textAlign: 'center', color: '#6E6E73', fontSize: 13 }}>{t('common.loading')}</div>
         ) : profile && (
           <>
+            {/* ── Avatar ───────────────────────────────────── */}
+            <div style={card}>
+              <div style={cardHeader}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#1E3A5F' }}>{t('profile.avatar')}</h3>
+                  <p style={{ margin: '2px 0 0', fontSize: 12, color: '#6E6E73' }}>{t('profile.avatarSubtitle')}</p>
+                </div>
+              </div>
+              <div style={{ padding: 20, display: 'flex', alignItems: 'center', gap: 20 }}>
+                {/* Avatar circle */}
+                <div style={{ position: 'relative', flexShrink: 0 }}>
+                  {profile.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt={profile.full_name}
+                      style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', display: 'block' }}
+                    />
+                  ) : (
+                    <div style={{
+                      width: 72, height: 72, borderRadius: '50%',
+                      background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 24, fontWeight: 700, color: '#1E3A5F',
+                    }}>
+                      {profile.full_name.slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                  {avatarUploading && (
+                    <div style={{
+                      position: 'absolute', inset: 0, borderRadius: '50%',
+                      background: 'rgba(0,0,0,0.45)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <div style={{ width: 20, height: 20, border: '2px solid rgba(255,255,255,0.4)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Upload controls */}
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    style={{ display: 'none' }}
+                    onChange={handleAvatarChange}
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={avatarUploading}
+                    style={{ padding: '7px 14px', background: '#F59E0B', border: 'none', borderRadius: 7, color: '#FFFFFF', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: avatarUploading ? 0.6 : 1 }}
+                  >
+                    {avatarUploading ? t('common.loading') : t('profile.avatarUpload')}
+                  </button>
+                  <p style={{ margin: '6px 0 0', fontSize: 11, color: '#6E6E73' }}>{t('profile.avatarHint')}</p>
+                  {avatarError && <p style={{ margin: '4px 0 0', fontSize: 11, color: '#DC2626' }}>{avatarError}</p>}
+                </div>
+              </div>
+            </div>
+
             {/* ── Name & Email ─────────────────────────────── */}
             <div style={card}>
               <div style={cardHeader}>
@@ -355,6 +462,7 @@ export default function ProfilePage() {
           </>
         )}
       </div>
+      <style>{`@keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }`}</style>
     </Shell>
   )
 }

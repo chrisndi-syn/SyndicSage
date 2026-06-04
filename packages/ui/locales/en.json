@@ -109,7 +109,13 @@
     "confirmPassword": "Confirm new password",
     "pwTooShort": "Password must be at least 8 characters.",
     "pwMismatch": "Passwords do not match.",
-    "pwSuccess": "Password updated successfully."
+    "pwSuccess": "Password updated successfully.",
+    "avatar": "Profile picture",
+    "avatarSubtitle": "Shown next to your name across the app.",
+    "avatarUpload": "Upload photo",
+    "avatarHint": "JPEG, PNG or WebP · max 2 MB",
+    "avatarBadType": "Only JPEG, PNG, and WebP images are supported.",
+    "avatarTooLarge": "Image must be under 2 MB."
   },
   "buildings": {
     "title": "Buildings",

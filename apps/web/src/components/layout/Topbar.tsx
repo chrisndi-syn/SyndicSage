@@ -2,10 +2,12 @@ import { useAuth }     from '../../shared/auth/AuthContext'
 import { useBuilding } from '../../shared/building/BuildingContext'
 import { theme }       from '../../lib/theme'
 import { ChevronDown } from 'lucide-react'
-import { useState }    from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
+
+const API_URL = import.meta.env['VITE_API_URL'] as string ?? 'http://localhost:3001'
 
 interface Props {
   title:     string
@@ -13,12 +15,25 @@ interface Props {
 }
 
 export function Topbar({ title, subtitle }: Props) {
-  const { user }                             = useAuth()
+  const { user, session }                    = useAuth()
   const { buildings, selected, setSelected } = useBuilding()
   const { t }                                = useTranslation()
   const navigate                             = useNavigate()
   const [showSwitcher, setShowSwitcher]      = useState(false)
   const [showUserMenu, setShowUserMenu]      = useState(false)
+  const [avatarUrl,    setAvatarUrl]         = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!session) return
+    fetch(`${API_URL}/api/v1/profile`, {
+      headers: { 'Authorization': `Bearer ${session.access_token}` },
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then((data: { avatar_url?: string | null } | null) => {
+        if (data?.avatar_url) setAvatarUrl(data.avatar_url)
+      })
+      .catch(() => { /* silent */ })
+  }, [session])
 
   const initials = user?.email
     ? user.email.slice(0, 2).toUpperCase()
@@ -138,7 +153,7 @@ export function Topbar({ title, subtitle }: Props) {
               width:          32,
               height:         32,
               borderRadius:   '50%',
-              background:     `linear-gradient(135deg, ${theme.colors.amber}, #D97706)`,
+              background:     avatarUrl ? 'transparent' : `linear-gradient(135deg, ${theme.colors.amber}, #D97706)`,
               color:          theme.colors.navy,
               display:        'flex',
               alignItems:     'center',
@@ -148,9 +163,14 @@ export function Topbar({ title, subtitle }: Props) {
               flexShrink:     0,
               cursor:         'pointer',
               border:         'none',
+              overflow:       'hidden',
+              padding:        0,
             }}
           >
-            {initials}
+            {avatarUrl
+              ? <img src={avatarUrl} alt="" style={{ width: 32, height: 32, objectFit: 'cover', display: 'block' }} />
+              : initials
+            }
           </button>
 
           {showUserMenu && (

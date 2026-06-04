@@ -109,7 +109,13 @@
     "confirmPassword": "Confirmer le nouveau mot de passe",
     "pwTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
     "pwMismatch": "Les mots de passe ne correspondent pas.",
-    "pwSuccess": "Mot de passe mis à jour avec succès."
+    "pwSuccess": "Mot de passe mis à jour avec succès.",
+    "avatar": "Photo de profil",
+    "avatarSubtitle": "Visible à côté de votre nom dans l'application.",
+    "avatarUpload": "Télécharger une photo",
+    "avatarHint": "JPEG, PNG ou WebP · max 2 Mo",
+    "avatarBadType": "Seuls les formats JPEG, PNG et WebP sont acceptés.",
+    "avatarTooLarge": "L'image doit faire moins de 2 Mo."
   },
   "buildings": {
     "title": "Immeubles",
