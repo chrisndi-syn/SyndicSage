@@ -30,6 +30,7 @@ import { portalRouter }           from './modules/portal/portal.routes.js'
 import { settingsRouter }              from './modules/settings/settings.routes.js'
 import { billingRouter, handleStripeWebhook } from './modules/billing/billing.routes.js'
 import { profileRouter }              from './modules/profile/profile.routes.js'
+import { maintenanceRouter }          from './modules/maintenance/maintenance.routes.js'
 
 const app = new Hono()
 
@@ -79,6 +80,7 @@ api.route('/portal',            portalRouter)
 api.route('/settings',          settingsRouter)
 api.route('/billing',           billingRouter)
 api.route('/profile',           profileRouter)
+api.route('/maintenance',       maintenanceRouter)
 
 app.route('/api/v1', api)
 

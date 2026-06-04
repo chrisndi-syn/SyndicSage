@@ -12,7 +12,7 @@ import {
   CalendarDays, BarChart2, Globe, Sparkles,
   Settings, LogOut,
   Receipt, TrendingUp, PieChart,
-  Shield, HardHat, FileEdit, UserCircle,
+  Shield, HardHat, FileEdit, UserCircle, Wrench,
 } from 'lucide-react'
 
 interface NavItem {
@@ -64,8 +64,9 @@ export function Sidebar() {
         { to: '/documents',  icon: <FileText  size={17} />, label: t('nav.documents')  },
         { to: '/tickets',    icon: <Ticket    size={17} />, label: t('nav.tickets')    },
         { to: '/insurance',  icon: <Shield    size={17} />, label: t('nav.insurance')  },
-        { to: '/contractors',icon: <HardHat   size={17} />, label: t('nav.contractors')},
-        { to: '/templates',  icon: <FileEdit  size={17} />, label: t('nav.templates')  },
+        { to: '/contractors',  icon: <HardHat   size={17} />, label: t('nav.contractors')  },
+        { to: '/templates',    icon: <FileEdit  size={17} />, label: t('nav.templates')    },
+        { to: '/maintenance',  icon: <Wrench    size={17} />, label: t('nav.maintenance')  },
       ],
     },
     {
