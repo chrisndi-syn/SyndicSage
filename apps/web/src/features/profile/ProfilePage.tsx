@@ -34,6 +34,14 @@ async function apiFetch(path: string, token: string, options?: RequestInit) {
   return res.json()
 }
 
+// ── Mock data (dev only) ──────────────────────────────────────
+
+const MOCK_PROFILE: ProfileData = {
+  full_name:          'Chris Ndiyalama',
+  email:              'chris@syndicsage.com',
+  preferred_language: 'fr',
+}
+
 // ── Component ─────────────────────────────────────────────────
 
 export default function ProfilePage() {
@@ -62,7 +70,12 @@ export default function ProfilePage() {
   // ── Load profile ───────────────────────────────────────────
 
   const loadProfile = useCallback(async () => {
-    if (!session) return
+    if (!session) {
+      setProfile(MOCK_PROFILE)
+      setNameValue(MOCK_PROFILE.full_name)
+      setLoading(false)
+      return
+    }
     setLoading(true)
     try {
       const data = await apiFetch('/api/v1/profile', session.access_token) as ProfileData
@@ -80,7 +93,8 @@ export default function ProfilePage() {
   // ── Save name ──────────────────────────────────────────────
 
   async function handleSaveName() {
-    if (!session || !profile) return
+    if (!profile) return
+    if (!session) { setProfile({ ...profile, full_name: nameValue }); setNameEditing(false); return }
     setNameSaving(true)
     setErrorMsg('')
     try {
@@ -100,7 +114,8 @@ export default function ProfilePage() {
   // ── Save language ──────────────────────────────────────────
 
   async function handleSaveLang(lang: 'en' | 'fr' | 'nl') {
-    if (!session || !profile || lang === profile.preferred_language) return
+    if (!profile || lang === profile.preferred_language) return
+    if (!session) { setProfile({ ...profile, preferred_language: lang }); void i18n.changeLanguage(lang); return }
     setLangSaving(true)
     setErrorMsg('')
     try {
@@ -109,7 +124,6 @@ export default function ProfilePage() {
         body:   JSON.stringify({ preferred_language: lang }),
       }) as ProfileData
       setProfile(updated)
-      // Apply language to the UI immediately
       void i18n.changeLanguage(lang)
     } catch {
       setErrorMsg(t('common.error'))
