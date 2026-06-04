@@ -188,9 +188,9 @@ export default function MaintenancePage() {
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', gap: 6, flex: 1, flexWrap: 'wrap' }}>
             {CHIP(t('common.all'), filter === 'all',       tasks.length,    () => setFilter('all'))}
-            {CHIP(t('maintenance.overdue'),   filter === 'overdue',   overdue.length,  () => setFilter('overdue'),  '#DC2626')}
-            {CHIP(t('maintenance.dueSoon'),   filter === 'due_soon',  dueSoon.length,  () => setFilter('due_soon'), '#B45309')}
-            {CHIP(t('maintenance.upcoming'),  filter === 'upcoming',  upcoming.length, () => setFilter('upcoming'), '#15803D')}
+            {CHIP(t('maintenance.filterOverdue'),  filter === 'overdue',   overdue.length,  () => setFilter('overdue'),  '#DC2626')}
+            {CHIP(t('maintenance.filterDueSoon'),  filter === 'due_soon',  dueSoon.length,  () => setFilter('due_soon'), '#B45309')}
+            {CHIP(t('maintenance.filterUpcoming'), filter === 'upcoming',  upcoming.length, () => setFilter('upcoming'), '#15803D')}
           </div>
           <button
             onClick={openCreate}
