@@ -1,7 +1,7 @@
 import { useAuth }     from '../../shared/auth/AuthContext'
 import { useBuilding } from '../../shared/building/BuildingContext'
 import { theme }       from '../../lib/theme'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Plus, Check } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -39,7 +39,7 @@ export function Topbar({ title, subtitle }: Props) {
     ? user.email.slice(0, 2).toUpperCase()
     : '??'
 
-  const hasSwitcher = buildings.length > 1
+  const hasSwitcher = buildings.length >= 1
 
   return (
     <header style={{
@@ -114,31 +114,60 @@ export function Topbar({ title, subtitle }: Props) {
                   borderRadius: theme.radiusSm,
                   padding:      '4px 0',
                   boxShadow:    theme.shadow,
-                  minWidth:     200,
+                  minWidth:     220,
                   zIndex:       50,
                 }}>
-                  {buildings.map(b => (
-                    <button
-                      key={b.id}
-                      onClick={() => { setSelected(b); setShowSwitcher(false) }}
-                      style={{
-                        display:    'block',
-                        width:      '100%',
-                        padding:    '8px 14px',
-                        textAlign:  'left',
-                        background: b.id === selected.id ? theme.colors.amberDim : 'transparent',
-                        border:     'none',
-                        fontSize:   13,
-                        color:      b.id === selected.id ? theme.colors.amber : theme.colors.text,
-                        cursor:     'pointer',
-                        fontWeight: b.id === selected.id ? 600 : 400,
-                        fontFamily: 'inherit',
-                        transition: 'background 0.12s',
-                      }}
-                    >
-                      {b.name}
-                    </button>
-                  ))}
+                  {buildings.map(b => {
+                    const isActive = b.id === selected!.id
+                    return (
+                      <button
+                        key={b.id}
+                        onClick={() => { setSelected(b); setShowSwitcher(false) }}
+                        style={{
+                          display:     'flex',
+                          alignItems:  'center',
+                          gap:         10,
+                          width:       '100%',
+                          padding:     '8px 12px',
+                          textAlign:   'left',
+                          background:  isActive ? theme.colors.amberDim : 'transparent',
+                          borderLeft:  isActive ? `2px solid ${theme.colors.amber}` : '2px solid transparent',
+                          border:      'none',
+                          cursor:      'pointer',
+                          fontFamily:  'inherit',
+                          transition:  'background 0.12s',
+                        }}
+                      >
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: isActive ? 600 : 400, color: isActive ? theme.colors.amber : theme.colors.text, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {b.name}
+                          </div>
+                          <div style={{ fontSize: 11, color: theme.colors.textMuted, marginTop: 1 }}>
+                            {b.unit_count} units
+                          </div>
+                        </div>
+                        {isActive && <Check size={13} color={theme.colors.amber} style={{ flexShrink: 0 }} />}
+                      </button>
+                    )
+                  })}
+                  <div style={{ borderTop: `1px solid ${theme.colors.border}`, margin: '4px 0' }} />
+                  <button
+                    onClick={() => { setShowSwitcher(false); navigate('/buildings') }}
+                    style={{
+                      display:    'flex',
+                      alignItems: 'center',
+                      gap:        8,
+                      width:      '100%',
+                      padding:    '8px 12px',
+                      background: 'transparent',
+                      border:     'none',
+                      cursor:     'pointer',
+                      fontFamily: 'inherit',
+                    }}
+                  >
+                    <Plus size={13} color={theme.colors.textMuted} />
+                    <span style={{ fontSize: 13, color: theme.colors.textMuted }}>{t('buildings.add')}</span>
+                  </button>
                 </div>
               </>
             )}

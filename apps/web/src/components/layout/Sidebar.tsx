@@ -10,22 +10,10 @@ import {
   LayoutDashboard, Building2, Users, CreditCard,
   FileText, Ticket, Bell, Clock, Map, Vote,
   CalendarDays, BarChart2, Globe, Sparkles,
-  Settings, LogOut, ChevronDown, Check, Plus,
+  Settings, LogOut,
   Receipt, TrendingUp, PieChart,
   Shield, HardHat, FileEdit, UserCircle,
 } from 'lucide-react'
-
-// Deterministic colour from building name
-function avatarColor(name: string): string {
-  const palette = ['#1E3A5F','#0891b2','#7c3aed','#059669','#d97706','#db2777','#dc2626']
-  let h = 0
-  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffffffff
-  return palette[Math.abs(h) % palette.length]!
-}
-
-function initials(name: string): string {
-  return name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()
-}
 
 interface NavItem {
   to:    string
@@ -44,9 +32,8 @@ const SIDEBAR_BG = `linear-gradient(180deg, #1a3357 0%, #1E3A5F 40%, #182f4e 100
 export function Sidebar() {
   const { t }      = useTranslation()
   const navigate   = useNavigate()
-  const [expanded, setExpanded]         = useState(false)
-  const [buildingOpen, setBuildingOpen] = useState(false)
-  const { buildings, selected, setSelected, myRole } = useBuilding()
+  const [expanded, setExpanded] = useState(false)
+  const { myRole } = useBuilding()
   const unreadCount = useUnreadCount()
   const isResident = myRole === 'co_owner' || myRole === 'renter'
 
@@ -181,143 +168,6 @@ export function Sidebar() {
           Syndic<span style={{ color: theme.colors.amber }}>Sage</span>
         </span>
       </div>
-
-      {/* Building selector */}
-      {buildings.length > 0 && (
-        <div style={{ margin: '8px 8px 4px', flexShrink: 0, position: 'relative' }}>
-          {/* Section label */}
-          <div style={{
-            fontSize: 9, fontWeight: 600, color: 'rgba(255,255,255,0.35)',
-            textTransform: 'uppercase', letterSpacing: '0.08em',
-            padding: '0 4px 5px', whiteSpace: 'nowrap',
-            opacity: expanded ? 1 : 0, transition: `opacity ${theme.transition}`,
-          }}>
-            Building
-          </div>
-
-          {/* Selector button */}
-          <button
-            onClick={() => expanded && setBuildingOpen(o => !o)}
-            style={{
-              display: 'flex', alignItems: 'center',
-              justifyContent: expanded ? 'flex-start' : 'center',
-              gap: expanded ? 8 : 0,
-              width: '100%', padding: '7px 4px',
-              background: 'rgba(255,255,255,0.07)',
-              border: '1px solid rgba(255,255,255,0.10)',
-              borderRadius: theme.radiusSm, cursor: 'pointer',
-              transition: `gap ${theme.transition}, justify-content ${theme.transition}`,
-            }}
-          >
-            {/* Initials avatar */}
-            <div style={{
-              width: 28, height: 28, flexShrink: 0,
-              borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: selected ? avatarColor(selected.name) : 'rgba(255,255,255,0.15)',
-              fontSize: 11, fontWeight: 700, color: '#fff',
-            }}>
-              {selected ? initials(selected.name) : '?'}
-            </div>
-
-            {/* Name + chevron */}
-            <div style={{
-              flex: 1, minWidth: 0,
-              opacity: expanded ? 1 : 0, maxWidth: expanded ? 160 : 0, overflow: 'hidden',
-              transition: `opacity ${theme.transition}, max-width ${theme.transition}`,
-              display: 'flex', alignItems: 'center', gap: 4,
-            }}>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {selected?.name ?? 'Select building'}
-                </div>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>
-                  {selected ? `${selected.unit_count} units` : ''}
-                </div>
-              </div>
-              <ChevronDown
-                size={13}
-                style={{
-                  flexShrink: 0, color: 'rgba(255,255,255,0.45)',
-                  transform: buildingOpen ? 'rotate(180deg)' : 'none',
-                  transition: 'transform 0.18s',
-                }}
-              />
-            </div>
-          </button>
-
-          {/* Dropdown */}
-          {buildingOpen && expanded && (
-            <>
-              <div
-                style={{ position: 'fixed', inset: 0, zIndex: 99 }}
-                onClick={() => setBuildingOpen(false)}
-              />
-              <div style={{
-                position: 'absolute', left: 0, right: 0, top: 'calc(100% + 4px)',
-                background: '#0f1f38',
-                border: '1px solid rgba(255,255,255,0.12)',
-                borderRadius: theme.radiusSm, overflow: 'hidden',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.35)', zIndex: 200,
-              }}>
-                {buildings.map(b => (
-                  <button
-                    key={b.id}
-                    onClick={() => { setSelected(b); setBuildingOpen(false) }}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 8,
-                      width: '100%', padding: '9px 10px',
-                      background: b.id === selected?.id ? 'rgba(245,158,11,0.14)' : 'transparent',
-                      borderLeft: b.id === selected?.id ? `2px solid ${theme.colors.amber}` : '2px solid transparent',
-                      border: 'none', cursor: 'pointer',
-                      transition: 'background 0.12s',
-                    }}
-                  >
-                    <div style={{
-                      width: 24, height: 24, flexShrink: 0, borderRadius: 6,
-                      background: avatarColor(b.name),
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 10, fontWeight: 700, color: '#fff',
-                    }}>
-                      {initials(b.name)}
-                    </div>
-                    <span style={{
-                      flex: 1, fontSize: 12, fontWeight: 500, textAlign: 'left',
-                      color: b.id === selected?.id ? theme.colors.amber : 'rgba(255,255,255,0.85)',
-                    }}>
-                      {b.name}
-                    </span>
-                    {b.id === selected?.id && (
-                      <Check size={12} color={theme.colors.amber} />
-                    )}
-                  </button>
-                ))}
-                {/* Add building */}
-                <button
-                  onClick={() => { setBuildingOpen(false); navigate('/buildings') }}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 8,
-                    width: '100%', padding: '8px 10px',
-                    background: 'transparent', border: 'none',
-                    borderTop: '1px solid rgba(255,255,255,0.07)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <div style={{
-                    width: 24, height: 24, flexShrink: 0, borderRadius: 6,
-                    background: 'rgba(255,255,255,0.08)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                    <Plus size={12} color="rgba(255,255,255,0.45)" />
-                  </div>
-                  <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>
-                    Add building…
-                  </span>
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      )}
 
       {/* Nav groups */}
       <nav style={{
