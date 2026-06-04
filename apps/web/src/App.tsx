@@ -25,6 +25,7 @@ import TimelinePage         from './features/timeline/TimelinePage'
 import RoadmapPage          from './features/roadmap/RoadmapPage'
 import MeetingsPage         from './features/meetings/MeetingsPage'
 import MeetingRoomPage      from './features/meetings/MeetingRoomPage'
+import VotesPage            from './features/votes/VotesPage'
 import ReportsPage          from './features/reports/ReportsPage'
 import InvitationsPage      from './features/invitations/InvitationsPage'
 import PortalPage           from './features/portal/PortalPage'
@@ -75,6 +76,7 @@ export default function App() {
             <Route path="/inbox"         element={<AuthGuard><InboxPage /></AuthGuard>} />
             <Route path="/timeline"      element={<AuthGuard><TimelinePage /></AuthGuard>} />
             <Route path="/roadmap"       element={<AuthGuard><RoadmapPage /></AuthGuard>} />
+            <Route path="/votes"         element={<AuthGuard><VotesPage /></AuthGuard>} />
             <Route path="/meetings"      element={<AuthGuard><MeetingsPage /></AuthGuard>} />
             <Route path="/meetings/:id/room" element={<AuthGuard><MeetingRoomPage /></AuthGuard>} />
             <Route path="/reports"       element={<AuthGuard><ReportsPage /></AuthGuard>} />

@@ -614,6 +614,8 @@
     "voteClosed": "Gesloten",
     "voteApproved": "Goedgekeurd",
     "voteRejected": "Verworpen",
+    "voters": "stemmers",
+    "noVoters": "Geen stemmen uitgebracht.",
     "voteQuestion": "Vraag",
     "voteQuestionPlaceholder": "bv. Dakrenovatie voor €28.000 goedkeuren?",
     "voteDescription": "Toelichting (optioneel)",

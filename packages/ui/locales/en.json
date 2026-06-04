@@ -612,6 +612,8 @@
     "voteClosed": "Closed",
     "voteApproved": "Approved",
     "voteRejected": "Rejected",
+    "voters": "voters",
+    "noVoters": "No votes cast.",
     "voteQuestion": "Question",
     "voteQuestionPlaceholder": "e.g. Approve roof renovation for €28,000?",
     "voteDescription": "Details (optional)",

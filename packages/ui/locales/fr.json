@@ -612,6 +612,8 @@
     "voteClosed": "Clôturé",
     "voteApproved": "Approuvé",
     "voteRejected": "Rejeté",
+    "voters": "votants",
+    "noVoters": "Aucun vote exprimé.",
     "voteQuestion": "Question",
     "voteQuestionPlaceholder": "ex. Approuver la rénovation de la toiture pour 28 000 € ?",
     "voteDescription": "Détails (facultatif)",
