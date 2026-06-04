@@ -1,9 +1,9 @@
 // ── Buildings page ────────────────────────────────────────────
 
-import { useState }       from 'react'
-import { useTranslation } from 'react-i18next'
-import { Building2 }      from 'lucide-react'
-import { useNavigate }    from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useTranslation }      from 'react-i18next'
+import { Building2 }           from 'lucide-react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Shell }          from '../../components/layout/Shell'
 import { Topbar }         from '../../components/layout/Topbar'
 import { useBuildings, useDeleteBuilding } from './useBuildings'
@@ -18,9 +18,18 @@ export default function BuildingsPage() {
   const { setSelected } = useBuilding()
 
   const navigate = useNavigate()
+  const [searchParams]                    = useSearchParams()
   const [showModal,     setShowModal]     = useState(false)
   const [editBuilding,  setEditBuilding]  = useState<Building | undefined>()
   const [confirmDelete, setConfirmDelete] = useState<Building | null>(null)
+
+  useEffect(() => {
+    if (searchParams.get('add') === '1') {
+      setEditBuilding(undefined)
+      setShowModal(true)
+      navigate('/buildings', { replace: true })
+    }
+  }, [searchParams, navigate])
 
   function handleEdit(b: Building) {
     setEditBuilding(b)

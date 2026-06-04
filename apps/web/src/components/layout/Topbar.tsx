@@ -152,7 +152,7 @@ export function Topbar({ title, subtitle }: Props) {
                   })}
                   <div style={{ borderTop: `1px solid ${theme.colors.border}`, margin: '4px 0' }} />
                   <button
-                    onClick={() => { setShowSwitcher(false); navigate('/buildings') }}
+                    onClick={() => { setShowSwitcher(false); navigate('/buildings?add=1') }}
                     style={{
                       display:    'flex',
                       alignItems: 'center',
