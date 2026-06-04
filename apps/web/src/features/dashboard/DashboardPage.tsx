@@ -215,7 +215,7 @@ export default function DashboardPage() {
             fontFamily: "'Cormorant Garamond', Georgia, serif",
             fontSize: 36, fontWeight: 600, color: '#fff', lineHeight: 1.1,
           }}>
-            {name || 'Welcome back'}
+            {name || t('dashboard.welcomeBack')}
           </h1>
 
           {selected ? (
