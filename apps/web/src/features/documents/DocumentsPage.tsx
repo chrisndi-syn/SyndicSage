@@ -22,9 +22,10 @@ const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
   budget:      { bg: '#d1fae5', color: '#065f46' },
   contract:    { bg: '#fef3c7', color: '#92400e' },
   insurance:   { bg: '#ede9fe', color: '#5b21b6' },
-  legal:       { bg: '#fee2e2', color: '#991b1b' },
-  maintenance: { bg: '#e0f2fe', color: '#0369a1' },
-  other:       { bg: '#f3f4f6', color: '#374151' },
+  legal:        { bg: '#fee2e2', color: '#991b1b' },
+  maintenance:  { bg: '#e0f2fe', color: '#0369a1' },
+  acte_de_base: { bg: '#fdf4ff', color: '#7e22ce' },
+  other:        { bg: '#f3f4f6', color: '#374151' },
 }
 
 const VISIBILITY_COLORS: Record<string, { bg: string; color: string }> = {

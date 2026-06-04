@@ -32,7 +32,7 @@ export interface DocumentRow {
   deleted_at:       string | null
 }
 
-const VALID_CATEGORIES   = ['minutes','budget','contract','insurance','legal','maintenance','other'] as const
+const VALID_CATEGORIES   = ['minutes','budget','contract','insurance','legal','maintenance','acte_de_base','other'] as const
 const VALID_VISIBILITIES = ['syndic_only','all_residents'] as const
 
 export type DocumentCategory   = typeof VALID_CATEGORIES[number]

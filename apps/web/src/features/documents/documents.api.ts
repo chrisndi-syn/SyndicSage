@@ -19,7 +19,7 @@ export interface Document {
 }
 
 export const DOCUMENT_CATEGORIES = [
-  'minutes', 'budget', 'contract', 'insurance', 'legal', 'maintenance', 'other',
+  'minutes', 'budget', 'contract', 'insurance', 'legal', 'maintenance', 'acte_de_base', 'other',
 ] as const
 
 export async function fetchDocuments(buildingId: string): Promise<Document[]> {
