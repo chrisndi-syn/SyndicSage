@@ -91,9 +91,25 @@
     "invitations": "Invitations",
     "ai": "AI Sage",
     "settings": "Settings",
+    "profile": "My Profile",
     "insurance": "Insurance",
     "contractors": "Contractors",
     "templates": "Letter Templates"
+  },
+  "profile": {
+    "title": "My Profile",
+    "personalInfo": "Personal information",
+    "fullName": "Full name",
+    "language": "Language",
+    "languageSubtitle": "Choose the language used throughout the app.",
+    "changePassword": "Change password",
+    "changePasswordSubtitle": "Set a new password for your account.",
+    "changePasswordBtn": "Update password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "pwTooShort": "Password must be at least 8 characters.",
+    "pwMismatch": "Passwords do not match.",
+    "pwSuccess": "Password updated successfully."
   },
   "buildings": {
     "title": "Buildings",

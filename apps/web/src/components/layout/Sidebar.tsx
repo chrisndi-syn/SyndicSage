@@ -12,7 +12,7 @@ import {
   CalendarDays, BarChart2, Globe, Sparkles,
   Settings, LogOut, ChevronDown, Check, Plus,
   Receipt, TrendingUp, PieChart,
-  Shield, HardHat, FileEdit,
+  Shield, HardHat, FileEdit, UserCircle,
 } from 'lucide-react'
 
 // Deterministic colour from building name
@@ -424,8 +424,9 @@ export function Sidebar() {
         flexShrink: 0,
       }}>
         {[
-          { to: '/settings', icon: <Settings size={17} />, label: t('nav.settings'), isLink: true  },
-          { to: null,        icon: <LogOut   size={17} />, label: t('auth.signOut'),  isLink: false },
+          { to: '/profile',  icon: <UserCircle size={17} />, label: t('nav.profile'),  isLink: true  },
+          { to: '/settings', icon: <Settings   size={17} />, label: t('nav.settings'), isLink: true  },
+          { to: null,        icon: <LogOut     size={17} />, label: t('auth.signOut'),  isLink: false },
         ].map((item, i) => {
           const inner = (isActive = false) => (
             <>
@@ -456,7 +457,7 @@ export function Sidebar() {
             return (
               <NavLink
                 key={i}
-                to="/settings"
+                to={item.to!}
                 style={({ isActive }) => ({
                   display:        'flex',
                   alignItems:     'center',

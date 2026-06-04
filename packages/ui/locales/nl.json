@@ -91,9 +91,25 @@
     "invitations": "Uitnodigingen",
     "ai": "AI Sage",
     "settings": "Instellingen",
+    "profile": "Mijn profiel",
     "insurance": "Verzekeringen",
     "contractors": "Aannemers",
     "templates": "Briefsjablonen"
+  },
+  "profile": {
+    "title": "Mijn profiel",
+    "personalInfo": "Persoonlijke informatie",
+    "fullName": "Volledige naam",
+    "language": "Taal",
+    "languageSubtitle": "Kies de taal die in de app wordt gebruikt.",
+    "changePassword": "Wachtwoord wijzigen",
+    "changePasswordSubtitle": "Stel een nieuw wachtwoord in voor uw account.",
+    "changePasswordBtn": "Wachtwoord bijwerken",
+    "newPassword": "Nieuw wachtwoord",
+    "confirmPassword": "Bevestig nieuw wachtwoord",
+    "pwTooShort": "Het wachtwoord moet minimaal 8 tekens bevatten.",
+    "pwMismatch": "Wachtwoorden komen niet overeen.",
+    "pwSuccess": "Wachtwoord succesvol bijgewerkt."
   },
   "buildings": {
     "title": "Gebouwen",

@@ -30,6 +30,7 @@ import InvitationsPage      from './features/invitations/InvitationsPage'
 import PortalPage           from './features/portal/PortalPage'
 import MessagesPage         from './features/portal/MessagesPage'
 import AcceptInvitePage     from './features/portal/AcceptInvitePage'
+import ProfilePage           from './features/profile/ProfilePage'
 import SubscribePage        from './features/billing/SubscribePage'
 import SubscribeSuccessPage from './features/billing/SubscribeSuccessPage'
 import CustomersPage        from './features/admin/CustomersPage'
@@ -65,6 +66,7 @@ export default function App() {
             <Route path="/bilan"     element={<AuthGuard><BilanPage /></AuthGuard>} />
             <Route path="/budget"    element={<AuthGuard><BudgetPage /></AuthGuard>} />
             <Route path="/settings"      element={<AuthGuard><SettingsPage /></AuthGuard>} />
+            <Route path="/profile"       element={<AuthGuard><ProfilePage /></AuthGuard>} />
             <Route path="/tickets"       element={<AuthGuard><TicketsPage /></AuthGuard>} />
             <Route path="/insurance"     element={<AuthGuard><InsurancePage /></AuthGuard>} />
             <Route path="/contractors"   element={<AuthGuard><ContractorsPage /></AuthGuard>} />
