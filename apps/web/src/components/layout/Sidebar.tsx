@@ -139,18 +139,18 @@ export function Sidebar() {
         whiteSpace:   'nowrap',
       }}>
         {/* Logo mark */}
-        <div style={{
-          width: 26, height: 26, flexShrink: 0,
-          background: 'rgba(255,255,255,0.1)',
-          borderRadius: 7,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <svg width="14" height="14" viewBox="0 0 32 32" fill="none">
-            <rect x="4" y="14" width="24" height="14" rx="2" stroke="#F59E0B" strokeWidth="2"/>
-            <rect x="12" y="20" width="8" height="8" rx="1" fill="#F59E0B"/>
-            <path d="M2 14L16 4L30 14" stroke="#F59E0B" strokeWidth="2" strokeLinejoin="round"/>
-          </svg>
-        </div>
+        <svg width="26" height="26" viewBox="0 0 1024 1024" style={{ flexShrink: 0, borderRadius: 6 }} xmlns="http://www.w3.org/2000/svg">
+          <rect width="1024" height="1024" rx="230" fill="#1E3A5F"/>
+          <radialGradient id="ssg" cx="50%" cy="42%" r="52%">
+            <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.18"/>
+            <stop offset="100%" stopColor="#1E3A5F" stopOpacity="0"/>
+          </radialGradient>
+          <rect width="1024" height="1024" rx="230" fill="url(#ssg)"/>
+          <g transform="translate(512,512)" stroke="#F59E0B" strokeLinecap="round" strokeLinejoin="round" fill="none">
+            <path d="M-220 -30 L0 -260 L220 -30" strokeWidth="48"/>
+            <path d="M-178 -55 L-178 220 Q-178 242 -156 242 L-65 242 L-65 85 L65 85 L65 242 L156 242 Q178 242 178 220 L178 -55" strokeWidth="48"/>
+          </g>
+        </svg>
         {/* Logo text — fades in on expand */}
         <span style={{
           fontFamily:  "'Cormorant Garamond', Georgia, serif",
