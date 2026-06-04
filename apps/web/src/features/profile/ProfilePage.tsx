@@ -417,15 +417,13 @@ export default function ProfilePage() {
                     )
                   })}
                 </div>
-                {selectedLang && selectedLang !== profile.preferred_language && (
-                  <button
-                    onClick={handleSaveLang}
-                    disabled={langSaving}
-                    style={{ padding: '7px 14px', background: '#F59E0B', border: 'none', borderRadius: 7, color: '#FFFFFF', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: langSaving ? 0.7 : 1 }}
-                  >
-                    {langSaving ? t('common.saving') : t('common.save')}
-                  </button>
-                )}
+                <button
+                  onClick={handleSaveLang}
+                  disabled={langSaving || !selectedLang || selectedLang === profile.preferred_language}
+                  style={{ padding: '7px 14px', background: '#F59E0B', border: 'none', borderRadius: 7, color: '#FFFFFF', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: (langSaving || !selectedLang || selectedLang === profile.preferred_language) ? 0.4 : 1 }}
+                >
+                  {langSaving ? t('common.saving') : t('common.save')}
+                </button>
               </div>
             </div>
 
