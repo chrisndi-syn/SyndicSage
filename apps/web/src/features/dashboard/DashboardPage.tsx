@@ -14,11 +14,11 @@ import { theme }           from '../../lib/theme'
 
 // ── Helpers ────────────────────────────────────────────────────
 
-function greeting() {
+function greetingKey(): string {
   const h = new Date().getHours()
-  if (h < 12) return 'Good morning'
-  if (h < 18) return 'Good afternoon'
-  return 'Good evening'
+  if (h < 12) return 'dashboard.greetMorning'
+  if (h < 18) return 'dashboard.greetAfternoon'
+  return 'dashboard.greetEvening'
 }
 
 function firstName(fullName?: string | null, email?: string | null): string {
@@ -208,7 +208,7 @@ export default function DashboardPage() {
           }} />
 
           <p style={{ margin: '0 0 4px', fontSize: 13, color: 'rgba(255,255,255,0.55)', fontWeight: 400 }}>
-            {greeting()}{name ? ',' : ''}
+            {t(greetingKey())}{name ? ',' : ''}
           </p>
           <h1 style={{
             margin: '0 0 10px',
