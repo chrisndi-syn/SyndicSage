@@ -112,11 +112,15 @@ export default function MeetingRoomPage() {
                 style={{ width: '100%', height: '100%', border: 'none' }}
               />
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'rgba(255,255,255,0.4)' }}>
-                <div style={{ fontSize: 15 }}>{t('meetings.noRoom')}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'rgba(255,255,255,0.5)', gap: 12 }}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.4 }}>
+                  <path d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.89L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/>
+                </svg>
+                <div style={{ fontSize: 14, textAlign: 'center' }}>{t('meetings.noRoom')}</div>
+                <div style={{ fontSize: 12, opacity: 0.6, textAlign: 'center', maxWidth: 260 }}>{t('meetings.noRoomHint')}</div>
                 {meeting?.daily_room_url && (
                   <a href={meeting.daily_room_url} target="_blank" rel="noreferrer"
-                    style={{ marginTop: 12, color: '#F59E0B', fontSize: 13 }}>
+                    style={{ marginTop: 4, color: '#F59E0B', fontSize: 13 }}>
                     {t('meetings.openExternal')}
                   </a>
                 )}

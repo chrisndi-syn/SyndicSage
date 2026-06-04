@@ -602,6 +602,7 @@
     "deleteConfirm": "Supprimer cette réunion ? Cette action est irréversible.",
     "empty": "Aucune réunion pour l'instant.",
     "noRoom": "Pas de salle vidéo — Daily.co non configuré.",
+    "noRoomHint": "Ajoutez une DAILY_API_KEY dans Railway pour activer les réunions vidéo.",
     "openExternal": "Ouvrir la salle dans le navigateur",
     "votes": "Votes",
     "noVotes": "Aucun vote. Ajoutez-en un pour commencer.",

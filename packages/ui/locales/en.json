@@ -602,6 +602,7 @@
     "deleteConfirm": "Delete this meeting? This cannot be undone.",
     "empty": "No meetings yet.",
     "noRoom": "No video room — Daily.co not configured.",
+    "noRoomHint": "Add a DAILY_API_KEY to Railway to enable video meetings.",
     "openExternal": "Open room in browser",
     "votes": "Votes",
     "noVotes": "No votes yet. Add one to start.",

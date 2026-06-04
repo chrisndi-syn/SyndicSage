@@ -604,6 +604,7 @@
     "deleteConfirm": "Vergadering verwijderen? Dit kan niet ongedaan worden gemaakt.",
     "empty": "Nog geen vergaderingen.",
     "noRoom": "Geen videozaal — Daily.co niet geconfigureerd.",
+    "noRoomHint": "Voeg een DAILY_API_KEY toe in Railway om videovergaderingen in te schakelen.",
     "openExternal": "Zaal openen in browser",
     "votes": "Stemmingen",
     "noVotes": "Nog geen stemmingen. Voeg er een toe om te beginnen.",

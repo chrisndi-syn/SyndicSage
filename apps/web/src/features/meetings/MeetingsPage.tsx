@@ -7,6 +7,7 @@ import { CalendarDays, Plus, X, ChevronRight, Play, CheckCircle, Clock } from 'l
 import { Shell }          from '../../components/layout/Shell'
 import { Topbar }         from '../../components/layout/Topbar'
 import { useBuilding }    from '../../shared/building/BuildingContext'
+import { useAuth }        from '../../shared/auth/AuthContext'
 import {
   useMeetings, useCreateMeeting, useUpdateMeeting, useDeleteMeeting, useStartMeeting,
 } from './useMeetings'
@@ -31,6 +32,7 @@ const EMPTY_FORM: FormState = { title: '', date: '', agenda: '' }
 export default function MeetingsPage() {
   const { t }        = useTranslation()
   const navigate     = useNavigate()
+  const { session }  = useAuth()
   const { selected: building } = useBuilding()
 
   const { data: meetings = [], isLoading } = useMeetings(building?.id)
@@ -86,6 +88,11 @@ export default function MeetingsPage() {
   }
 
   async function handleStart(m: Meeting) {
+    if (!session) {
+      // Dev mode: navigate directly without API call
+      navigate(`/meetings/${m.id}/room`)
+      return
+    }
     const result = await startMeeting.mutateAsync(m.id)
     navigate(`/meetings/${m.id}/room`, { state: { roomUrl: result.room_url, token: result.token } })
   }
