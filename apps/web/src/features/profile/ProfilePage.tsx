@@ -65,7 +65,8 @@ export default function ProfilePage() {
   const [nameSaving,  setNameSaving]  = useState(false)
 
   // Language section
-  const [langSaving,  setLangSaving]  = useState(false)
+  const [selectedLang, setSelectedLang] = useState<'en' | 'fr' | 'nl' | null>(null)
+  const [langSaving,   setLangSaving]   = useState(false)
 
   // Password section
   const [pwNew,     setPwNew]     = useState('')
@@ -120,9 +121,15 @@ export default function ProfilePage() {
 
   // ── Save language ──────────────────────────────────────────
 
-  async function handleSaveLang(lang: 'en' | 'fr' | 'nl') {
-    if (!profile || lang === profile.preferred_language) return
-    if (!session) { setProfile({ ...profile, preferred_language: lang }); void i18n.changeLanguage(lang); return }
+  async function handleSaveLang() {
+    const lang = selectedLang
+    if (!profile || !lang || lang === profile.preferred_language) return
+    if (!session) {
+      setProfile({ ...profile, preferred_language: lang })
+      setSelectedLang(null)
+      void i18n.changeLanguage(lang)
+      return
+    }
     setLangSaving(true)
     setErrorMsg('')
     try {
@@ -131,6 +138,7 @@ export default function ProfilePage() {
         body:   JSON.stringify({ preferred_language: lang }),
       }) as ProfileData
       setProfile(updated)
+      setSelectedLang(null)
       void i18n.changeLanguage(lang)
     } catch {
       setErrorMsg(t('common.error'))
@@ -381,31 +389,43 @@ export default function ProfilePage() {
                   <p style={{ margin: '2px 0 0', fontSize: 12, color: '#6E6E73' }}>{t('profile.languageSubtitle')}</p>
                 </div>
               </div>
-              <div style={{ padding: 20, display: 'flex', gap: 10 }}>
-                {LANGUAGES.map(lang => {
-                  const isSelected = profile.preferred_language === lang.code
-                  return (
-                    <button
-                      key={lang.code}
-                      onClick={() => handleSaveLang(lang.code)}
-                      disabled={langSaving}
-                      style={{
-                        padding:      '8px 20px',
-                        borderRadius: 8,
-                        border:       isSelected ? '2px solid #F59E0B' : '1px solid rgba(60,60,67,0.2)',
-                        background:   isSelected ? 'rgba(245,158,11,0.08)' : '#FFFFFF',
-                        color:        isSelected ? '#B45309' : '#3C3C43',
-                        fontSize:     13,
-                        fontWeight:   isSelected ? 600 : 400,
-                        cursor:       langSaving ? 'not-allowed' : 'pointer',
-                        opacity:      langSaving ? 0.6 : 1,
-                        transition:   'all 0.15s',
-                      }}
-                    >
-                      {lang.label}
-                    </button>
-                  )
-                })}
+              <div style={{ padding: 20 }}>
+                <div style={{ display: 'flex', gap: 10, marginBottom: 16 }}>
+                  {LANGUAGES.map(lang => {
+                    const activeLang = selectedLang ?? profile.preferred_language
+                    const isSelected = activeLang === lang.code
+                    return (
+                      <button
+                        key={lang.code}
+                        onClick={() => setSelectedLang(lang.code)}
+                        disabled={langSaving}
+                        style={{
+                          padding:      '8px 20px',
+                          borderRadius: 8,
+                          border:       isSelected ? '2px solid #F59E0B' : '1px solid rgba(60,60,67,0.2)',
+                          background:   isSelected ? 'rgba(245,158,11,0.08)' : '#FFFFFF',
+                          color:        isSelected ? '#B45309' : '#3C3C43',
+                          fontSize:     13,
+                          fontWeight:   isSelected ? 600 : 400,
+                          cursor:       langSaving ? 'not-allowed' : 'pointer',
+                          opacity:      langSaving ? 0.6 : 1,
+                          transition:   'all 0.15s',
+                        }}
+                      >
+                        {lang.label}
+                      </button>
+                    )
+                  })}
+                </div>
+                {selectedLang && selectedLang !== profile.preferred_language && (
+                  <button
+                    onClick={handleSaveLang}
+                    disabled={langSaving}
+                    style={{ padding: '7px 14px', background: '#F59E0B', border: 'none', borderRadius: 7, color: '#FFFFFF', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: langSaving ? 0.7 : 1 }}
+                  >
+                    {langSaving ? t('common.saving') : t('common.save')}
+                  </button>
+                )}
               </div>
             </div>
 
