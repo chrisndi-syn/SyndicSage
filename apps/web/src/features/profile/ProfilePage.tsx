@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import i18n from '../../lib/i18n'
 import { Shell }   from '../../components/layout/Shell'
 import { Topbar }  from '../../components/layout/Topbar'
-import { supabase } from '../../lib/supabase'
 import { useAuth }  from '../../shared/auth/AuthContext'
 
 // ── Types ─────────────────────────────────────────────────────
@@ -55,9 +54,9 @@ export default function ProfilePage() {
   const [errorMsg, setErrorMsg] = useState('')
 
   // Avatar section
-  const fileInputRef             = useRef<HTMLInputElement>(null)
-  const [avatarUploading, setAvatarUploading] = useState(false)
-  const [avatarError,     setAvatarError]     = useState('')
+  const fileInputRef                             = useRef<HTMLInputElement>(null)
+  const [avatarUploading, setAvatarUploading]    = useState(false)
+  const [avatarError,     setAvatarError]        = useState('')
 
   // Name section
   const [nameEditing, setNameEditing] = useState(false)
@@ -67,13 +66,6 @@ export default function ProfilePage() {
   // Language section
   const [selectedLang, setSelectedLang] = useState<'en' | 'fr' | 'nl' | null>(null)
   const [langSaving,   setLangSaving]   = useState(false)
-
-  // Password section
-  const [pwNew,     setPwNew]     = useState('')
-  const [pwConfirm, setPwConfirm] = useState('')
-  const [pwSaving,  setPwSaving]  = useState(false)
-  const [pwSuccess, setPwSuccess] = useState(false)
-  const [pwError,   setPwError]   = useState('')
 
   // ── Load profile ───────────────────────────────────────────
 
@@ -159,7 +151,6 @@ export default function ProfilePage() {
 
     setAvatarError('')
 
-    // Dev mode: show preview locally without calling the API
     if (!session) {
       const url = URL.createObjectURL(file)
       setProfile({ ...profile, avatar_url: url })
@@ -182,38 +173,7 @@ export default function ProfilePage() {
       setAvatarError(t('common.error'))
     } finally {
       setAvatarUploading(false)
-      // Reset file input so the same file can be re-selected
       if (fileInputRef.current) fileInputRef.current.value = ''
-    }
-  }
-
-  // ── Change password ────────────────────────────────────────
-
-  async function handleChangePassword() {
-    if (!session) return
-    setPwError('')
-    setPwSuccess(false)
-
-    if (pwNew.length < 8) {
-      setPwError(t('profile.pwTooShort'))
-      return
-    }
-    if (pwNew !== pwConfirm) {
-      setPwError(t('profile.pwMismatch'))
-      return
-    }
-
-    setPwSaving(true)
-    const { error } = await supabase.auth.updateUser({ password: pwNew })
-    setPwSaving(false)
-
-    if (error) {
-      setPwError(t('common.error'))
-    } else {
-      setPwNew('')
-      setPwConfirm('')
-      setPwSuccess(true)
-      setTimeout(() => setPwSuccess(false), 4000)
     }
   }
 
@@ -269,7 +229,6 @@ export default function ProfilePage() {
                 </div>
               </div>
               <div style={{ padding: 20, display: 'flex', alignItems: 'center', gap: 20 }}>
-                {/* Avatar circle */}
                 <div style={{ position: 'relative', flexShrink: 0 }}>
                   {profile.avatar_url ? (
                     <img
@@ -297,8 +256,6 @@ export default function ProfilePage() {
                     </div>
                   )}
                 </div>
-
-                {/* Upload controls */}
                 <div>
                   <input
                     ref={fileInputRef}
@@ -424,57 +381,6 @@ export default function ProfilePage() {
                 >
                   {langSaving ? t('common.saving') : t('common.save')}
                 </button>
-              </div>
-            </div>
-
-            {/* ── Password ──────────────────────────────────── */}
-            <div style={card}>
-              <div style={cardHeader}>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#1E3A5F' }}>{t('profile.changePassword')}</h3>
-                  <p style={{ margin: '2px 0 0', fontSize: 12, color: '#6E6E73' }}>{t('profile.changePasswordSubtitle')}</p>
-                </div>
-              </div>
-              <div style={{ padding: 20 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 14, maxWidth: 360 }}>
-                  <div>
-                    <label style={label}>{t('profile.newPassword')}</label>
-                    <input
-                      type="password"
-                      value={pwNew}
-                      onChange={e => { setPwNew(e.target.value); setPwError('') }}
-                      style={input}
-                      placeholder="••••••••"
-                    />
-                  </div>
-                  <div>
-                    <label style={label}>{t('profile.confirmPassword')}</label>
-                    <input
-                      type="password"
-                      value={pwConfirm}
-                      onChange={e => { setPwConfirm(e.target.value); setPwError('') }}
-                      style={input}
-                      placeholder="••••••••"
-                    />
-                  </div>
-
-                  {pwError && (
-                    <p style={{ margin: 0, fontSize: 12, color: '#DC2626' }}>{pwError}</p>
-                  )}
-                  {pwSuccess && (
-                    <p style={{ margin: 0, fontSize: 12, color: '#15803D' }}>{t('profile.pwSuccess')}</p>
-                  )}
-
-                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <button
-                      onClick={handleChangePassword}
-                      disabled={pwSaving || !pwNew || !pwConfirm}
-                      style={{ padding: '7px 14px', background: '#F59E0B', border: 'none', borderRadius: 7, color: '#FFFFFF', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: (pwSaving || !pwNew || !pwConfirm) ? 0.6 : 1 }}
-                    >
-                      {pwSaving ? t('common.saving') : t('profile.changePasswordBtn')}
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           </>
