@@ -695,7 +695,17 @@
     "supplierLabel": "Prestataire",
     "supplierPlaceholder": "ex. Dalkia Belgium",
     "doneToday": "Fait aujourd'hui",
-    "noSupplier": "—"
+    "noSupplier": "—",
+    "tplBoiler": "Entretien chaudière",
+    "tplGas": "Contrôle installation gaz",
+    "tplElevator": "Inspection ascenseur",
+    "tplFireExt": "Contrôle extincteurs",
+    "tplSmoke": "Test détecteurs de fumée",
+    "tplElectrical": "Contrôle tableau électrique",
+    "tplCleaning": "Nettoyage parties communes",
+    "tplGutter": "Nettoyage gouttières",
+    "tplPest": "Dératisation / désinsectisation",
+    "tplPlumbing": "Inspection plomberie"
   },
   "reports": {
     "title": "Rapports",

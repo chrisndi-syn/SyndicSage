@@ -124,7 +124,7 @@ export default function MaintenancePage() {
   function applyTemplate(tpl: typeof TASK_TEMPLATES[number]) {
     setForm(f => ({
       ...f,
-      title:       tpl.title,
+      title:       t('maintenance.' + tpl.tplKey),
       description: tpl.description ?? '',
       category:    tpl.category ?? 'other',
       frequency:   tpl.frequency ?? 'annual',
@@ -334,7 +334,7 @@ export default function MaintenancePage() {
                       onMouseEnter={e => (e.currentTarget.style.borderColor = '#1E3A5F')}
                       onMouseLeave={e => (e.currentTarget.style.borderColor = '#E5E7EB')}
                     >
-                      {tpl.title}
+                      {t('maintenance.' + tpl.tplKey)}
                     </button>
                   ))}
                 </div>

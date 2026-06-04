@@ -695,7 +695,17 @@
     "supplierLabel": "Supplier",
     "supplierPlaceholder": "e.g. Otis Belgium",
     "doneToday": "Done today",
-    "noSupplier": "—"
+    "noSupplier": "—",
+    "tplBoiler": "Boiler service",
+    "tplGas": "Gas installation check",
+    "tplElevator": "Elevator inspection",
+    "tplFireExt": "Fire extinguisher check",
+    "tplSmoke": "Smoke detector test",
+    "tplElectrical": "Electrical panel check",
+    "tplCleaning": "Common area cleaning",
+    "tplGutter": "Gutter cleaning",
+    "tplPest": "Pest control",
+    "tplPlumbing": "Plumbing inspection"
   },
   "reports": {
     "title": "Reports",

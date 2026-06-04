@@ -697,7 +697,17 @@
     "supplierLabel": "Leverancier",
     "supplierPlaceholder": "bv. Dalkia Belgium",
     "doneToday": "Vandaag gedaan",
-    "noSupplier": "—"
+    "noSupplier": "—",
+    "tplBoiler": "Ketelonderhoud",
+    "tplGas": "Gasinstallatie controle",
+    "tplElevator": "Liftinspectie",
+    "tplFireExt": "Controle brandblussers",
+    "tplSmoke": "Test rookmelders",
+    "tplElectrical": "Controle elektrisch bord",
+    "tplCleaning": "Schoonmaak gemeenschappelijke delen",
+    "tplGutter": "Reiniging dakgoten",
+    "tplPest": "Ongediertebestrijding",
+    "tplPlumbing": "Inspectie leidingen"
   },
   "reports": {
     "title": "Rapporten",
