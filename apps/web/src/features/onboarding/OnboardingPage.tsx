@@ -12,12 +12,13 @@ interface ObData {
   lastName:      string
   phone:         string
   role:          string
-  yearsExp:      string
   buildingCount: string
   // Building
   bName:         string
   bAddress:      string
+  bPostal:       string
   bCity:         string
+  bCountry:      string
   bYear:         string
   bFloors:       string
   bUnits:        string
@@ -37,91 +38,94 @@ interface ObData {
   policyNo:       string
   insRenewal:     string
   // Co-owners
-  ownerCount:     string
   ownerInfo:      string
   wantsPortal:    string
   // Compliance
   compliance:     string[]
-  // Workflow
-  currentTool:    string
-  painPoints:     string[]
-  // Priorities
-  priorities:     string[]
 }
 
 const EMPTY: ObData = {
-  lang: 'fr', firstName: '', lastName: '', phone: '', role: '', yearsExp: '', buildingCount: '',
-  bName: '', bAddress: '', bCity: '', bYear: '', bFloors: '', bUnits: '',
+  lang: 'fr', firstName: '', lastName: '', phone: '', role: '', buildingCount: '',
+  bName: '', bAddress: '', bPostal: '', bCity: '', bCountry: '', bYear: '', bFloors: '', bUnits: '',
   hasVme: '', vmeNumber: '', hasActe: '', hasRME: '', hasMandate: '',
   hasBankAccount: '', bankIban: '', bankName: '',
   hasInsurance: '', insurer: '', policyNo: '', insRenewal: '',
-  ownerCount: '', ownerInfo: '', wantsPortal: '',
-  compliance: [], currentTool: '', painPoints: [], priorities: [],
+  ownerInfo: '', wantsPortal: '',
+  compliance: [],
 }
 
-const TOTAL_STEPS = 11
+const TOTAL_STEPS = 10
 
 // ── Step labels ───────────────────────────────────────────────
 const STEP_LABELS: Record<Lang, string[]> = {
-  en: ['Language','About you','Your building','VME & legal','Financials','Insurance','Co-owners','Compliance','Your workflow','Priorities','Ready!'],
-  fr: ['Langue','À propos','Votre immeuble','ACP & légal','Finances','Assurances','Copropriétaires','Conformité','Workflow actuel','Priorités','Prêt !'],
-  nl: ['Taal','Over u','Uw gebouw','VME & juridisch','Financiën','Verzekeringen','Mede-eigenaars','Conformiteit','Huidige aanpak','Prioriteiten','Klaar!'],
+  en: ['Language', 'Before you begin', 'About you', 'Your building', 'VME & legal', 'Financials', 'Insurance', 'Co-owners', 'Compliance', 'Ready!'],
+  fr: ['Langue', 'Avant de commencer', 'À propos', 'Votre immeuble', 'ACP & légal', 'Finances', 'Assurances', 'Copropriétaires', 'Conformité', 'Prêt !'],
+  nl: ['Taal', 'Voordat u begint', 'Over u', 'Uw gebouw', 'VME & juridisch', 'Financiën', 'Verzekeringen', 'Mede-eigenaars', 'Conformiteit', 'Klaar!'],
 }
 
 // ── Translations ──────────────────────────────────────────────
 const T = {
   en: {
-    prepTitle: 'Before you begin',
-    prep: 'This questionnaire takes approximately 30 minutes. Please have ready: VME number, insurance policy, co-owner list, financial figures, and compliance certificates.',
-    prepReassure: "Don't have everything at hand? No worries — we'll guide you through each step.",
     langTitle: 'Welcome to SyndicSage',
     langSub: 'Choose your preferred language to get started.',
-    // Step 2
-    s2t: 'About you', s2sub: "Let's start with who you are. This personalises your workspace.",
-    firstname: 'First name', lastname: 'Last name', emailLabel: 'Email address', phoneLabel: 'Phone number',
-    yearsLabel: 'Years of experience as syndic',
-    y1: '< 1 year', y2: '1–3 years', y3: '4–10 years', y4: '10+ years',
-    roleLabel: 'I am a…',
-    r1: 'Voluntary syndic', r1s: 'Self-managed VME',
-    r2: 'Professional syndic', r2s: 'Managing buildings for clients',
-    volNote: 'As a voluntary syndic, you may set up a compensation — a service fee approved by the general assembly.',
+    // Step 2 — Before you begin
+    prepTitle: 'Before you begin',
+    prepIntro: 'To get started, you only need two documents:',
+    prepDoc1: 'Basic deed (acte de base)',
+    prepDoc2: 'Joint ownership regulations (règlement de copropriété)',
+    prepNotary: 'These documents are sometimes bundled together in one notarial deed. Upon the purchase of your apartment, you should have received a copy from your notary.',
+    prepReassure: "Don't have them yet? No worries — we'll help you track them down once setup is complete.",
+    // Step 3 — About you
+    s3t: 'About you', s3sub: "Let's start with who you are. This personalises your workspace.",
+    firstname: 'First name', lastname: 'Last name', phoneLabel: 'Phone number',
+    roleLabel: 'I am…',
+    r1: 'A voluntary syndic', r1s: 'Self-managed VME',
+    r2: 'A professional syndic', r2s: 'Managing buildings for clients',
     bcountLabel: 'How many buildings do you manage?',
     bc1: '1', bc1s: 'Just one', bc2: '2–5', bc2s: 'Small portfolio', bc3: '6–15', bc3s: 'Growing', bc4: '16+', bc4s: 'Large portfolio',
-    // Step 3
-    s3t: 'Your first building', s3sub: 'Register the building you manage most. You can add more afterwards.',
-    bname: 'Building name *', baddr: 'Street address', bcity: 'City', byear: 'Year built', bfloors: 'Floors', bunits: 'Units / lots *',
-    // Step 4
-    s4t: 'VME & legal', s4sub: 'These details pre-fill your convocation letters and official filings.',
+    // Step 4 — Building
+    s4t: 'Your first building', s4sub: 'Register the building you manage. You can add more afterwards.',
+    bname: 'Building name (VME name) *', bnameHint: 'Use the name of the VME as written on the basic deed.',
+    baddr: 'Street address', bpostal: 'Postal code', bcity: 'City', bcountry: 'Country',
+    byear: 'Year built', bfloors: 'Floors', bunits: 'Units / lots *',
+    // Step 5 — VME & legal
+    s5t: 'VME & legal', s5sub: 'These details pre-fill your convocation letters and official filings.',
     vmeQ: 'Does your building have a VME number (BCE / KBO)?',
     vmeYes: 'Yes — I have it', vmeNo: 'Not yet', vmeUnknown: "Don't know / need to check",
     vmeHint: 'You can look it up for free at syndi.be',
+    vmeNoNote: "Don't worry — we'll help you with your application for a VME number.",
     vmePH: 'BE 0123.456.789',
-    acteLabel: 'Acte de base / statutes',
-    a1: 'Have it', a1s: 'Ready to upload', a1note: "Great — we'll show you where to upload the acte de base after setup.",
+    acteLabel: 'Basic deed',
+    a1: 'Have it', a1s: 'Ready to upload', a1note: "Great — we'll show you where to upload the Basic Deed after setup.",
     a2: 'Upload later', a2s: 'Need to locate it',
-    a3: "Don't have it", a3s: 'Not yet obtained',
-    rmeLabel: 'Règlement de copropriété / RME',
+    a3: "Don't have it — where can I find it?", a3s: 'Not yet obtained',
+    a3note: 'We will help you retrieve your Basic Deed once we complete the setup.',
+    rmeLabel: 'Joint ownership regulations',
     rme1: 'Have it', rme1s: 'Ready to upload', rme1note: "Great — we'll show you where to upload it after setup.",
     rme2: 'Upload later', rme2s: 'Need to locate it',
-    rme3: "Don't have it", rme3s: 'Not yet obtained',
+    rme3: "Don't have it — where can I find it?", rme3s: 'Not yet obtained',
+    rme3note: 'We will help you retrieve your Joint Ownership Regulations once we complete the setup.',
     mandateQ: 'Do you have a syndic mandate?',
     mandateYes: 'Yes — I have the PV of the first AG',
+    mandateYesNote: "Great — once your syndic mandate is confirmed, it will be stored on your profile.",
     mandateNo: 'Not yet — I need to obtain it',
-    // Step 5
-    s5t: 'Financials', s5sub: 'These figures feed your dashboard and AG report templates.',
+    mandateNoNote: 'We will help you obtain a syndic mandate through your first general assembly once we complete the setup.',
+    // Step 6 — Financials
+    s6t: 'Financials', s6sub: 'These figures feed your dashboard and AG report templates.',
     bankQ: 'Does your VME have a bank account?',
     bankYes: 'Yes', bankUnsure: 'Not sure / need to check', bankNo: 'Not yet opened',
+    bankNoNote: 'We will help you create a bank account for your VME once we complete the setup.',
     bankIban: 'VME bank account IBAN', bankName: 'Bank name',
     bankTip: 'Belgian law requires a VME to have a bank account in its own name. Options: BNP Paribas Fortis (~€10/quarter), Argenta (free for VMEs).',
-    // Step 6
-    s6t: 'Insurance', s6sub: "Let's capture your VME's insurance details.",
+    // Step 7 — Insurance
+    s7t: 'Insurance', s7sub: "Let's capture your VME's insurance details.",
     insQ: 'Does the VME have fire insurance?',
     insYes: 'Yes — active policy', insNo: 'Not yet / not sure',
+    insYesNote: "Great — we'll show you where to upload the insurance policy as soon as we finish setup.",
     insurer: 'Insurance company', policyNo: 'Policy number', insRenewal: 'Renewal date',
     insTip: 'Liability insurance is legally required for syndics (Art. 577-9 Belgian Civil Code). Fire insurance is strongly recommended.',
-    // Step 7
-    s7t: 'Co-owners', s7sub: 'This helps us set up the portal and payment tracking.',
-    ownerCount: 'Approximate number of co-owners',
+    // Step 8 — Co-owners
+    s8t: 'Co-owners', s8sub: 'This helps us set up the portal and payment tracking.',
     ownerInfoLabel: 'How complete is your co-owner contact list?',
     oi1: 'Complete', oi1s: 'Names, emails & units ready',
     oi2: 'Partial', oi2s: 'Some info missing',
@@ -129,8 +133,8 @@ const T = {
     portalQ: 'Activate the co-owner portal?',
     p1: 'Yes, immediately', p1s: 'Owners can log in right away',
     p2: 'Later', p2s: "I'll set it up when ready",
-    // Step 8
-    s8t: 'Compliance checklist', s8sub: 'Select which certificates and inspections you currently have on file.',
+    // Step 9 — Compliance
+    s9t: 'Compliance checklist', s9sub: 'Select which certificates and inspections you currently have on file.',
     c1: 'Electrical inspection (RGIE)', c1s: 'Required every 25 years',
     c2: 'Elevator inspection', c2s: 'Annual mandatory inspection',
     c3: 'Fire safety inspection', c3s: 'Smoke detectors, extinguishers, exits',
@@ -138,78 +142,68 @@ const T = {
     c5: 'Gas / heating inspection', c5s: 'Boiler & gas installation certificate',
     c6: 'Energy Performance Certificate (EPC)', c6s: 'For common areas',
     c7: 'None on file', c7s: "I'll add them as I collect them",
-    // Step 9
-    s9t: 'Your current workflow', s9sub: 'Help us understand how you manage today.',
-    toolLabel: 'How do you manage your buildings today?',
-    t1: 'Excel / Google Sheets', t2: 'Paper & binders',
-    t3: 'Generic software', t3s: 'e.g. Odoo, syndic software',
-    t4: 'Another syndic app', t4s: 'Switching from a tool',
-    painLabel: 'Biggest pain points? (select all that apply)',
-    pp1: 'Chasing late payments', pp2: 'Organising AG meetings',
-    pp3: 'Document chaos', pp4: 'Tracking compliance deadlines',
-    pp5: 'Co-owner communication', pp6: 'Financial reporting',
-    // Step 10
-    s10t: 'Your priorities', s10sub: 'Pick 2–3 features to highlight on your dashboard.',
-    pr1: 'Payment tracking', pr1s: 'Charges, reminders, collection',
-    pr2: 'AG & assembly management', pr2s: 'Convocations, voting, minutes',
-    pr3: 'Document management', pr3s: 'Store, organise, access all docs',
-    pr4: 'Compliance tracking', pr4s: 'Certificates, inspections, deadlines',
-    pr5: 'Co-owner portal', pr5s: 'Self-service requests & payments',
-    pr6: 'Financial reporting', pr6s: 'Budget overview and AG reports',
-    // Step 11
-    s11t: 'Your workspace is ready', s11sub: "Here's what we'll create — and what to tackle next.",
-    creatingNow: 'Creating now', doNext: 'To do next', yourPri: 'Your priorities',
+    // Step 10 — Ready
+    s10t: 'Your workspace is ready', s10sub: "Here's what we'll create — and what to tackle next.",
+    creatingNow: 'Creating now', doNext: 'To do next',
     finishBtn: 'Launch my workspace →',
     creating: 'Setting up your workspace…',
     // Nav
     next: 'Next →', back: '← Back', skip: 'Skip for now',
   },
   fr: {
-    prepTitle: 'Avant de commencer',
-    prep: "Ce questionnaire prend environ 30 minutes. Préparez : numéro d'ACP, police d'assurance, liste des copropriétaires, chiffres financiers et certificats de conformité.",
-    prepReassure: "Vous n'avez pas tout sous la main ? Pas de panique — nous vous guidons étape par étape.",
     langTitle: 'Bienvenue sur SyndicSage',
     langSub: 'Choisissez votre langue préférée pour commencer.',
-    s2t: 'À propos de vous', s2sub: "Commençons par votre profil. Cela personnalise votre espace.",
-    firstname: 'Prénom', lastname: 'Nom de famille', emailLabel: 'Adresse e-mail', phoneLabel: 'Téléphone',
-    yearsLabel: "Années d'expérience comme syndic",
-    y1: '< 1 an', y2: '1–3 ans', y3: '4–10 ans', y4: '10+ ans',
+    prepTitle: 'Avant de commencer',
+    prepIntro: 'Pour démarrer, il vous suffit de deux documents :',
+    prepDoc1: 'Acte de base',
+    prepDoc2: 'Règlement de copropriété',
+    prepNotary: "Ces documents sont parfois regroupés dans un seul acte notarié. Lors de l'achat de votre appartement, vous avez dû en recevoir une copie de votre notaire.",
+    prepReassure: "Vous ne les avez pas encore ? Pas de panique — nous vous aiderons à les retrouver une fois la configuration terminée.",
+    s3t: 'À propos de vous', s3sub: "Commençons par votre profil. Cela personnalise votre espace.",
+    firstname: 'Prénom', lastname: 'Nom de famille', phoneLabel: 'Téléphone',
     roleLabel: 'Je suis…',
-    r1: 'Syndic bénévole', r1s: 'VME autogérée',
-    r2: 'Syndic professionnel', r2s: 'Gérant des immeubles pour des clients',
-    volNote: "En tant que syndic bénévole, vous pouvez percevoir une indemnité approuvée par l'assemblée générale.",
+    r1: 'Un syndic bénévole', r1s: 'VME autogérée',
+    r2: 'Un syndic professionnel', r2s: 'Gérant des immeubles pour des clients',
     bcountLabel: "Combien d'immeubles gérez-vous ?",
     bc1: '1', bc1s: 'Un seul', bc2: '2–5', bc2s: 'Petit portefeuille', bc3: '6–15', bc3s: 'En croissance', bc4: '16+', bc4s: 'Grand portefeuille',
-    s3t: 'Votre premier immeuble', s3sub: "Enregistrez l'immeuble que vous gérez principalement.",
-    bname: 'Nom de l\'immeuble *', baddr: 'Adresse', bcity: 'Ville', byear: 'Année de construction', bfloors: 'Étages', bunits: 'Nombre de lots *',
-    s4t: 'ACP & légal', s4sub: 'Ces données pré-remplissent vos convocations et dépôts officiels.',
+    s4t: 'Votre premier immeuble', s4sub: "Enregistrez l'immeuble que vous gérez. Vous pourrez en ajouter d'autres ensuite.",
+    bname: "Nom de l'immeuble (nom de l'ACP) *", bnameHint: "Utilisez le nom de l'ACP tel qu'il apparaît sur l'acte de base.",
+    baddr: 'Adresse', bpostal: 'Code postal', bcity: 'Ville', bcountry: 'Pays',
+    byear: 'Année de construction', bfloors: 'Étages', bunits: 'Nombre de lots *',
+    s5t: 'ACP & légal', s5sub: 'Ces données pré-remplissent vos convocations et dépôts officiels.',
     vmeQ: "Votre immeuble a-t-il un numéro d'ACP (BCE / KBO) ?",
     vmeYes: "Oui — je l'ai", vmeNo: 'Pas encore', vmeUnknown: "Je ne sais pas / je dois vérifier",
     vmeHint: 'Vous pouvez le rechercher gratuitement sur syndi.be',
+    vmeNoNote: "Ne vous inquiétez pas — nous vous aiderons à obtenir un numéro d'ACP.",
     vmePH: 'BE 0123.456.789',
-    acteLabel: 'Acte de base / statuts',
+    acteLabel: 'Acte de base',
     a1: "Je l'ai", a1s: 'Prêt à téléverser', a1note: "Parfait — nous vous montrerons où téléverser l'acte de base après la configuration.",
     a2: 'Téléverserai plus tard', a2s: 'Besoin de le retrouver',
-    a3: "Je ne l'ai pas", a3s: 'Pas encore obtenu',
+    a3: "Je ne l'ai pas — où puis-je le trouver ?", a3s: 'Pas encore obtenu',
+    a3note: 'Nous vous aiderons à récupérer votre acte de base une fois la configuration terminée.',
     rmeLabel: 'Règlement de copropriété',
     rme1: "Je l'ai", rme1s: 'Prêt à téléverser', rme1note: 'Parfait — nous vous montrerons où le téléverser après la configuration.',
     rme2: 'Téléverserai plus tard', rme2s: 'Besoin de le retrouver',
-    rme3: "Je ne l'ai pas", rme3s: 'Pas encore obtenu',
+    rme3: "Je ne l'ai pas — où puis-je le trouver ?", rme3s: 'Pas encore obtenu',
+    rme3note: 'Nous vous aiderons à récupérer votre règlement de copropriété une fois la configuration terminée.',
     mandateQ: 'Avez-vous un mandat de syndic ?',
     mandateYes: "Oui — j'ai le PV de la première AG",
+    mandateYesNote: "Parfait — une fois confirmé, votre mandat sera enregistré dans votre profil.",
     mandateNo: "Pas encore — je dois l'obtenir",
-    s5t: 'Finances', s5sub: 'Ces chiffres alimentent votre tableau de bord et vos rapports d\'AG.',
+    mandateNoNote: "Nous vous aiderons à obtenir un mandat de syndic lors de votre première assemblée générale, une fois la configuration terminée.",
+    s6t: 'Finances', s6sub: "Ces chiffres alimentent votre tableau de bord et vos rapports d'AG.",
     bankQ: 'La VME dispose-t-elle d\'un compte bancaire ?',
     bankYes: 'Oui', bankUnsure: 'Pas sûr / je dois vérifier', bankNo: 'Non — pas encore ouvert',
+    bankNoNote: 'Nous vous aiderons à ouvrir un compte bancaire pour votre VME une fois la configuration terminée.',
     bankIban: 'IBAN du compte bancaire VME', bankName: 'Nom de la banque',
     bankTip: 'La loi belge oblige toute VME à avoir un compte en son propre nom. Options : BNP Paribas Fortis (~10 €/trimestre), Argenta (gratuit pour les VME).',
-    s6t: 'Assurances', s6sub: "Renseignons les détails d'assurance de votre VME.",
+    s7t: 'Assurances', s7sub: "Renseignons les détails d'assurance de votre VME.",
     insQ: 'La VME a-t-elle une assurance incendie ?',
     insYes: 'Oui — police active', insNo: 'Pas encore / incertain',
+    insYesNote: "Parfait — nous vous montrerons où téléverser la police d'assurance dès la fin de la configuration.",
     insurer: "Compagnie d'assurance", policyNo: 'Numéro de police', insRenewal: 'Date de renouvellement',
     insTip: "L'assurance RC est légalement obligatoire pour le syndic (art. 577-9 Code civil belge). L'assurance incendie est vivement recommandée.",
-    s7t: 'Copropriétaires', s7sub: 'Cela nous aide à configurer le portail et le suivi des paiements.',
-    ownerCount: 'Nombre approximatif de copropriétaires',
+    s8t: 'Copropriétaires', s8sub: 'Cela nous aide à configurer le portail et le suivi des paiements.',
     ownerInfoLabel: 'La liste de contacts des copropriétaires est…',
     oi1: 'Complète', oi1s: 'Noms, emails & lots prêts',
     oi2: 'Partielle', oi2s: 'Certaines infos manquantes',
@@ -217,7 +211,7 @@ const T = {
     portalQ: 'Activer le portail copropriétaires ?',
     p1: 'Oui, maintenant', p1s: 'Les copropriétaires peuvent se connecter',
     p2: 'Plus tard', p2s: "Je le configurerai quand prêt",
-    s8t: 'Checklist de conformité', s8sub: 'Sélectionnez les certificats que vous avez en dossier.',
+    s9t: 'Checklist de conformité', s9sub: 'Sélectionnez les certificats que vous avez en dossier.',
     c1: 'Inspection électrique (RGIE)', c1s: 'Requise tous les 25 ans',
     c2: 'Inspection ascenseur', c2s: 'Inspection annuelle obligatoire',
     c3: 'Inspection sécurité incendie', c3s: 'Détecteurs, extincteurs, sorties',
@@ -225,74 +219,66 @@ const T = {
     c5: 'Inspection gaz / chauffage', c5s: 'Certificat chaudière & installation gaz',
     c6: 'Certificat PEB (zones communes)', c6s: 'Performance énergétique',
     c7: 'Aucun en dossier', c7s: "J'ajouterai au fur et à mesure",
-    s9t: 'Votre workflow actuel', s9sub: "Dites-nous comment vous gérez aujourd'hui.",
-    toolLabel: "Comment gérez-vous vos immeubles aujourd'hui ?",
-    t1: 'Excel / Google Sheets', t2: 'Papier & classeurs',
-    t3: 'Logiciel générique', t3s: 'ex. Odoo, logiciel syndic',
-    t4: 'Autre application syndic', t4s: "Changement d'outil",
-    painLabel: 'Vos principaux points de douleur ? (sélectionnez tout ce qui s\'applique)',
-    pp1: 'Relancer les paiements en retard', pp2: 'Organiser les AG',
-    pp3: 'Chaos documentaire', pp4: 'Suivi des délais de conformité',
-    pp5: 'Communication copropriétaires', pp6: 'Rapports financiers',
-    s10t: 'Vos priorités', s10sub: 'Choisissez 2–3 fonctionnalités à mettre en avant.',
-    pr1: 'Suivi des paiements', pr1s: 'Charges, relances, encaissements',
-    pr2: 'Gestion AG & assemblées', pr2s: 'Convocations, votes, PV',
-    pr3: 'Gestion documentaire', pr3s: 'Stocker, organiser, accéder aux docs',
-    pr4: 'Suivi de conformité', pr4s: 'Certificats, inspections, délais',
-    pr5: 'Portail copropriétaires', pr5s: 'Demandes et paiements en ligne',
-    pr6: 'Rapports financiers', pr6s: "Budget et rapports d'AG",
-    s11t: 'Votre espace est prêt', s11sub: 'Voici ce que nous allons créer — et ce qu\'il reste à faire.',
-    creatingNow: 'En cours de création', doNext: 'À faire ensuite', yourPri: 'Vos priorités',
+    s10t: 'Votre espace est prêt', s10sub: "Voici ce que nous allons créer — et ce qu'il reste à faire.",
+    creatingNow: 'En cours de création', doNext: 'À faire ensuite',
     finishBtn: 'Lancer mon espace →',
     creating: 'Configuration en cours…',
-    next: 'Suivant →', back: '← Retour', skip: 'Passer pour l\'instant',
+    next: 'Suivant →', back: '← Retour', skip: "Passer pour l'instant",
   },
   nl: {
-    prepTitle: 'Voordat u begint',
-    prep: 'Deze vragenlijst duurt ongeveer 30 minuten. Zorg dat u bij de hand heeft: VME-nummer, verzekeringspolis, lijst mede-eigenaars, financiële cijfers en conformiteitscertificaten.',
-    prepReassure: 'Heeft u niet alles bij de hand? Geen zorgen — we begeleiden u stap voor stap.',
     langTitle: 'Welkom bij SyndicSage',
     langSub: 'Kies uw voorkeurstaal om te beginnen.',
-    s2t: 'Over u', s2sub: 'Laten we beginnen met wie u bent. Dit personaliseert uw werkruimte.',
-    firstname: 'Voornaam', lastname: 'Achternaam', emailLabel: 'E-mailadres', phoneLabel: 'Telefoonnummer',
-    yearsLabel: 'Jaren ervaring als syndicus',
-    y1: '< 1 jaar', y2: '1–3 jaar', y3: '4–10 jaar', y4: '10+ jaar',
-    roleLabel: 'Ik ben een…',
-    r1: 'Vrijwillige syndicus', r1s: 'Zelfbeherende VME',
-    r2: 'Professionele syndicus', r2s: 'Gebouwen beheren voor klanten',
-    volNote: 'Als vrijwillige syndicus kunt u een vergoeding ontvangen goedgekeurd door de algemene vergadering.',
+    prepTitle: 'Voordat u begint',
+    prepIntro: 'Om te starten hebt u slechts twee documenten nodig:',
+    prepDoc1: 'Basisakte',
+    prepDoc2: 'Reglement van mede-eigendom',
+    prepNotary: 'Deze documenten zijn soms gebundeld in één notariële akte. Bij de aankoop van uw appartement heeft u normaal gezien een kopie ontvangen van uw notaris.',
+    prepReassure: 'Heeft u ze nog niet? Geen zorgen — we helpen u ze te vinden zodra de setup voltooid is.',
+    s3t: 'Over u', s3sub: 'Laten we beginnen met wie u bent. Dit personaliseert uw werkruimte.',
+    firstname: 'Voornaam', lastname: 'Achternaam', phoneLabel: 'Telefoonnummer',
+    roleLabel: 'Ik ben…',
+    r1: 'Een vrijwillige syndicus', r1s: 'Zelfbeherende VME',
+    r2: 'Een professionele syndicus', r2s: 'Gebouwen beheren voor klanten',
     bcountLabel: 'Hoeveel gebouwen beheert u?',
     bc1: '1', bc1s: 'Slechts één', bc2: '2–5', bc2s: 'Klein portefeuille', bc3: '6–15', bc3s: 'Groeiend', bc4: '16+', bc4s: 'Groot portefeuille',
-    s3t: 'Uw eerste gebouw', s3sub: 'Registreer het gebouw dat u het meest beheert.',
-    bname: 'Naam gebouw *', baddr: 'Adres', bcity: 'Stad', byear: 'Bouwjaar', bfloors: 'Verdiepingen', bunits: 'Aantal kavels *',
-    s4t: 'VME & juridisch', s4sub: 'Deze gegevens vullen uw oproepingsbrieven vooraf in.',
+    s4t: 'Uw eerste gebouw', s4sub: 'Registreer het gebouw dat u beheert. U kunt er later meer toevoegen.',
+    bname: 'Naam gebouw (VME-naam) *', bnameHint: 'Gebruik de naam van de VME zoals vermeld op de basisakte.',
+    baddr: 'Adres', bpostal: 'Postcode', bcity: 'Stad', bcountry: 'Land',
+    byear: 'Bouwjaar', bfloors: 'Verdiepingen', bunits: 'Aantal kavels *',
+    s5t: 'VME & juridisch', s5sub: 'Deze gegevens vullen uw oproepingsbrieven vooraf in.',
     vmeQ: 'Heeft uw gebouw een VME-nummer (BCE / KBO)?',
     vmeYes: 'Ja — en ik heb het', vmeNo: 'Nog niet', vmeUnknown: 'Ik weet het niet / moet nakijken',
     vmeHint: 'U kunt het gratis opzoeken op syndi.be',
+    vmeNoNote: 'Geen zorgen — we helpen u met uw aanvraag voor een VME-nummer.',
     vmePH: 'BE 0123.456.789',
-    acteLabel: 'Basisakte / statuten',
+    acteLabel: 'Basisakte',
     a1: 'Ik heb het', a1s: 'Klaar om te uploaden', a1note: 'Goed — we tonen u waar u de basisakte kunt uploaden na de setup.',
     a2: 'Upload later', a2s: 'Moet het zoeken',
-    a3: 'Heb ik niet', a3s: 'Nog niet verkregen',
+    a3: 'Ik heb het niet — waar vind ik het?', a3s: 'Nog niet verkregen',
+    a3note: 'Wij helpen u uw basisakte te vinden zodra de setup voltooid is.',
     rmeLabel: 'Reglement van mede-eigendom',
     rme1: 'Ik heb het', rme1s: 'Klaar om te uploaden', rme1note: 'Goed — we tonen u waar u het reglement kunt uploaden na de setup.',
     rme2: 'Upload later', rme2s: 'Moet het zoeken',
-    rme3: 'Heb ik niet', rme3s: 'Nog niet verkregen',
+    rme3: 'Ik heb het niet — waar vind ik het?', rme3s: 'Nog niet verkregen',
+    rme3note: 'Wij helpen u uw reglement van mede-eigendom te vinden zodra de setup voltooid is.',
     mandateQ: 'Heeft u een syndicusmandaat?',
     mandateYes: 'Ja — ik heb het PV van de eerste AV',
+    mandateYesNote: 'Uitstekend — uw syndicusmandaat wordt opgeslagen in uw profiel zodra het bevestigd is.',
     mandateNo: 'Nog niet — ik moet het nog verkrijgen',
-    s5t: 'Financiën', s5sub: 'Deze cijfers voeden uw dashboard en AV-rapportsjablonen.',
+    mandateNoNote: 'Wij helpen u een syndicusmandaat te verkrijgen via uw eerste algemene vergadering, zodra de setup voltooid is.',
+    s6t: 'Financiën', s6sub: 'Deze cijfers voeden uw dashboard en AV-rapportsjablonen.',
     bankQ: 'Heeft de VME een bankrekening?',
     bankYes: 'Ja', bankUnsure: 'Niet zeker / moet nakijken', bankNo: 'Nee — nog niet geopend',
+    bankNoNote: 'Wij helpen u een bankrekening aan te maken voor uw VME zodra de setup voltooid is.',
     bankIban: 'IBAN VME-bankrekening', bankName: 'Naam bank',
     bankTip: "Belgische wet verplicht elke VME een bankrekening op eigen naam. Opties: BNP Paribas Fortis (~€10/kwartaal), Argenta (gratis voor VME's).",
-    s6t: 'Verzekeringen', s6sub: 'Laten we de verzekeringsgegevens van uw VME vastleggen.',
+    s7t: 'Verzekeringen', s7sub: 'Laten we de verzekeringsgegevens van uw VME vastleggen.',
     insQ: 'Heeft de VME een brandverzekering?',
     insYes: 'Ja — actieve polis', insNo: 'Nog niet / onzeker',
+    insYesNote: 'Uitstekend — we tonen u waar u de verzekeringspolis kunt uploaden zodra de setup voltooid is.',
     insurer: 'Verzekeringsmaatschappij', policyNo: 'Polisnummer', insRenewal: 'Verlengingsdatum',
     insTip: 'Aansprakelijkheidsverzekering is wettelijk verplicht voor de syndicus (art. 577-9 BW). Brandverzekering is sterk aanbevolen.',
-    s7t: 'Mede-eigenaars', s7sub: 'Dit helpt ons het portaal en betalingsbeheer in te stellen.',
-    ownerCount: 'Ongeveer aantal mede-eigenaars',
+    s8t: 'Mede-eigenaars', s8sub: 'Dit helpt ons het portaal en betalingsbeheer in te stellen.',
     ownerInfoLabel: 'Hoe volledig is uw contactlijst?',
     oi1: 'Volledig', oi1s: 'Namen, e-mails & kavels klaar',
     oi2: 'Gedeeltelijk', oi2s: 'Sommige info ontbreekt',
@@ -300,7 +286,7 @@ const T = {
     portalQ: 'Mede-eigenaarportaal activeren?',
     p1: 'Ja, onmiddellijk', p1s: 'Eigenaars kunnen direct inloggen',
     p2: 'Later', p2s: 'Ik stel het in wanneer klaar',
-    s8t: 'Conformiteitslijst', s8sub: 'Selecteer welke keuringen en certificaten u in dossier heeft.',
+    s9t: 'Conformiteitslijst', s9sub: 'Selecteer welke keuringen en certificaten u in dossier heeft.',
     c1: 'Elektrische keuring (AREI)', c1s: 'Vereist om de 25 jaar',
     c2: 'Liftkeuring', c2s: 'Jaarlijkse verplichte keuring',
     c3: 'Brandbeveiligingskeuring', c3s: 'Rookmelders, blusapparaten, vluchtwegen',
@@ -308,24 +294,8 @@ const T = {
     c5: 'Gas / verwarmingskeuring', c5s: 'Ketel & gasinstallatie certificaat',
     c6: 'Energieprestatiecertificaat (EPC)', c6s: 'Voor gemeenschappelijke delen',
     c7: 'Niets in dossier', c7s: 'Ik voeg toe naarmate ik verzamel',
-    s9t: 'Uw huidige werkwijze', s9sub: 'Help ons begrijpen hoe u vandaag beheert.',
-    toolLabel: 'Hoe beheert u uw gebouwen vandaag?',
-    t1: 'Excel / Google Sheets', t2: 'Papier & ordners',
-    t3: 'Generieke software', t3s: 'bijv. Odoo, syndicussoftware',
-    t4: 'Andere syndicus-app', t4s: 'Overstap van een tool',
-    painLabel: 'Uw grootste pijnpunten? (selecteer alles wat van toepassing is)',
-    pp1: 'Achterstallige betalingen opvolgen', pp2: 'AV-vergaderingen organiseren',
-    pp3: 'Documentenchaos', pp4: 'Conformiteitsdeadlines bijhouden',
-    pp5: 'Communicatie mede-eigenaars', pp6: 'Financiële rapportage',
-    s10t: 'Uw prioriteiten', s10sub: 'Kies 2–3 functies om te markeren op uw dashboard.',
-    pr1: 'Betalingsbeheer', pr1s: 'Bijdragen, herinneringen, inning',
-    pr2: 'AV & vergaderbeheer', pr2s: 'Oproepingen, stemming, notulen',
-    pr3: 'Documentbeheer', pr3s: 'Opslaan, organiseren en raadplegen',
-    pr4: 'Conformiteitsopvolging', pr4s: 'Certificaten, keuringen, deadlines',
-    pr5: 'Mede-eigenaarportaal', pr5s: 'Zelfbedieningsverzoeken & online betalingen',
-    pr6: 'Financiële rapportage', pr6s: 'Budget en financiële AV-rapporten',
-    s11t: 'Uw werkruimte is klaar', s11sub: 'Dit is wat we aanmaken — en wat u daarna kunt aanpakken.',
-    creatingNow: 'Nu aanmaken', doNext: 'Vervolgens te doen', yourPri: 'Uw prioriteiten',
+    s10t: 'Uw werkruimte is klaar', s10sub: 'Dit is wat we aanmaken — en wat u daarna kunt aanpakken.',
+    creatingNow: 'Nu aanmaken', doNext: 'Vervolgens te doen',
     finishBtn: 'Mijn werkruimte starten →',
     creating: 'Werkruimte instellen…',
     next: 'Volgende →', back: '← Terug', skip: 'Nu overslaan',
@@ -416,6 +386,21 @@ const css = {
     padding:    '10px 12px',
     marginTop:  8,
   } as React.CSSProperties,
+  infoNote: {
+    fontSize:   12,
+    color:      '#92400E',
+    background: 'rgba(245,158,11,0.07)',
+    border:     '1px solid rgba(245,158,11,0.25)',
+    borderRadius: 8,
+    padding:    '10px 12px',
+    marginTop:  8,
+  } as React.CSSProperties,
+  hint: {
+    fontSize:   11,
+    color:      '#6E6E73',
+    marginTop:  4,
+    lineHeight: 1.5,
+  } as React.CSSProperties,
 }
 
 // ── Main component ────────────────────────────────────────────
@@ -434,7 +419,7 @@ export default function OnboardingPage() {
     setOb(prev => ({ ...prev, [key]: val }))
   }
 
-  function toggleArr(key: 'compliance' | 'painPoints' | 'priorities', val: string) {
+  function toggleArr(key: 'compliance', val: string) {
     setOb(prev => {
       const arr = prev[key] as string[]
       return { ...prev, [key]: arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val] }
@@ -442,16 +427,15 @@ export default function OnboardingPage() {
   }
 
   function canNext(): boolean {
-    if (step === 3) {
+    if (step === 4) {
       const nameOk  = ob.bName.trim().length > 0 && ob.bName.trim().length <= 100
       const cityOk  = ob.bCity.trim().length > 0 && ob.bCity.trim().length <= 100
       const unitsOk = !!ob.bUnits.trim()
       return nameOk && cityOk && unitsOk
     }
-    if (step === 5 && ob.hasBankAccount === 'yes' && ob.bankIban.trim()) {
+    if (step === 6 && ob.hasBankAccount === 'yes' && ob.bankIban.trim()) {
       const iban = ob.bankIban.replace(/\s/g, '').toUpperCase()
-      const ibanOk = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/.test(iban)
-      return ibanOk
+      return /^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/.test(iban)
     }
     return true
   }
@@ -479,12 +463,13 @@ export default function OnboardingPage() {
       if (profileErr) throw new Error(profileErr.message)
 
       // 3. Building
+      const addressLine = [ob.bAddress.trim(), ob.bPostal.trim()].filter(Boolean).join(', ')
       const { data: building, error: buildingErr } = await supabase
         .from('buildings')
         .insert({
           organization_id: org.id,
           name:            ob.bName.trim(),
-          address:         ob.bAddress.trim() || 'TBD',
+          address:         addressLine || 'TBD',
           city:            ob.bCity.trim(),
           unit_count:      (() => { const n = parseInt(ob.bUnits, 10); return isNaN(n) ? 1 : n })(),
         })
@@ -504,14 +489,10 @@ export default function OnboardingPage() {
         data: {
           ob_lang:           ob.lang,
           ob_role:           ob.role,
-          ob_years_exp:      ob.yearsExp,
           ob_building_count: ob.buildingCount,
           ob_has_acte:       ob.hasActe,
           ob_has_rme:        ob.hasRME,
           ob_wants_portal:   ob.wantsPortal,
-          ob_current_tool:   ob.currentTool,
-          ob_pain_points:    ob.painPoints.join(','),
-          ob_priorities:     ob.priorities.join(','),
           onboarding_complete: true,
         },
       })
@@ -562,7 +543,7 @@ export default function OnboardingPage() {
             })}
           </nav>
 
-          {/* Progress + security note */}
+          {/* Progress */}
           <div style={{ padding: '16px 20px 0', borderTop: '1px solid rgba(60,60,67,0.08)' }}>
             <div style={{ height: 4, background: 'rgba(60,60,67,0.10)', borderRadius: 2, marginBottom: 8, overflow: 'hidden' }}>
               <div style={{ height: '100%', background: '#1E3A5F', borderRadius: 2, width: `${Math.round(((step - 1) / (TOTAL_STEPS - 1)) * 100)}%`, transition: 'width 0.3s ease' }} />
@@ -584,16 +565,6 @@ export default function OnboardingPage() {
                   {v.langTitle.replace('SyndicSage', '')}Syndic<span style={{ color: '#F59E0B' }}>Sage</span>
                 </h2>
                 <p style={css.sub}>{v.langSub}</p>
-
-                {/* Warning notice */}
-                <div style={{ border: '1.5px solid rgba(245,158,11,0.35)', background: 'rgba(245,158,11,0.06)', borderRadius: 10, padding: '14px 16px', marginBottom: 20 }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
-                    {v.prepTitle}
-                  </div>
-                  <p style={{ fontSize: 12, color: '#78350F', lineHeight: 1.6, margin: '0 0 6px' }}>{v.prep}</p>
-                  <p style={{ fontSize: 12, color: '#92400E', margin: 0 }}>{v.prepReassure}</p>
-                </div>
-
                 <div style={css.grid3}>
                   {(['en', 'fr', 'nl'] as Lang[]).map(lang => (
                     <div key={lang} onClick={() => set('lang', lang)} style={{ ...css.card(ob.lang === lang), textAlign: 'center', padding: '16px 12px' }}>
@@ -605,28 +576,39 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* STEP 2 — About you */}
+            {/* STEP 2 — Before you begin */}
             {step === 2 && (
               <div>
-                <h2 style={css.title}>{v.s2t}</h2>
-                <p style={css.sub}>{v.s2sub}</p>
+                <h2 style={css.title}>{v.prepTitle}</h2>
+                <p style={css.sub}>{v.prepIntro}</p>
+                <div style={{ marginBottom: 16 }}>
+                  {[v.prepDoc1, v.prepDoc2].map(doc => (
+                    <div key={doc} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'rgba(30,58,95,0.04)', border: '1px solid rgba(30,58,95,0.10)', borderRadius: 8, marginBottom: 8 }}>
+                      <span style={{ fontSize: 16 }}>📄</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: '#1E3A5F' }}>{doc}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ ...css.tip, marginTop: 0 }}>
+                  {v.prepNotary}
+                </div>
+                <p style={{ fontSize: 12, color: '#6E6E73', marginTop: 12, lineHeight: 1.6 }}>{v.prepReassure}</p>
+              </div>
+            )}
+
+            {/* STEP 3 — About you */}
+            {step === 3 && (
+              <div>
+                <h2 style={css.title}>{v.s3t}</h2>
+                <p style={css.sub}>{v.s3sub}</p>
                 <div style={{ ...css.grid2, marginBottom: 12 }}>
                   <Field label={v.firstname}><input style={css.input} value={ob.firstName} onChange={e => set('firstName', e.target.value)} placeholder="Jean" autoFocus /></Field>
                   <Field label={v.lastname}><input style={css.input} value={ob.lastName} onChange={e => set('lastName', e.target.value)} placeholder="Dupont" /></Field>
                 </div>
-                <div style={{ marginBottom: 12 }}>
+                <div style={{ marginBottom: 14 }}>
                   <Field label={v.phoneLabel}><input style={css.input} value={ob.phone} onChange={e => set('phone', e.target.value)} placeholder="+32 470 00 00 00" type="tel" /></Field>
                 </div>
-                <Field label={v.yearsLabel}>
-                  <div style={{ ...css.grid2, marginTop: 6 }}>
-                    {([['lt1', v.y1], ['1to3', v.y2], ['4to10', v.y3], ['10plus', v.y4]] as [string, string][]).map(([val, label]) => (
-                      <div key={val} onClick={() => set('yearsExp', val)} style={css.card(ob.yearsExp === val)}>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: '#1E3A5F' }}>{label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </Field>
-                <Field label={v.roleLabel} style={{ marginTop: 14 }}>
+                <Field label={v.roleLabel}>
                   <div style={{ ...css.grid2, marginTop: 6 }}>
                     {([['non_professional', v.r1, v.r1s], ['professional', v.r2, v.r2s]] as [string, string, string][]).map(([val, title, sub]) => (
                       <div key={val} onClick={() => set('role', val)} style={css.card(ob.role === val)}>
@@ -636,7 +618,6 @@ export default function OnboardingPage() {
                     ))}
                   </div>
                 </Field>
-                {ob.role === 'non_professional' && <div style={css.tip}>{v.volNote}</div>}
                 {ob.role === 'professional' && (
                   <Field label={v.bcountLabel} style={{ marginTop: 14 }}>
                     <div style={{ ...css.grid2, marginTop: 6 }}>
@@ -652,14 +633,23 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* STEP 3 — First building */}
-            {step === 3 && (
+            {/* STEP 4 — First building */}
+            {step === 4 && (
               <div>
-                <h2 style={css.title}>{v.s3t}</h2>
-                <p style={css.sub}>{v.s3sub}</p>
-                <Field label={v.bname} style={{ marginBottom: 12 }}><input style={css.input} value={ob.bName} onChange={e => set('bName', e.target.value)} placeholder="Résidence du Parc" autoFocus /></Field>
-                <Field label={v.baddr} style={{ marginBottom: 12 }}><input style={css.input} value={ob.bAddress} onChange={e => set('bAddress', e.target.value)} placeholder="Rue de la Loi 1" /></Field>
-                <Field label={v.bcity} style={{ marginBottom: 12 }}><input style={css.input} value={ob.bCity} onChange={e => set('bCity', e.target.value)} placeholder="Bruxelles" /></Field>
+                <h2 style={css.title}>{v.s4t}</h2>
+                <p style={css.sub}>{v.s4sub}</p>
+                <Field label={v.bname} style={{ marginBottom: 12 }}>
+                  <input style={css.input} value={ob.bName} onChange={e => set('bName', e.target.value)} placeholder="Résidence du Parc" autoFocus />
+                  <p style={css.hint}>{v.bnameHint}</p>
+                </Field>
+                <Field label={v.baddr} style={{ marginBottom: 12 }}>
+                  <input style={css.input} value={ob.bAddress} onChange={e => set('bAddress', e.target.value)} placeholder="Rue de la Loi 1" />
+                </Field>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: 12, marginBottom: 12 }}>
+                  <Field label={v.bpostal}><input style={css.input} value={ob.bPostal} onChange={e => set('bPostal', e.target.value)} placeholder="1000" /></Field>
+                  <Field label={v.bcity}><input style={css.input} value={ob.bCity} onChange={e => set('bCity', e.target.value)} placeholder="Bruxelles" /></Field>
+                  <Field label={v.bcountry}><input style={css.input} value={ob.bCountry} onChange={e => set('bCountry', e.target.value)} placeholder="Belgium" /></Field>
+                </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
                   <Field label={v.byear}><input style={css.input} value={ob.bYear} onChange={e => set('bYear', e.target.value)} placeholder="1985" type="number" /></Field>
                   <Field label={v.bfloors}><input style={css.input} value={ob.bFloors} onChange={e => set('bFloors', e.target.value)} placeholder="6" type="number" /></Field>
@@ -668,11 +658,11 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* STEP 4 — VME & legal */}
-            {step === 4 && (
+            {/* STEP 5 — VME & legal */}
+            {step === 5 && (
               <div>
-                <h2 style={css.title}>{v.s4t}</h2>
-                <p style={css.sub}>{v.s4sub}</p>
+                <h2 style={css.title}>{v.s5t}</h2>
+                <p style={css.sub}>{v.s5sub}</p>
                 <Field label={v.vmeQ} style={{ marginBottom: 14 }}>
                   <div style={{ ...css.grid3, marginTop: 6 }}>
                     {([['yes', v.vmeYes], ['no', v.vmeNo], ['unknown', v.vmeUnknown]] as [string, string][]).map(([val, label]) => (
@@ -683,6 +673,7 @@ export default function OnboardingPage() {
                   </div>
                   {ob.hasVme === 'yes' && <input style={{ ...css.input, marginTop: 8 }} value={ob.vmeNumber} onChange={e => set('vmeNumber', e.target.value)} placeholder={v.vmePH} />}
                   {ob.hasVme === 'unknown' && <div style={css.tip}>{v.vmeHint} — <a href="https://syndi.be" target="_blank" rel="noopener" style={{ color: '#1E3A5F', fontWeight: 600 }}>syndi.be</a></div>}
+                  {ob.hasVme === 'no' && <div style={css.infoNote}>{v.vmeNoNote}</div>}
                 </Field>
                 <Field label={v.acteLabel} style={{ marginBottom: 14 }}>
                   <div style={{ ...css.grid3, marginTop: 6 }}>
@@ -694,6 +685,7 @@ export default function OnboardingPage() {
                     ))}
                   </div>
                   {ob.hasActe === 'yes' && <div style={css.successNote}>{v.a1note}</div>}
+                  {ob.hasActe === 'no' && <div style={css.infoNote}>{v.a3note}</div>}
                 </Field>
                 <Field label={v.rmeLabel} style={{ marginBottom: 14 }}>
                   <div style={{ ...css.grid3, marginTop: 6 }}>
@@ -705,6 +697,7 @@ export default function OnboardingPage() {
                     ))}
                   </div>
                   {ob.hasRME === 'yes' && <div style={css.successNote}>{v.rme1note}</div>}
+                  {ob.hasRME === 'no' && <div style={css.infoNote}>{v.rme3note}</div>}
                 </Field>
                 <Field label={v.mandateQ}>
                   <div style={{ ...css.grid2, marginTop: 6 }}>
@@ -714,15 +707,17 @@ export default function OnboardingPage() {
                       </div>
                     ))}
                   </div>
+                  {ob.hasMandate === 'yes' && <div style={css.successNote}>{v.mandateYesNote}</div>}
+                  {ob.hasMandate === 'no' && <div style={css.infoNote}>{v.mandateNoNote}</div>}
                 </Field>
               </div>
             )}
 
-            {/* STEP 5 — Financials */}
-            {step === 5 && (
+            {/* STEP 6 — Financials */}
+            {step === 6 && (
               <div>
-                <h2 style={css.title}>{v.s5t}</h2>
-                <p style={css.sub}>{v.s5sub}</p>
+                <h2 style={css.title}>{v.s6t}</h2>
+                <p style={css.sub}>{v.s6sub}</p>
                 <Field label={v.bankQ} style={{ marginBottom: 14 }}>
                   <div style={{ ...css.grid3, marginTop: 6 }}>
                     {([['yes', v.bankYes], ['unsure', v.bankUnsure], ['no', v.bankNo]] as [string, string][]).map(([val, label]) => (
@@ -731,6 +726,7 @@ export default function OnboardingPage() {
                       </div>
                     ))}
                   </div>
+                  {ob.hasBankAccount === 'no' && <div style={css.infoNote}>{v.bankNoNote}</div>}
                 </Field>
                 {ob.hasBankAccount === 'yes' && (
                   <>
@@ -743,15 +739,15 @@ export default function OnboardingPage() {
                     </Field>
                   </>
                 )}
-                {(ob.hasBankAccount === 'unsure' || ob.hasBankAccount === 'no') && <div style={css.tip}>{v.bankTip}</div>}
+                {ob.hasBankAccount === 'unsure' && <div style={css.tip}>{v.bankTip}</div>}
               </div>
             )}
 
-            {/* STEP 6 — Insurance */}
-            {step === 6 && (
+            {/* STEP 7 — Insurance */}
+            {step === 7 && (
               <div>
-                <h2 style={css.title}>{v.s6t}</h2>
-                <p style={css.sub}>{v.s6sub}</p>
+                <h2 style={css.title}>{v.s7t}</h2>
+                <p style={css.sub}>{v.s7sub}</p>
                 <Field label={v.insQ} style={{ marginBottom: 14 }}>
                   <div style={{ ...css.grid2, marginTop: 6 }}>
                     {([['yes', v.insYes], ['no', v.insNo]] as [string, string][]).map(([val, label]) => (
@@ -760,6 +756,7 @@ export default function OnboardingPage() {
                       </div>
                     ))}
                   </div>
+                  {ob.hasInsurance === 'yes' && <div style={css.successNote}>{v.insYesNote}</div>}
                 </Field>
                 {ob.hasInsurance === 'yes' && (
                   <>
@@ -774,12 +771,11 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* STEP 7 — Co-owners */}
-            {step === 7 && (
+            {/* STEP 8 — Co-owners */}
+            {step === 8 && (
               <div>
-                <h2 style={css.title}>{v.s7t}</h2>
-                <p style={css.sub}>{v.s7sub}</p>
-                <Field label={v.ownerCount} style={{ marginBottom: 14 }}><input style={{ ...css.input, maxWidth: 160 }} value={ob.ownerCount} onChange={e => set('ownerCount', e.target.value)} placeholder="12" type="number" autoFocus /></Field>
+                <h2 style={css.title}>{v.s8t}</h2>
+                <p style={css.sub}>{v.s8sub}</p>
                 <Field label={v.ownerInfoLabel} style={{ marginBottom: 14 }}>
                   <div style={{ ...css.grid3, marginTop: 6 }}>
                     {([['yes', v.oi1, v.oi1s], ['partial', v.oi2, v.oi2s], ['no', v.oi3, v.oi3s]] as [string, string, string][]).map(([val, title, sub]) => (
@@ -803,11 +799,11 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* STEP 8 — Compliance */}
-            {step === 8 && (
+            {/* STEP 9 — Compliance */}
+            {step === 9 && (
               <div>
-                <h2 style={css.title}>{v.s8t}</h2>
-                <p style={css.sub}>{v.s8sub}</p>
+                <h2 style={css.title}>{v.s9t}</h2>
+                <p style={css.sub}>{v.s9sub}</p>
                 {([['electrical', v.c1, v.c1s], ['elevator', v.c2, v.c2s], ['fire', v.c3, v.c3s], ['asbestos', v.c4, v.c4s], ['gas', v.c5, v.c5s], ['epc', v.c6, v.c6s], ['none', v.c7, v.c7s]] as [string, string, string][]).map(([val, title, sub]) => (
                   <div key={val} onClick={() => toggleArr('compliance', val)} style={css.checkCard(ob.compliance.includes(val))}>
                     <div style={{ width: 18, height: 18, borderRadius: 4, border: `2px solid ${ob.compliance.includes(val) ? '#1E3A5F' : 'rgba(60,60,67,0.3)'}`, background: ob.compliance.includes(val) ? '#1E3A5F' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -822,60 +818,12 @@ export default function OnboardingPage() {
               </div>
             )}
 
-            {/* STEP 9 — Workflow */}
-            {step === 9 && (
-              <div>
-                <h2 style={css.title}>{v.s9t}</h2>
-                <p style={css.sub}>{v.s9sub}</p>
-                <Field label={v.toolLabel} style={{ marginBottom: 16 }}>
-                  <div style={{ ...css.grid2, marginTop: 6 }}>
-                    {([['excel', v.t1], ['paper', v.t2], ['generic', v.t3, v.t3s], ['other', v.t4, v.t4s]] as [string, string, string?][]).map(([val, title, sub]) => (
-                      <div key={val} onClick={() => set('currentTool', val)} style={css.card(ob.currentTool === val)}>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: '#1E3A5F' }}>{title}</div>
-                        {sub && <div style={{ fontSize: 11, color: '#6E6E73', marginTop: 2 }}>{sub}</div>}
-                      </div>
-                    ))}
-                  </div>
-                </Field>
-                <Field label={v.painLabel}>
-                  {([['payments', v.pp1], ['ag', v.pp2], ['docs', v.pp3], ['compliance', v.pp4], ['comms', v.pp5], ['reporting', v.pp6]] as [string, string][]).map(([val, label]) => (
-                    <div key={val} onClick={() => toggleArr('painPoints', val)} style={css.checkCard(ob.painPoints.includes(val))}>
-                      <div style={{ width: 18, height: 18, borderRadius: 4, border: `2px solid ${ob.painPoints.includes(val) ? '#1E3A5F' : 'rgba(60,60,67,0.3)'}`, background: ob.painPoints.includes(val) ? '#1E3A5F' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        {ob.painPoints.includes(val) && <span style={{ color: '#fff', fontSize: 10 }}>✓</span>}
-                      </div>
-                      <span style={{ fontSize: 13, color: '#1E3A5F' }}>{label}</span>
-                    </div>
-                  ))}
-                </Field>
-              </div>
-            )}
-
-            {/* STEP 10 — Priorities */}
+            {/* STEP 10 — Summary */}
             {step === 10 && (
               <div>
                 <h2 style={css.title}>{v.s10t}</h2>
                 <p style={css.sub}>{v.s10sub}</p>
-                {([['payments', v.pr1, v.pr1s], ['ag', v.pr2, v.pr2s], ['documents', v.pr3, v.pr3s], ['compliance', v.pr4, v.pr4s], ['portal', v.pr5, v.pr5s], ['reporting', v.pr6, v.pr6s]] as [string, string, string][]).map(([val, title, sub]) => (
-                  <div key={val} onClick={() => toggleArr('priorities', val)} style={css.checkCard(ob.priorities.includes(val))}>
-                    <div style={{ width: 18, height: 18, borderRadius: 4, border: `2px solid ${ob.priorities.includes(val) ? '#F59E0B' : 'rgba(60,60,67,0.3)'}`, background: ob.priorities.includes(val) ? '#F59E0B' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {ob.priorities.includes(val) && <span style={{ color: '#fff', fontSize: 10 }}>✓</span>}
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#1E3A5F' }}>{title}</div>
-                      <div style={{ fontSize: 11, color: '#6E6E73', marginTop: 1 }}>{sub}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* STEP 11 — Summary */}
-            {step === 11 && (
-              <div>
-                <h2 style={css.title}>{v.s11t}</h2>
-                <p style={css.sub}>{v.s11sub}</p>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   <div style={{ background: '#F0F7FF', border: '1px solid rgba(30,58,95,0.12)', borderRadius: 10, padding: 16 }}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: '#1E3A5F', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>{v.creatingNow}</div>
                     {[`👤 ${ob.firstName || 'Your'} profile`, `🏢 ${ob.bName || 'Your building'}`, '🔑 Syndic access', '📊 Dashboard'].map(item => (
@@ -886,24 +834,11 @@ export default function OnboardingPage() {
                   </div>
                   <div style={{ background: 'rgba(245,158,11,0.05)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 10, padding: 16 }}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>{v.doNext}</div>
-                    {[ob.hasActe !== 'yes' && '📄 Upload acte de base', ob.hasRME !== 'yes' && '📋 Upload RME', ob.hasBankAccount !== 'yes' && '🏦 Add VME bank account', '👥 Add co-owners'].filter(Boolean).slice(0, 4).map(item => (
+                    {[ob.hasActe !== 'yes' && '📄 Upload basic deed', ob.hasRME !== 'yes' && '📋 Upload joint ownership regulations', ob.hasBankAccount !== 'yes' && '🏦 Add VME bank account', '👥 Add co-owners'].filter(Boolean).slice(0, 4).map(item => (
                       <div key={String(item)} style={{ fontSize: 12, color: '#92400E', marginBottom: 6 }}>→ {item}</div>
                     ))}
                   </div>
                 </div>
-
-                {ob.priorities.length > 0 && (
-                  <div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: '#1E3A5F', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>{v.yourPri}</div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                      {ob.priorities.map(p => (
-                        <span key={p} style={{ fontSize: 12, fontWeight: 600, color: '#1E3A5F', background: 'rgba(30,58,95,0.08)', padding: '4px 10px', borderRadius: 20 }}>
-                          {p === 'payments' ? v.pr1 : p === 'ag' ? v.pr2 : p === 'documents' ? v.pr3 : p === 'compliance' ? v.pr4 : p === 'portal' ? v.pr5 : v.pr6}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 
@@ -919,7 +854,7 @@ export default function OnboardingPage() {
               )}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              {step < TOTAL_STEPS && step > 1 && (
+              {step < TOTAL_STEPS && step > 2 && (
                 <button onClick={() => setStep(s => s + 1)} style={{ background: 'none', border: 'none', color: '#6E6E73', fontSize: 12, cursor: 'pointer' }}>
                   {v.skip}
                 </button>
