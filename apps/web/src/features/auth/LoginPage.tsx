@@ -117,21 +117,32 @@ export default function LoginPage() {
 
   return (
     <div style={{
-      minHeight:      '100vh',
-      background:     '#F2F2F7',
-      display:        'flex',
-      alignItems:     'center',
-      justifyContent: 'center',
-      padding:        '24px 16px',
-      fontFamily:     "'Inter', -apple-system, sans-serif",
+      minHeight:           '100vh',
+      backgroundImage:     'url(https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80)',
+      backgroundSize:      'cover',
+      backgroundPosition:  'center',
+      display:             'flex',
+      alignItems:          'center',
+      justifyContent:      'center',
+      padding:             '24px 16px',
+      fontFamily:          "'Inter', -apple-system, sans-serif",
+      position:            'relative' as const,
     }}>
+      {/* Dark overlay */}
       <div style={{
+        position:   'absolute',
+        inset:      0,
+        background: 'linear-gradient(135deg, rgba(15,30,55,0.72) 0%, rgba(30,58,95,0.60) 100%)',
+      }} />
+      <div style={{
+        position:     'relative' as const,
+        zIndex:       1,
         width:        '100%',
         maxWidth:     400,
-        background:   '#FFFFFF',
-        borderRadius: 12,
-        border:       '1px solid rgba(60,60,67,0.10)',
-        boxShadow:    '0 2px 12px rgba(0,0,0,0.06)',
+        background:   'rgba(255,255,255,0.97)',
+        borderRadius: 14,
+        border:       '1px solid rgba(255,255,255,0.3)',
+        boxShadow:    '0 8px 40px rgba(0,0,0,0.28)',
         padding:      '40px 36px',
       }}>
 
