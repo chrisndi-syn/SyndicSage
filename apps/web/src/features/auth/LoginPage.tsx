@@ -117,60 +117,38 @@ export default function LoginPage() {
 
   return (
     <div style={{
-      minHeight:  '100vh',
-      display:    'flex',
-      fontFamily: "'Inter', -apple-system, sans-serif",
+      minHeight:          '100vh',
+      display:            'flex',
+      alignItems:         'center',
+      justifyContent:     'center',
+      fontFamily:         "'Inter', -apple-system, sans-serif",
+      backgroundImage:    'url(https://images.unsplash.com/photo-1754444215892-b50d00eedf41?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)',
+      backgroundSize:     'cover',
+      backgroundPosition: 'center',
+      position:           'relative' as const,
     }}>
-
-      {/* ── LEFT — photo panel ──────────────────────────── */}
+      {/* Dark overlay */}
       <div style={{
-        flex:               '1 1 55%',
-        backgroundImage:    'url(https://images.unsplash.com/photo-1594811815859-c354d5afc3dc?q=80&w=1740&auto=format&fit=crop)',
-        backgroundSize:     'cover',
-        backgroundPosition: 'center',
-        position:           'relative' as const,
-        display:            'flex',
-        flexDirection:      'column',
-        justifyContent:     'flex-end',
-        padding:            '48px',
-      }}>
-        {/* Gradient overlay — heavier at bottom for text legibility */}
-        <div style={{
-          position:   'absolute',
-          inset:      0,
-          background: 'linear-gradient(to bottom, rgba(15,30,55,0.25) 0%, rgba(15,30,55,0.75) 100%)',
-        }} />
-        {/* Branding */}
-        <div style={{ position: 'relative' as const, zIndex: 1 }}>
-          <h1 style={{
-            fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize:   42,
-            fontWeight: 700,
-            color:      '#FFFFFF',
-            margin:     '0 0 12px',
-            lineHeight: 1.1,
-          }}>
-            Syndic<span style={{ color: '#F59E0B' }}>Sage</span>
-          </h1>
-          <p style={{ color: 'rgba(255,255,255,0.80)', fontSize: 15, margin: 0, lineHeight: 1.6, maxWidth: 340 }}>
-            {t('auth.tagline')}
-          </p>
-        </div>
-      </div>
+        position:   'absolute',
+        inset:      0,
+        background: 'rgba(15,30,55,0.55)',
+      }} />
 
-      {/* ── RIGHT — login panel ─────────────────────────── */}
+      {/* ── Centered login card ─────────────────────────── */}
       <div style={{
-        flex:           '0 0 420px',
-        background:     '#FFFFFF',
-        display:        'flex',
-        alignItems:     'center',
-        justifyContent: 'center',
-        padding:        '48px 40px',
-        boxShadow:      '-4px 0 24px rgba(0,0,0,0.08)',
+        position:     'relative' as const,
+        zIndex:       1,
+        width:        '100%',
+        maxWidth:     400,
+        margin:       '24px',
+        background:   '#FFFFFF',
+        borderRadius: 16,
+        padding:      '40px 36px',
+        boxShadow:    '0 24px 64px rgba(0,0,0,0.30)',
       }}>
-        <div style={{ width: '100%', maxWidth: 340 }}>
+        <div style={{ width: '100%' }}>
 
-        {/* Logo (small, top of form) */}
+        {/* Logo */}
         <div style={{ marginBottom: 32 }}>
           <h2 style={{
             fontFamily: "'Cormorant Garamond', Georgia, serif",
