@@ -513,7 +513,10 @@
     "suggestCode": "AI boekhoudcode laten voorstellen",
     "confidence": "zekerheid",
     "accept": "Toepassen",
-    "disclaimer": "Alleen AI-suggestie — gelieve te verifiëren"
+    "disclaimer": "Alleen AI-suggestie — gelieve te verifiëren",
+    "draftReminder": "Herinnering opstellen",
+    "findContractor": "Aannemer zoeken",
+    "generateAgenda": "Agenda genereren"
   },
   "inbox": {
     "title": "Meldingen",

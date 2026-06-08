@@ -2,18 +2,20 @@
 
 import { useState }       from 'react'
 import { useTranslation } from 'react-i18next'
-import { CreditCard }     from 'lucide-react'
+import { CreditCard, Sparkles } from 'lucide-react'
 import { Shell }          from '../../components/layout/Shell'
 import { Topbar }         from '../../components/layout/Topbar'
 import { useBuilding }    from '../../shared/building/BuildingContext'
 import { useCharges, useMarkPaid, useDeleteCharge } from './useCharges'
 import { ChargeModal }    from './ChargeModal'
 import { useOwners }      from '../owners/useOwners'
+import { useAiSage }      from '../ai/AiSageContext'
 import type { ChargeWithOwner, StatusFilter } from './charges.api'
 
 export default function ChargesPage() {
   const { t } = useTranslation()
   const { selected: building } = useBuilding()
+  const { openWithPrompt } = useAiSage()
   const [filter, setFilter] = useState<StatusFilter>('all')
 
   const { data: charges = [], isLoading, error } = useCharges(building?.id, filter)
@@ -125,6 +127,16 @@ export default function ChargesPage() {
                     onMarkPaid={() => markPaid.mutate(charge.id)}
                     onDelete={() => setConfirmDelete(charge)}
                     isMarkingPaid={markPaid.isPending && markPaid.variables === charge.id}
+                    onAskAi={() => {
+                      const owner  = charge.owners ? `${charge.owners.full_name} (unit ${charge.owners.units.unit_number})` : 'the co-owner'
+                      const due    = new Date(charge.due_date).toLocaleDateString('fr-BE', { day: 'numeric', month: 'long', year: 'numeric' })
+                      openWithPrompt(
+                        `Draft a polite but firm payment reminder letter in French for co-owner ${owner}. ` +
+                        `They have an outstanding charge of €${charge.amount.toFixed(2)} for "${charge.title}", ` +
+                        `due on ${due}. Building: ${building?.name ?? ''}. ` +
+                        `Keep it professional and reference Belgian VME law if appropriate.`
+                      )
+                    }}
                     t={t}
                   />
                 ))}
@@ -167,12 +179,13 @@ const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   overdue: { bg: '#FEE2E2', color: '#991B1B' },
 }
 
-function ChargeRow({ charge, isLast, onEdit, onMarkPaid, onDelete, isMarkingPaid, t }: {
+function ChargeRow({ charge, isLast, onEdit, onMarkPaid, onDelete, onAskAi, isMarkingPaid, t }: {
   charge:        ChargeWithOwner
   isLast:        boolean
   onEdit:        () => void
   onMarkPaid:    () => void
   onDelete:      () => void
+  onAskAi:       () => void
   isMarkingPaid: boolean
   t:             (key: string) => string
 }) {
@@ -221,6 +234,21 @@ function ChargeRow({ charge, isLast, onEdit, onMarkPaid, onDelete, isMarkingPaid
               label={isMarkingPaid ? '…' : t('charges.markPaid')}
               primary
             />
+          )}
+          {charge.status !== 'paid' && (
+            <button
+              onClick={onAskAi}
+              title={t('ai.draftReminder')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 4,
+                padding: '4px 8px', borderRadius: 5, border: '1px solid rgba(245,158,11,0.35)',
+                background: 'rgba(245,158,11,0.08)', color: '#B45309',
+                fontSize: 12, cursor: 'pointer', whiteSpace: 'nowrap',
+              }}
+            >
+              <Sparkles size={11} />
+              {t('ai.draftReminder')}
+            </button>
           )}
           <SmallBtn onClick={onEdit}   label={t('common.edit')} />
           <SmallBtn onClick={onDelete} label={t('common.delete')} danger />

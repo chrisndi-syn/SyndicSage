@@ -3,10 +3,11 @@
 
 import { useState }       from 'react'
 import { useTranslation } from 'react-i18next'
-import { Wrench, Plus, X, CheckCheck, Pencil, Trash2 } from 'lucide-react'
+import { Wrench, Plus, X, CheckCheck, Pencil, Trash2, Sparkles } from 'lucide-react'
 import { Shell }          from '../../components/layout/Shell'
 import { Topbar }         from '../../components/layout/Topbar'
 import { useBuilding }    from '../../shared/building/BuildingContext'
+import { useAiSage }      from '../ai/AiSageContext'
 import {
   useMaintenance, useCreateTask, useUpdateTask, useMarkDone, useDeleteTask,
   type MaintenanceTask,
@@ -69,6 +70,7 @@ const SELECT: React.CSSProperties = { ...INPUT, background: '#fff' }
 export default function MaintenancePage() {
   const { t }                      = useTranslation()
   const { selected: building }     = useBuilding()
+  const { openWithPrompt }         = useAiSage()
   const { data: tasks = [], isLoading } = useMaintenance(building?.id)
 
   const createTask = useCreateTask(building?.id ?? '')
@@ -295,6 +297,18 @@ export default function MaintenancePage() {
                               style={{ padding: '5px 7px', borderRadius: 6, border: '1px solid rgba(220,38,38,0.25)', background: 'rgba(220,38,38,0.05)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                             >
                               <Trash2 size={12} color="#DC2626" />
+                            </button>
+                            <button
+                              onClick={() => openWithPrompt(
+                                `I need to find a qualified contractor in Belgium for a maintenance task at building "${building?.name ?? ''}". ` +
+                                `Task: "${task.title}" (category: ${t(`maintenance.cat_${task.category}`)}, priority: ${t(`maintenance.priority_${task.priority}`)}). ` +
+                                (task.description ? `Details: ${task.description}. ` : '') +
+                                `What type of contractor should I look for, and what questions should I ask them?`
+                              )}
+                              title={t('ai.findContractor')}
+                              style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '5px 8px', borderRadius: 6, border: '1px solid rgba(245,158,11,0.35)', background: 'rgba(245,158,11,0.08)', color: '#B45309', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}
+                            >
+                              <Sparkles size={11} /> {t('ai.findContractor')}
                             </button>
                           </div>
                         </td>

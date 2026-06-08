@@ -3,11 +3,12 @@
 import { useState }       from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate }    from 'react-router-dom'
-import { CalendarDays, Plus, X, ChevronRight, Play, CheckCircle, Clock } from 'lucide-react'
+import { CalendarDays, Plus, X, ChevronRight, Play, CheckCircle, Clock, Sparkles } from 'lucide-react'
 import { Shell }          from '../../components/layout/Shell'
 import { Topbar }         from '../../components/layout/Topbar'
 import { useBuilding }    from '../../shared/building/BuildingContext'
 import { useAuth }        from '../../shared/auth/AuthContext'
+import { useAiSage }      from '../ai/AiSageContext'
 import {
   useMeetings, useCreateMeeting, useUpdateMeeting, useDeleteMeeting, useStartMeeting,
 } from './useMeetings'
@@ -35,6 +36,7 @@ export default function MeetingsPage() {
   const { session }  = useAuth()
   const { selected: building } = useBuilding()
 
+  const { openWithPrompt } = useAiSage()
   const { data: meetings = [], isLoading } = useMeetings(building?.id)
   const createMeeting = useCreateMeeting(building?.id ?? '')
   const updateMeeting = useUpdateMeeting(building?.id ?? '')
@@ -181,6 +183,19 @@ export default function MeetingsPage() {
                   <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                     {m.status === 'scheduled' && (
                       <>
+                        <button
+                          onClick={() => openWithPrompt(
+                            `Generate a professional agenda for the VME general assembly meeting "${m.title}" ` +
+                            `scheduled for ${new Date(m.date).toLocaleString('fr-BE', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} ` +
+                            `for building "${building?.name ?? ''}". ` +
+                            (m.agenda ? `Current notes: ${m.agenda}. ` : '') +
+                            `Format it as a proper Belgian VME general assembly agenda with numbered items, including standard items like approval of previous minutes, financial report, and AOB.`
+                          )}
+                          title={t('ai.generateAgenda')}
+                          style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px', borderRadius: 7, border: '1px solid rgba(245,158,11,0.35)', background: 'rgba(245,158,11,0.08)', color: '#B45309', fontSize: 12, cursor: 'pointer' }}
+                        >
+                          <Sparkles size={12} /> {t('ai.generateAgenda')}
+                        </button>
                         <button onClick={() => openEdit(m)}
                           style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid #D1D1D6', background: '#fff', fontSize: 12, cursor: 'pointer', color: '#1C1C1E' }}>
                           {t('common.edit')}

@@ -511,7 +511,10 @@
     "suggestCode": "Laisser l'IA suggérer un code comptable",
     "confidence": "confiance",
     "accept": "Appliquer",
-    "disclaimer": "Suggestion IA uniquement — veuillez vérifier"
+    "disclaimer": "Suggestion IA uniquement — veuillez vérifier",
+    "draftReminder": "Rédiger un rappel",
+    "findContractor": "Trouver un entrepreneur",
+    "generateAgenda": "Générer l'ordre du jour"
   },
   "inbox": {
     "title": "Notifications",

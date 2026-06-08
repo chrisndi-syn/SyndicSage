@@ -2,12 +2,14 @@
 // Floating amber button (bottom-right) → slides in from the right.
 // Scoped to the currently selected building.
 // Conversation persists across panel open/close within the same session.
+// Pages can trigger contextual prompts via useAiSage().openWithPrompt()
 
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation }              from 'react-i18next'
 import { Sparkles, X, Send, Loader2 }  from 'lucide-react'
 import { useBuilding }                 from '../../shared/building/BuildingContext'
 import { sendChatMessage }             from './ai.api'
+import { useAiSage }                   from './AiSageContext'
 
 interface Message {
   role:    'user' | 'assistant'
@@ -17,22 +19,29 @@ interface Message {
 export function AiSagePanel() {
   const { t }                      = useTranslation()
   const { selected: building }     = useBuilding()
-  const [open,    setOpen]         = useState(false)
-  const [input,   setInput]        = useState('')
-  const [loading, setLoading]      = useState(false)
-  const [messages, setMessages]    = useState<Message[]>([])
-  const [convId,   setConvId]      = useState<string | undefined>()
-  const [error,    setError]       = useState('')
-  const bottomRef                  = useRef<HTMLDivElement>(null)
+  const { isOpen, setOpen, pendingPrompt, clearPending } = useAiSage()
+
+  const [input,   setInput]         = useState('')
+  const [loading, setLoading]       = useState(false)
+  const [messages, setMessages]     = useState<Message[]>([])
+  const [convId,   setConvId]       = useState<string | undefined>()
+  const [error,    setError]        = useState('')
+  const bottomRef                   = useRef<HTMLDivElement>(null)
 
   // Scroll to bottom on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  async function handleSend(e: React.FormEvent) {
-    e.preventDefault()
-    const text = input.trim()
+  // Auto-send contextual prompts triggered from other pages
+  useEffect(() => {
+    if (pendingPrompt && isOpen) {
+      clearPending()
+      sendMessage(pendingPrompt)
+    }
+  }, [pendingPrompt, isOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function sendMessage(text: string) {
     if (!text || loading) return
 
     setInput('')
@@ -46,18 +55,22 @@ export function AiSagePanel() {
       setMessages(prev => [...prev, { role: 'assistant', content: res.message }])
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : t('errors.generic'))
-      // Remove optimistic user message on error
       setMessages(prev => prev.slice(0, -1))
     } finally {
       setLoading(false)
     }
   }
 
+  async function handleSend(e: React.FormEvent) {
+    e.preventDefault()
+    await sendMessage(input.trim())
+  }
+
   return (
     <>
       {/* Floating button */}
       <button
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen(!isOpen)}
         title={t('ai.openSage')}
         style={{
           position:       'fixed',
@@ -81,7 +94,7 @@ export function AiSagePanel() {
       </button>
 
       {/* Side panel */}
-      {open && (
+      {isOpen && (
         <div style={{
           position:   'fixed',
           top:        0,

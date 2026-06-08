@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider }     from './shared/auth/AuthContext'
 import { BuildingProvider } from './shared/building/BuildingContext'
+import { AiSageProvider }   from './features/ai/AiSageContext'
 import { AuthGuard }        from './shared/auth/AuthGuard'
 import LoginPage            from './features/auth/LoginPage'
 import AuthCallbackPage     from './features/auth/AuthCallbackPage'
@@ -42,6 +43,7 @@ export default function App() {
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthProvider>
         <BuildingProvider>
+          <AiSageProvider>
           <Routes>
             {/* Public */}
             <Route path="/login"         element={<LoginPage />} />
@@ -89,6 +91,7 @@ export default function App() {
             {/* Public — no AuthGuard (token validates identity) */}
             <Route path="/invite/accept" element={<AcceptInvitePage />} />
           </Routes>
+          </AiSageProvider>
         </BuildingProvider>
       </AuthProvider>
     </BrowserRouter>

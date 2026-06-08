@@ -511,7 +511,10 @@
     "suggestCode": "Let AI suggest an accounting code",
     "confidence": "confidence",
     "accept": "Apply",
-    "disclaimer": "AI suggestion only — please verify"
+    "disclaimer": "AI suggestion only — please verify",
+    "draftReminder": "Draft reminder",
+    "findContractor": "Find contractor",
+    "generateAgenda": "Generate agenda"
   },
   "inbox": {
     "title": "Notifications",
