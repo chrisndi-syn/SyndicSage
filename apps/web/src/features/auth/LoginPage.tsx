@@ -117,48 +117,71 @@ export default function LoginPage() {
 
   return (
     <div style={{
-      minHeight:           '100vh',
-      backgroundImage:     'url(https://images.unsplash.com/photo-1594811815859-c354d5afc3dc?q=80&w=1740&auto=format&fit=crop)',
-      backgroundSize:      'cover',
-      backgroundPosition:  'center',
-      display:             'flex',
-      alignItems:          'center',
-      justifyContent:      'center',
-      padding:             '24px 16px',
-      fontFamily:          "'Inter', -apple-system, sans-serif",
-      position:            'relative' as const,
+      minHeight:  '100vh',
+      display:    'flex',
+      fontFamily: "'Inter', -apple-system, sans-serif",
     }}>
-      {/* Dark overlay */}
-      <div style={{
-        position:   'absolute',
-        inset:      0,
-        background: 'linear-gradient(135deg, rgba(15,30,55,0.72) 0%, rgba(30,58,95,0.60) 100%)',
-      }} />
-      <div style={{
-        position:     'relative' as const,
-        zIndex:       1,
-        width:        '100%',
-        maxWidth:     400,
-        background:   'rgba(255,255,255,0.97)',
-        borderRadius: 14,
-        border:       '1px solid rgba(255,255,255,0.3)',
-        boxShadow:    '0 8px 40px rgba(0,0,0,0.28)',
-        padding:      '40px 36px',
-      }}>
 
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+      {/* ── LEFT — photo panel ──────────────────────────── */}
+      <div style={{
+        flex:               '1 1 55%',
+        backgroundImage:    'url(https://images.unsplash.com/photo-1594811815859-c354d5afc3dc?q=80&w=1740&auto=format&fit=crop)',
+        backgroundSize:     'cover',
+        backgroundPosition: 'center',
+        position:           'relative' as const,
+        display:            'flex',
+        flexDirection:      'column',
+        justifyContent:     'flex-end',
+        padding:            '48px',
+      }}>
+        {/* Gradient overlay — heavier at bottom for text legibility */}
+        <div style={{
+          position:   'absolute',
+          inset:      0,
+          background: 'linear-gradient(to bottom, rgba(15,30,55,0.25) 0%, rgba(15,30,55,0.75) 100%)',
+        }} />
+        {/* Branding */}
+        <div style={{ position: 'relative' as const, zIndex: 1 }}>
           <h1 style={{
             fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize:   36,
+            fontSize:   42,
             fontWeight: 700,
-            color:      '#1E3A5F',
-            lineHeight: 1,
-            margin:     0,
+            color:      '#FFFFFF',
+            margin:     '0 0 12px',
+            lineHeight: 1.1,
           }}>
             Syndic<span style={{ color: '#F59E0B' }}>Sage</span>
           </h1>
-          <p style={{ color: '#6E6E73', fontSize: 13, marginTop: 8 }}>
+          <p style={{ color: 'rgba(255,255,255,0.80)', fontSize: 15, margin: 0, lineHeight: 1.6, maxWidth: 340 }}>
+            {t('auth.tagline')}
+          </p>
+        </div>
+      </div>
+
+      {/* ── RIGHT — login panel ─────────────────────────── */}
+      <div style={{
+        flex:           '0 0 420px',
+        background:     '#FFFFFF',
+        display:        'flex',
+        alignItems:     'center',
+        justifyContent: 'center',
+        padding:        '48px 40px',
+        boxShadow:      '-4px 0 24px rgba(0,0,0,0.08)',
+      }}>
+        <div style={{ width: '100%', maxWidth: 340 }}>
+
+        {/* Logo (small, top of form) */}
+        <div style={{ marginBottom: 32 }}>
+          <h2 style={{
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontSize:   26,
+            fontWeight: 700,
+            color:      '#1E3A5F',
+            margin:     '0 0 4px',
+          }}>
+            Syndic<span style={{ color: '#F59E0B' }}>Sage</span>
+          </h2>
+          <p style={{ color: '#6E6E73', fontSize: 13, margin: 0 }}>
             {t('auth.tagline')}
           </p>
         </div>
@@ -297,6 +320,7 @@ export default function LoginPage() {
             </div>
           </>
         )}
+      </div>
       </div>
     </div>
   )
