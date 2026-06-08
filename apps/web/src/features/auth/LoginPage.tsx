@@ -118,7 +118,7 @@ export default function LoginPage() {
   return (
     <div style={{
       minHeight:           '100vh',
-      backgroundImage:     'url(https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80)',
+      backgroundImage:     'url(https://images.unsplash.com/photo-1594811815859-c354d5afc3dc?q=80&w=1740&auto=format&fit=crop)',
       backgroundSize:      'cover',
       backgroundPosition:  'center',
       display:             'flex',
