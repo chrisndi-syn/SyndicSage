@@ -3,7 +3,7 @@
 import { useState }       from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate }    from 'react-router-dom'
-import { CalendarDays, Plus, X, ChevronRight, Play, CheckCircle, Clock, Sparkles } from 'lucide-react'
+import { CalendarDays, Plus, X, ChevronRight, Play, CheckCircle, Clock, Sparkles, FileText, Copy, Check } from 'lucide-react'
 import { Shell }          from '../../components/layout/Shell'
 import { Topbar }         from '../../components/layout/Topbar'
 import { useBuilding }    from '../../shared/building/BuildingContext'
@@ -27,6 +27,102 @@ const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   completed:   { bg: 'rgba(34,197,94,0.10)',   color: '#15803D' },
 }
 
+// ── Lifecycle stepper ─────────────────────────────────────────
+type LifecycleStage = { key: string; done: boolean; active: boolean }
+
+function getLifecycleStages(m: Meeting, t: (k: string) => string): LifecycleStage[] {
+  const isHeld      = m.status === 'in_progress' || m.status === 'completed'
+  const hasVotes    = false // votes are loaded separately; stepper is indicative
+  const hasMinutes  = Boolean(m.minutes)
+  return [
+    { key: t('meetings.lifecycle.prepare'),  done: true,             active: m.status === 'scheduled' && !m.agenda },
+    { key: t('meetings.lifecycle.agenda'),   done: Boolean(m.agenda), active: m.status === 'scheduled' && !m.agenda },
+    { key: t('meetings.lifecycle.hold'),     done: isHeld,            active: m.status === 'scheduled' && Boolean(m.agenda) },
+    { key: t('meetings.lifecycle.vote'),     done: isHeld,            active: m.status === 'in_progress' },
+    { key: t('meetings.lifecycle.minutes'),  done: hasMinutes,        active: m.status === 'completed' && !hasMinutes },
+  ]
+}
+
+function LifecycleStepper({ meeting, t }: { meeting: Meeting; t: (k: string) => string }) {
+  const stages = getLifecycleStages(meeting, t)
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 10 }}>
+      {stages.map((stage, i) => (
+        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{
+              width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
+              background: stage.done ? '#16A34A' : stage.active ? '#F59E0B' : '#D1D1D6',
+            }} />
+            <span style={{
+              fontSize: 11,
+              color: stage.done ? '#16A34A' : stage.active ? '#B45309' : '#9CA3AF',
+              fontWeight: stage.active ? 600 : 400,
+              whiteSpace: 'nowrap',
+            }}>
+              {stage.key}
+            </span>
+          </div>
+          {i < stages.length - 1 && (
+            <div style={{ width: 16, height: 1, background: stage.done ? '#16A34A' : '#D1D1D6', flexShrink: 0 }} />
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// ── Minutes modal ─────────────────────────────────────────────
+function MinutesModal({ meeting, onClose }: { meeting: Meeting; onClose: () => void }) {
+  const { t } = useTranslation()
+  const [copied, setCopied] = useState(false)
+
+  function handleCopy() {
+    if (!meeting.minutes) return
+    navigator.clipboard.writeText(meeting.minutes).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
+      <div style={{ background: '#fff', borderRadius: 14, width: '100%', maxWidth: 620, maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '20px 24px 0' }}>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: '#6E6E73', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>{t('meetings.minutesTitle')}</div>
+            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: '#1C1C1E' }}>{meeting.title}</h2>
+            <div style={{ fontSize: 12, color: '#6E6E73', marginTop: 3 }}>
+              {new Date(meeting.date).toLocaleString('fr-BE', { day: 'numeric', month: 'long', year: 'numeric' })}
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <button
+              onClick={handleCopy}
+              style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 7, border: '1px solid #D1D1D6', background: '#fff', fontSize: 12, cursor: 'pointer', color: copied ? '#15803D' : '#1C1C1E' }}
+            >
+              {copied ? <Check size={12} /> : <Copy size={12} />}
+              {copied ? t('meetings.minutesCopied') : t('meetings.minutesCopy')}
+            </button>
+            <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+              <X size={20} color="#6E6E73" />
+            </button>
+          </div>
+        </div>
+        {/* Body */}
+        <div style={{ padding: '16px 24px 24px', overflowY: 'auto', flex: 1 }}>
+          <pre style={{ margin: 0, fontFamily: 'inherit', fontSize: 13, color: '#3C3C43', lineHeight: 1.7, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+            {meeting.minutes}
+          </pre>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Form state ────────────────────────────────────────────────
+
 interface FormState { title: string; date: string; agenda: string }
 const EMPTY_FORM: FormState = { title: '', date: '', agenda: '' }
 
@@ -43,10 +139,11 @@ export default function MeetingsPage() {
   const deleteMeeting = useDeleteMeeting(building?.id ?? '')
   const startMeeting  = useStartMeeting(building?.id ?? '')
 
-  const [tab,        setTab]        = useState<Tab>('upcoming')
-  const [showModal,  setShowModal]  = useState(false)
-  const [editing,    setEditing]    = useState<Meeting | undefined>()
-  const [form,       setForm]       = useState<FormState>(EMPTY_FORM)
+  const [tab,             setTab]             = useState<Tab>('upcoming')
+  const [showModal,       setShowModal]       = useState(false)
+  const [editing,         setEditing]         = useState<Meeting | undefined>()
+  const [form,            setForm]            = useState<FormState>(EMPTY_FORM)
+  const [minutesMeeting,  setMinutesMeeting]  = useState<Meeting | undefined>()
 
   if (!building) {
     return (
@@ -57,7 +154,6 @@ export default function MeetingsPage() {
     )
   }
 
-  const now = new Date().toISOString()
   const upcoming = meetings.filter(m => m.status !== 'completed')
   const past     = meetings.filter(m => m.status === 'completed')
   const visible  = tab === 'upcoming' ? upcoming : past
@@ -91,7 +187,6 @@ export default function MeetingsPage() {
 
   async function handleStart(m: Meeting) {
     if (!session) {
-      // Dev mode: navigate directly without API call
       navigate(`/meetings/${m.id}/room`)
       return
     }
@@ -102,6 +197,18 @@ export default function MeetingsPage() {
   async function handleDelete(m: Meeting) {
     if (!confirm(t('meetings.deleteConfirm'))) return
     await deleteMeeting.mutateAsync(m.id)
+  }
+
+  function handleGenerateMinutes(m: Meeting) {
+    openWithPrompt(
+      `Write professional meeting minutes (procès-verbal) for this Belgian VME general assembly.\n\n` +
+      `Meeting: "${m.title}"\n` +
+      `Date: ${new Date(m.date).toLocaleString('fr-BE', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}\n` +
+      `Building: "${building?.name ?? ''}"\n\n` +
+      (m.agenda ? `Agenda:\n${m.agenda}\n\n` : '') +
+      (m.transcript ? `Transcript:\n${m.transcript}\n\n` : '') +
+      `Format as a proper Belgian VME procès-verbal with: attendees section, agenda items with decisions, vote results (if any), and closing.`
+    )
   }
 
   const isSaving = createMeeting.isPending || updateMeeting.isPending
@@ -152,72 +259,93 @@ export default function MeetingsPage() {
                   background: '#fff', borderRadius: 12, padding: '14px 16px',
                   border: '1px solid rgba(0,0,0,0.07)',
                   boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
-                  display: 'flex', alignItems: 'flex-start', gap: 12,
                 }}>
-                  {/* Date chip */}
-                  <div style={{ width: 48, flexShrink: 0, textAlign: 'center', background: '#F5F5F7', borderRadius: 10, padding: '8px 0' }}>
-                    <div style={{ fontSize: 11, color: '#6E6E73', textTransform: 'uppercase' }}>
-                      {new Date(m.date).toLocaleString('fr-BE', { month: 'short' })}
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                    {/* Date chip */}
+                    <div style={{ width: 48, flexShrink: 0, textAlign: 'center', background: '#F5F5F7', borderRadius: 10, padding: '8px 0' }}>
+                      <div style={{ fontSize: 11, color: '#6E6E73', textTransform: 'uppercase' }}>
+                        {new Date(m.date).toLocaleString('fr-BE', { month: 'short' })}
+                      </div>
+                      <div style={{ fontSize: 20, fontWeight: 700, color: '#1E3A5F', lineHeight: 1.2 }}>
+                        {new Date(m.date).getDate()}
+                      </div>
                     </div>
-                    <div style={{ fontSize: 20, fontWeight: 700, color: '#1E3A5F', lineHeight: 1.2 }}>
-                      {new Date(m.date).getDate()}
-                    </div>
-                  </div>
 
-                  {/* Content */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, flexWrap: 'wrap' }}>
-                      <div style={{ fontWeight: 600, fontSize: 14, color: '#1C1C1E', flex: 1 }}>{m.title}</div>
-                      <span style={{ fontSize: 11, fontWeight: 500, padding: '2px 8px', borderRadius: 99, ...sc, display: 'flex', alignItems: 'center', gap: 4 }}>
-                        {STATUS_ICONS[m.status]}
-                        {t(`meetings.status_${m.status}`)}
-                      </span>
+                    {/* Content */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, flexWrap: 'wrap' }}>
+                        <div style={{ fontWeight: 600, fontSize: 14, color: '#1C1C1E', flex: 1 }}>{m.title}</div>
+                        <span style={{ fontSize: 11, fontWeight: 500, padding: '2px 8px', borderRadius: 99, ...sc, display: 'flex', alignItems: 'center', gap: 4 }}>
+                          {STATUS_ICONS[m.status]}
+                          {t(`meetings.status_${m.status}`)}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 12, color: '#6E6E73', marginTop: 3 }}>{dateStr}</div>
+                      {m.agenda && (
+                        <div style={{ fontSize: 12, color: '#6E6E73', marginTop: 6, whiteSpace: 'pre-line', lineHeight: 1.5 }}>{m.agenda}</div>
+                      )}
+                      {/* Lifecycle stepper */}
+                      <LifecycleStepper meeting={m} t={t} />
                     </div>
-                    <div style={{ fontSize: 12, color: '#6E6E73', marginTop: 3 }}>{dateStr}</div>
-                    {m.agenda && (
-                      <div style={{ fontSize: 12, color: '#6E6E73', marginTop: 6, whiteSpace: 'pre-line', lineHeight: 1.5 }}>{m.agenda}</div>
-                    )}
-                  </div>
 
-                  {/* Actions */}
-                  <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                    {m.status === 'scheduled' && (
-                      <>
-                        <button
-                          onClick={() => openWithPrompt(
-                            `Generate a professional agenda for the VME general assembly meeting "${m.title}" ` +
-                            `scheduled for ${new Date(m.date).toLocaleString('fr-BE', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} ` +
-                            `for building "${building?.name ?? ''}". ` +
-                            (m.agenda ? `Current notes: ${m.agenda}. ` : '') +
-                            `Format it as a proper Belgian VME general assembly agenda with numbered items, including standard items like approval of previous minutes, financial report, and AOB.`
+                    {/* Actions */}
+                    <div style={{ display: 'flex', gap: 6, flexShrink: 0, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                      {m.status === 'scheduled' && (
+                        <>
+                          <button
+                            onClick={() => openWithPrompt(
+                              `Generate a professional agenda for the VME general assembly meeting "${m.title}" ` +
+                              `scheduled for ${new Date(m.date).toLocaleString('fr-BE', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} ` +
+                              `for building "${building?.name ?? ''}". ` +
+                              (m.agenda ? `Current notes: ${m.agenda}. ` : '') +
+                              `Format it as a proper Belgian VME general assembly agenda with numbered items, including standard items like approval of previous minutes, financial report, and AOB.`
+                            )}
+                            title={t('ai.generateAgenda')}
+                            style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px', borderRadius: 7, border: '1px solid rgba(245,158,11,0.35)', background: 'rgba(245,158,11,0.08)', color: '#B45309', fontSize: 12, cursor: 'pointer' }}
+                          >
+                            <Sparkles size={12} /> {t('ai.generateAgenda')}
+                          </button>
+                          <button onClick={() => openEdit(m)}
+                            style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid #D1D1D6', background: '#fff', fontSize: 12, cursor: 'pointer', color: '#1C1C1E' }}>
+                            {t('common.edit')}
+                          </button>
+                          <button onClick={() => handleStart(m)} disabled={startMeeting.isPending}
+                            style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 7, border: 'none', background: '#F59E0B', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                            <Play size={12} /> {t('meetings.start')}
+                          </button>
+                        </>
+                      )}
+                      {m.status === 'in_progress' && (
+                        <button onClick={() => navigate(`/meetings/${m.id}/room`)}
+                          style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 7, border: 'none', background: '#1E3A5F', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                          {t('meetings.joinRoom')} <ChevronRight size={13} />
+                        </button>
+                      )}
+                      {m.status === 'completed' && (
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          {/* Generate minutes from transcript if no minutes yet */}
+                          {m.transcript && !m.minutes && (
+                            <button
+                              onClick={() => handleGenerateMinutes(m)}
+                              style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px', borderRadius: 7, border: '1px solid rgba(245,158,11,0.35)', background: 'rgba(245,158,11,0.08)', color: '#B45309', fontSize: 12, cursor: 'pointer' }}
+                            >
+                              <Sparkles size={12} /> {t('meetings.generateMinutes')}
+                            </button>
                           )}
-                          title={t('ai.generateAgenda')}
-                          style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px', borderRadius: 7, border: '1px solid rgba(245,158,11,0.35)', background: 'rgba(245,158,11,0.08)', color: '#B45309', fontSize: 12, cursor: 'pointer' }}
-                        >
-                          <Sparkles size={12} /> {t('ai.generateAgenda')}
-                        </button>
-                        <button onClick={() => openEdit(m)}
-                          style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid #D1D1D6', background: '#fff', fontSize: 12, cursor: 'pointer', color: '#1C1C1E' }}>
-                          {t('common.edit')}
-                        </button>
-                        <button onClick={() => handleStart(m)} disabled={startMeeting.isPending}
-                          style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 7, border: 'none', background: '#F59E0B', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                          <Play size={12} /> {t('meetings.start')}
-                        </button>
-                      </>
-                    )}
-                    {m.status === 'in_progress' && (
-                      <button onClick={() => navigate(`/meetings/${m.id}/room`)}
-                        style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 7, border: 'none', background: '#1E3A5F', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                        {t('meetings.joinRoom')} <ChevronRight size={13} />
-                      </button>
-                    )}
-                    {m.status === 'completed' && m.minutes && (
-                      <button onClick={() => alert(m.minutes)}
-                        style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid #D1D1D6', background: '#fff', fontSize: 12, cursor: 'pointer', color: '#1C1C1E' }}>
-                        {t('meetings.viewMinutes')}
-                      </button>
-                    )}
+                          {m.minutes ? (
+                            <button onClick={() => setMinutesMeeting(m)}
+                              style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 7, border: '1px solid #D1D1D6', background: '#fff', fontSize: 12, cursor: 'pointer', color: '#1C1C1E' }}>
+                              <FileText size={12} /> {t('meetings.viewMinutes')}
+                            </button>
+                          ) : (
+                            <button onClick={() => handleGenerateMinutes(m)}
+                              style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 7, border: '1px solid rgba(245,158,11,0.35)', background: 'rgba(245,158,11,0.08)', color: '#B45309', fontSize: 12, cursor: 'pointer' }}>
+                              <Sparkles size={12} /> {t('meetings.generateMinutes')}
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )
@@ -226,7 +354,7 @@ export default function MeetingsPage() {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Edit / create modal */}
       {showModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
           <div style={{ background: '#fff', borderRadius: 14, padding: 24, width: '100%', maxWidth: 500, boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
@@ -270,6 +398,11 @@ export default function MeetingsPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Minutes modal */}
+      {minutesMeeting && (
+        <MinutesModal meeting={minutesMeeting} onClose={() => setMinutesMeeting(undefined)} />
       )}
     </Shell>
   )

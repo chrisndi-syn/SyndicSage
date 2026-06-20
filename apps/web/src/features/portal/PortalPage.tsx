@@ -4,12 +4,11 @@
 import { useState, useEffect } from 'react'
 import { useTranslation }      from 'react-i18next'
 import { useNavigate }         from 'react-router-dom'
-import { CreditCard, CalendarDays, FileText, MessageSquare, ExternalLink } from 'lucide-react'
+import { CreditCard, CalendarDays, FileText, MessageSquare, ExternalLink, Download, CheckCircle } from 'lucide-react'
 import { Shell }               from '../../components/layout/Shell'
 import { Topbar }              from '../../components/layout/Topbar'
 import { useBuilding }         from '../../shared/building/BuildingContext'
 import { supabase }            from '../../lib/supabase'
-import { MOCK_BUILDINGS }      from '../../lib/mockData'
 
 // ── Mock portal data ──────────────────────────────────────────
 const MOCK_PORTAL_DATA = {
@@ -17,18 +16,24 @@ const MOCK_PORTAL_DATA = {
     building: { id: 'mock-building-1', name: 'Résidence les Acacias', address: 'Rue des Acacias 12', city: 'Bruxelles', ag_date: '2026-09-15' },
     unit: { unit_number: '3B', floor: 3, unit_type: 'apartment', ownership_share: 75 },
     charges: [
-      { id: 'c1', title: 'Provision Q2 2026', amount: 480, status: 'pending', due_date: '2026-06-30', period: 'quarterly' },
-      { id: 'c2', title: 'Provision Q1 2026', amount: 480, status: 'paid', due_date: '2026-03-31', period: 'quarterly' },
+      { id: 'c1', title: 'Provision Q2 2026', amount: 480, status: 'pending',  due_date: '2026-06-30', paid_date: null,         period: 'quarterly' },
+      { id: 'c2', title: 'Provision Q1 2026', amount: 480, status: 'paid',     due_date: '2026-03-31', paid_date: '2026-03-28', period: 'quarterly' },
+      { id: 'c3', title: 'Provision Q4 2025', amount: 460, status: 'paid',     due_date: '2025-12-31', paid_date: '2025-12-29', period: 'quarterly' },
+      { id: 'c4', title: 'Provision Q3 2025', amount: 460, status: 'paid',     due_date: '2025-09-30', paid_date: '2025-09-25', period: 'quarterly' },
+      { id: 'c5', title: 'Travaux ascenseur — quote-part',  amount: 3375, status: 'overdue', due_date: '2026-05-15', paid_date: null, period: 'oneTime' },
     ],
     meetings: [
-      { id: 'mtg-1', title: 'Assemblée Générale Ordinaire 2026', date: '2026-09-15T18:00:00Z', status: 'scheduled', agenda: '1. Approbation des comptes\n2. Budget 2027' },
+      { id: 'mtg-1', title: 'Assemblée Générale Ordinaire 2026', date: '2026-09-15T18:00:00Z', status: 'scheduled', agenda: '1. Approbation des comptes\n2. Budget 2027\n3. Rénovation toiture' },
     ],
     documents: [
-      { id: 'doc-1', name: 'PV AG 2025.pdf', category: 'minutes', created_at: '2026-01-15T00:00:00Z' },
-      { id: 'doc-2', name: 'Budget 2026.pdf', category: 'budget', created_at: '2026-01-10T00:00:00Z' },
+      { id: 'doc-1', name: 'PV AG 2025.pdf',          category: 'minutes',  created_at: '2026-01-15T00:00:00Z', download_url: null },
+      { id: 'doc-2', name: 'Budget 2026.pdf',          category: 'budget',   created_at: '2026-01-10T00:00:00Z', download_url: null },
+      { id: 'doc-3', name: 'Règlement de copropriété', category: 'legal',    created_at: '2025-06-01T00:00:00Z', download_url: null },
+      { id: 'doc-4', name: 'Acte de base.pdf',         category: 'acte_de_base', created_at: '2025-06-01T00:00:00Z', download_url: null },
     ],
     messages: [
       { id: 'msg-1', subject: 'Bruit au 3ème étage', body: 'Bonjour, merci pour votre signalement.', read_at: null, created_at: '2026-06-03T08:45:00Z', thread_id: 'msg-1', sender_user_id: 'syndic-1' },
+      { id: 'msg-2', subject: 'Travaux ascenseur — planning', body: 'Les travaux débuteront le 15 juin.', read_at: '2026-06-01T10:00:00Z', created_at: '2026-05-30T14:00:00Z', thread_id: 'msg-2', sender_user_id: 'syndic-1' },
     ],
   },
 }
@@ -36,9 +41,9 @@ const MOCK_PORTAL_DATA = {
 interface PortalData {
   building:  { name: string; address: string; city: string; ag_date: string | null }
   unit:      { unit_number: string; floor: number | null; unit_type: string; ownership_share: number } | null
-  charges:   Array<{ id: string; title: string; amount: number; status: string; due_date: string; period: string }>
+  charges:   Array<{ id: string; title: string; amount: number; status: string; due_date: string; paid_date: string | null; period: string }>
   meetings:  Array<{ id: string; title: string; date: string; status: string; agenda: string | null }>
-  documents: Array<{ id: string; name: string; category: string; created_at: string }>
+  documents: Array<{ id: string; name: string; category: string; created_at: string; download_url: string | null }>
   messages:  Array<{ id: string; subject: string | null; body: string; read_at: string | null; created_at: string; thread_id: string; sender_user_id: string }>
 }
 
@@ -52,7 +57,9 @@ export default function PortalPage() {
   const { t }  = useTranslation()
   const navigate = useNavigate()
   const { selected: building } = useBuilding()
-  const [data, setData] = useState<PortalData | null>(null)
+  const [data, setData]                 = useState<PortalData | null>(null)
+  const [showAllCharges, setShowAllCharges] = useState(false)
+  const [payingId, setPayingId]         = useState<string | null>(null)
 
   useEffect(() => {
     if (!building) return
@@ -70,6 +77,43 @@ export default function PortalPage() {
         .catch(console.error)
     })
   }, [building])
+
+  async function handlePayNow(chargeId: string) {
+    if (!building) return
+    if (building.id.startsWith('mock-')) {
+      alert('Demo mode: in production this opens a Mollie payment page.')
+      return
+    }
+    setPayingId(chargeId)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+      const res = await fetch(`/api/v1/payments/create?building_id=${building.id}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ charge_id: chargeId }),
+      })
+      const json = await res.json()
+      if (json.payment_url) window.location.href = json.payment_url
+    } finally {
+      setPayingId(null)
+    }
+  }
+
+  async function handleDownload(doc: PortalData['documents'][number]) {
+    if (!building) return
+    if (building.id.startsWith('mock-')) {
+      alert(`Demo mode: "${doc.name}" would download here in production.`)
+      return
+    }
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) return
+    const res = await fetch(`/api/v1/portal/document/${doc.id}/url?building_id=${building.id}`, {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+    const json = await res.json()
+    if (json.url) window.open(json.url, '_blank')
+  }
 
   if (!building) {
     return (
@@ -92,6 +136,7 @@ export default function PortalPage() {
   const pendingCharges  = data.charges.filter(c => c.status !== 'paid')
   const pendingTotal    = pendingCharges.reduce((s, c) => s + c.amount, 0)
   const unreadMessages  = data.messages.filter(m => !m.read_at).length
+  const visibleCharges  = showAllCharges ? data.charges : data.charges.slice(0, 4)
 
   return (
     <Shell>
@@ -135,24 +180,50 @@ export default function PortalPage() {
           <div style={{ background: '#fff', borderRadius: 12, padding: '16px 18px', border: '1px solid rgba(0,0,0,0.07)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#1E3A5F' }}>{t('portal.myCharges')}</div>
-              <button onClick={() => navigate('/portal/charges')} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#F59E0B', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 4 }}>
-                {t('portal.viewAll')} <ExternalLink size={11} />
-              </button>
+              {data.charges.length > 4 && (
+                <button onClick={() => setShowAllCharges(v => !v)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, color: '#F59E0B', fontWeight: 500 }}>
+                  {showAllCharges ? t('portal.showLess') : t('portal.viewAll')} <ExternalLink size={11} />
+                </button>
+              )}
             </div>
-            {data.charges.slice(0, 4).map(charge => {
+            {visibleCharges.map(charge => {
               const cs = STATUS_COLORS[charge.status] ?? STATUS_COLORS['pending']!
+              const canPay = charge.status === 'pending' || charge.status === 'overdue'
               return (
-                <div key={charge.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
-                  <div>
-                    <div style={{ fontSize: 13, color: '#1C1C1E', fontWeight: 500 }}>{charge.title}</div>
-                    <div style={{ fontSize: 11, color: '#9CA3AF' }}>{t(`charges.${charge.period}`)} · {charge.due_date}</div>
+                <div key={charge.id} style={{ padding: '10px 0', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, color: '#1C1C1E', fontWeight: 500 }}>{charge.title}</div>
+                      <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
+                        {t(`charges.${charge.period}`)} · {t('charges.dueDate')}: {charge.due_date}
+                        {charge.paid_date && (
+                          <span style={{ marginLeft: 6, color: '#15803D' }}>
+                            · <CheckCircle size={9} style={{ display: 'inline', verticalAlign: 'middle' }} /> {t('portal.paidOn', { date: charge.paid_date })}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 10 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: '#1C1C1E', marginBottom: 3 }}>€{charge.amount.toLocaleString()}</div>
+                      <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 99, fontWeight: 500, ...cs }}>
+                        {t(`charges.${charge.status}`)}
+                      </span>
+                    </div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#1C1C1E' }}>€{charge.amount.toLocaleString()}</div>
-                    <span style={{ fontSize: 11, padding: '1px 6px', borderRadius: 99, fontWeight: 500, ...cs }}>
-                      {t(`charges.${charge.status}`)}
-                    </span>
-                  </div>
+                  {canPay && (
+                    <button
+                      onClick={() => handlePayNow(charge.id)}
+                      disabled={payingId === charge.id}
+                      style={{
+                        marginTop: 8, width: '100%', padding: '6px 0', borderRadius: 7,
+                        border: 'none', background: charge.status === 'overdue' ? '#DC2626' : '#1E3A5F',
+                        color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                        opacity: payingId === charge.id ? 0.6 : 1,
+                      }}
+                    >
+                      {payingId === charge.id ? t('portal.paymentProcessing') : t('portal.payNow')}
+                    </button>
+                  )}
                 </div>
               )
             })}
@@ -212,11 +283,22 @@ export default function PortalPage() {
         {data.documents.length > 0 && (
           <div style={{ background: '#fff', borderRadius: 12, padding: '16px 18px', border: '1px solid rgba(0,0,0,0.07)', marginTop: 16 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: '#1E3A5F', marginBottom: 12 }}>{t('portal.recentDocuments')}</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {data.documents.map(doc => (
-                <div key={doc.id} style={{ display: 'flex', alignItems: 'center', gap: 7, background: '#F5F5F7', borderRadius: 8, padding: '7px 12px' }}>
-                  <FileText size={13} color="#6E6E73" />
-                  <span style={{ fontSize: 12, color: '#1C1C1E' }}>{doc.name}</span>
+                <div key={doc.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#F5F5F7', borderRadius: 8, padding: '8px 12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <FileText size={13} color="#6E6E73" />
+                    <div>
+                      <div style={{ fontSize: 13, color: '#1C1C1E', fontWeight: 500 }}>{doc.name}</div>
+                      <div style={{ fontSize: 11, color: '#9CA3AF' }}>{new Date(doc.created_at).toLocaleDateString('fr-BE')}</div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handleDownload(doc)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '5px 10px', borderRadius: 6, border: '1px solid rgba(30,58,95,0.2)', background: '#fff', color: '#1E3A5F', fontSize: 12, cursor: 'pointer', flexShrink: 0 }}
+                  >
+                    <Download size={12} /> {t('portal.download')}
+                  </button>
                 </div>
               ))}
             </div>

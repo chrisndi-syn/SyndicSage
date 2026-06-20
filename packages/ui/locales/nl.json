@@ -422,6 +422,19 @@
     "checkInsurance": "Verzekeringspolis uploaden",
     "checkActe": "Basisakte uploaden",
     "checkMeeting": "Een vergadering plannen",
+    "buildingLifecycle": "Gebouwlevenscyclus",
+    "legalTrack": "Wettelijke conformiteit",
+    "financialTrack": "Financiële gezondheid",
+    "governanceTrack": "Bestuur",
+    "trackActeBase": "Basisakte geüpload",
+    "trackInsurance": "Verzekering geregistreerd",
+    "trackBuildingReg": "Gebouw geregistreerd",
+    "trackChargesSet": "Kosten geconfigureerd",
+    "trackNoOverdue": "Geen achterstallige kosten",
+    "trackDocsFiled": "Documenten geklasseerd",
+    "trackOwnersAdded": "Mede-eigenaars toegevoegd",
+    "trackMeetingScheduled": "AV gepland",
+    "trackMinutesArchived": "Notulen gearchiveerd",
     "events": {
       "chargeCreated": "Kost aangemaakt:",
       "chargePaid": "Kost gemarkeerd als betaald",
@@ -585,7 +598,12 @@
     "noMessages": "Nog geen berichten.",
     "noSubject": "(geen onderwerp)",
     "upcomingMeetings": "Komende vergaderingen",
-    "recentDocuments": "Gebouwdocumenten"
+    "recentDocuments": "Gebouwdocumenten",
+    "payNow": "Nu betalen",
+    "download": "Downloaden",
+    "paidOn": "Betaald op {{date}}",
+    "paymentProcessing": "Doorsturen…",
+    "showLess": "Minder tonen"
   },
   "roadmap": {
     "title": "Werkplanning",
@@ -646,7 +664,18 @@
     "voteDescription": "Toelichting (optioneel)",
     "yes": "Ja",
     "no": "Nee",
-    "abstain": "Onthouding"
+    "abstain": "Onthouding",
+    "minutesTitle": "Vergadernotulen",
+    "minutesCopy": "Tekst kopiëren",
+    "minutesCopied": "Gekopieerd!",
+    "generateMinutes": "Notulen genereren",
+    "lifecycle": {
+      "prepare": "Gepland",
+      "agenda": "Agenda",
+      "hold": "Gehouden",
+      "vote": "Gestemd",
+      "minutes": "Notulen"
+    }
   },
   "maintenance": {
     "title": "Onderhoud",

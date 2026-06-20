@@ -420,6 +420,19 @@
     "checkInsurance": "Téléverser la police d'assurance",
     "checkActe": "Téléverser l'acte de base",
     "checkMeeting": "Planifier une réunion",
+    "buildingLifecycle": "Cycle de vie de l'immeuble",
+    "legalTrack": "Conformité légale",
+    "financialTrack": "Santé financière",
+    "governanceTrack": "Gouvernance",
+    "trackActeBase": "Acte de base téléversé",
+    "trackInsurance": "Assurance enregistrée",
+    "trackBuildingReg": "Immeuble enregistré",
+    "trackChargesSet": "Charges configurées",
+    "trackNoOverdue": "Aucune charge en retard",
+    "trackDocsFiled": "Documents classés",
+    "trackOwnersAdded": "Copropriétaires ajoutés",
+    "trackMeetingScheduled": "AG planifiée",
+    "trackMinutesArchived": "PV archivé",
     "events": {
       "chargeCreated": "Charge créée :",
       "chargePaid": "Charge marquée comme payée",
@@ -583,7 +596,12 @@
     "noMessages": "Aucun message.",
     "noSubject": "(sans objet)",
     "upcomingMeetings": "Prochaines réunions",
-    "recentDocuments": "Documents de l'immeuble"
+    "recentDocuments": "Documents de l'immeuble",
+    "payNow": "Payer maintenant",
+    "download": "Télécharger",
+    "paidOn": "Payé le {{date}}",
+    "paymentProcessing": "Redirection…",
+    "showLess": "Voir moins"
   },
   "roadmap": {
     "title": "Feuille de route",
@@ -644,7 +662,18 @@
     "voteDescription": "Détails (facultatif)",
     "yes": "Oui",
     "no": "Non",
-    "abstain": "Abstention"
+    "abstain": "Abstention",
+    "minutesTitle": "Procès-verbal",
+    "minutesCopy": "Copier le texte",
+    "minutesCopied": "Copié !",
+    "generateMinutes": "Générer le PV",
+    "lifecycle": {
+      "prepare": "Planifiée",
+      "agenda": "Ordre du jour",
+      "hold": "Tenue",
+      "vote": "Votes",
+      "minutes": "PV"
+    }
   },
   "maintenance": {
     "title": "Maintenance",

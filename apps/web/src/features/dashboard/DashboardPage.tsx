@@ -2,7 +2,7 @@
 
 import { useTranslation }  from 'react-i18next'
 import { useNavigate }     from 'react-router-dom'
-import { ChevronRight, AlertTriangle, CheckCircle2, Circle, CalendarDays, Users, CreditCard, FileText } from 'lucide-react'
+import { ChevronRight, AlertTriangle, CheckCircle2, Circle, CalendarDays, Users, CreditCard, FileText, Scale, Banknote, Vote } from 'lucide-react'
 import { Shell }           from '../../components/layout/Shell'
 import { Topbar }          from '../../components/layout/Topbar'
 import { useBuilding }     from '../../shared/building/BuildingContext'
@@ -25,10 +25,6 @@ function firstName(fullName?: string | null, email?: string | null): string {
   if (fullName) return fullName.split(' ')[0] ?? fullName
   if (email)    return email.split('@')[0] ?? ''
   return ''
-}
-
-function daysUntil(dateStr: string): number {
-  return Math.ceil((new Date(dateStr).getTime() - Date.now()) / 86400000)
 }
 
 // ── Sub-components ─────────────────────────────────────────────
@@ -133,6 +129,97 @@ function CheckItem({ label, done, onClick }: { label: string; done: boolean; onC
   )
 }
 
+// ── Lifecycle Track card ───────────────────────────────────────
+
+interface TrackItem { label: string; done: boolean; route: string }
+
+function LifecycleTrack({
+  icon, title, color, items, onClick,
+}: {
+  icon:    React.ReactNode
+  title:   string
+  color:   string
+  items:   TrackItem[]
+  onClick: (route: string) => void
+}) {
+  const doneCount = items.filter(i => i.done).length
+  const allDone   = doneCount === items.length
+  const nextItem  = items.find(i => !i.done)
+
+  return (
+    <div style={{
+      background: '#fff', borderRadius: 12, padding: '16px 18px',
+      border: `1px solid ${allDone ? 'rgba(22,163,74,0.2)' : 'rgba(0,0,0,0.07)'}`,
+      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+    }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+        <div style={{
+          width: 32, height: 32, borderRadius: 8, flexShrink: 0,
+          background: allDone ? 'rgba(22,163,74,0.10)' : `${color}18`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: allDone ? '#16A34A' : color,
+        }}>
+          {icon}
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: '#1C1C1E' }}>{title}</div>
+        </div>
+        <span style={{
+          fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 99,
+          background: allDone ? 'rgba(22,163,74,0.10)' : 'rgba(245,158,11,0.10)',
+          color:      allDone ? '#15803D'               : '#B45309',
+        }}>
+          {doneCount}/{items.length}
+        </span>
+      </div>
+
+      {/* Progress dots */}
+      <div style={{ display: 'flex', gap: 4, marginBottom: 12 }}>
+        {items.map((item, i) => (
+          <div
+            key={i}
+            title={item.label}
+            style={{
+              flex: 1, height: 4, borderRadius: 99,
+              background: item.done ? '#16A34A' : '#E5E7EB',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Items */}
+      {items.map((item, i) => (
+        <div
+          key={i}
+          onClick={!item.done ? () => onClick(item.route) : undefined}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '6px 0',
+            borderBottom: i < items.length - 1 ? '1px solid rgba(0,0,0,0.04)' : 'none',
+            cursor: !item.done ? 'pointer' : 'default',
+          }}
+        >
+          {item.done
+            ? <CheckCircle2 size={14} color="#16A34A" style={{ flexShrink: 0 }} />
+            : <Circle       size={14} color={i === items.findIndex(x => !x.done) ? color : '#D1D1D6'} style={{ flexShrink: 0 }} />
+          }
+          <span style={{
+            fontSize: 12, flex: 1,
+            color: item.done ? '#9CA3AF' : '#1C1C1E',
+            textDecoration: item.done ? 'line-through' : 'none',
+          }}>
+            {item.label}
+          </span>
+          {!item.done && i === items.findIndex(x => !x.done) && (
+            <ChevronRight size={12} color={color} />
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 // ── Main page ──────────────────────────────────────────────────
 
 export default function DashboardPage() {
@@ -176,7 +263,7 @@ export default function DashboardPage() {
   if (overdueCharges.length > 0)
     actions.push({ text: t('dashboard.actionOverdueCharges', { count: overdueCharges.length }), route: '/charges' })
 
-  // ── Onboarding checklist ───────────────────────────────────
+  // ── Setup checklist ────────────────────────────────────────
   const checks = [
     { label: t('dashboard.checkBuilding'),   done: buildings.length > 0,     route: '/buildings' },
     { label: t('dashboard.checkOwners'),     done: (selected?.unit_count ?? 0) > 0, route: '/owners' },
@@ -186,6 +273,28 @@ export default function DashboardPage() {
     { label: t('dashboard.checkMeeting'),    done: meetings.length > 0,      route: '/meetings' },
   ]
   const doneCount = checks.filter(c => c.done).length
+
+  // ── Lifecycle track data ───────────────────────────────────
+  const hasCompletedMeetingWithMinutes = meetings.some(m => m.status === 'completed' && m.minutes)
+  const hasScheduledMeeting            = meetings.some(m => m.status === 'scheduled')
+
+  const legalItems: TrackItem[] = [
+    { label: t('dashboard.trackActeBase'),    done: hasActeDeBase || (meta['ob_has_acte'] === true), route: '/documents' },
+    { label: t('dashboard.trackInsurance'),   done: hasInsuranceDoc, route: '/documents' },
+    { label: t('dashboard.trackBuildingReg'), done: buildings.length > 0, route: '/buildings' },
+  ]
+
+  const financialItems: TrackItem[] = [
+    { label: t('dashboard.trackChargesSet'),  done: charges.length > 0,          route: '/charges' },
+    { label: t('dashboard.trackNoOverdue'),   done: overdueCharges.length === 0,  route: '/charges' },
+    { label: t('dashboard.trackDocsFiled'),   done: docs.length > 0,             route: '/documents' },
+  ]
+
+  const governanceItems: TrackItem[] = [
+    { label: t('dashboard.trackOwnersAdded'), done: (selected?.unit_count ?? 0) > 0, route: '/owners' },
+    { label: t('dashboard.trackMeetingScheduled'), done: hasScheduledMeeting,    route: '/meetings' },
+    { label: t('dashboard.trackMinutesArchived'), done: hasCompletedMeetingWithMinutes, route: '/meetings' },
+  ]
 
   return (
     <Shell>
@@ -199,7 +308,6 @@ export default function DashboardPage() {
           boxShadow: '0 4px 24px rgba(30,58,95,0.18)',
           position: 'relative', overflow: 'hidden',
         }}>
-          {/* decorative amber circle */}
           <div style={{
             position: 'absolute', top: -40, right: -40,
             width: 180, height: 180, borderRadius: '50%',
@@ -310,7 +418,37 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* ── Two-column bottom: Checklist + Activity ── */}
+        {/* ── Lifecycle tracks ── */}
+        {selected && (
+          <>
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#1E3A5F' }}>{t('dashboard.buildingLifecycle')}</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12 }}>
+              <LifecycleTrack
+                icon={<Scale size={16} />}
+                title={t('dashboard.legalTrack')}
+                color="#7C3AED"
+                items={legalItems}
+                onClick={navigate}
+              />
+              <LifecycleTrack
+                icon={<Banknote size={16} />}
+                title={t('dashboard.financialTrack')}
+                color="#0369A1"
+                items={financialItems}
+                onClick={navigate}
+              />
+              <LifecycleTrack
+                icon={<Vote size={16} />}
+                title={t('dashboard.governanceTrack')}
+                color="#B45309"
+                items={governanceItems}
+                onClick={navigate}
+              />
+            </div>
+          </>
+        )}
+
+        {/* ── Two-column bottom: Checklist + Quick links ── */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
 
           {/* Onboarding checklist */}

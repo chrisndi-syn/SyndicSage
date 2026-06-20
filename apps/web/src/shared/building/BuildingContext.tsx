@@ -9,7 +9,6 @@ import {
 } from 'react'
 import type { Building } from '@syndicsage/types'
 import { supabase } from '../../lib/supabase'
-import { MOCK_BUILDINGS } from '../../lib/mockData'
 
 const STORAGE_KEY = 'syndicsage_selected_building'
 
@@ -45,34 +44,34 @@ export function BuildingProvider({ children }: { children: ReactNode }) {
   const loadBuildings = useCallback(async () => {
     setLoading(true)
     const { data: { session } } = await supabase.auth.getSession()
-    let rows: Building[]
     if (!session) {
-      rows = MOCK_BUILDINGS
-      setOrgPlan('pro') // mock/dev: bypass paywall
-    } else {
-      const { data } = await supabase
-        .from('buildings')
-        .select('*')
-        .is('deleted_at', null)
-        .order('name')
-      rows = (data ?? []) as Building[]
-
-      // Load org plan via profile → organization
-      Promise.resolve(
-        supabase
-          .from('profiles')
-          .select('organization_id, organizations(plan)')
-          .eq('id', session.user.id)
-          .single()
-      ).then(({ data: profileRow }) => {
-        const plan = (profileRow as { organizations?: { plan?: string } } | null)?.organizations?.plan ?? null
-        setOrgPlan(plan)
-      }).catch(() => {
-        // Query failed — default to 'free' so the paywall gate still activates
-        // rather than silently bypassing it with null
-        setOrgPlan('free')
-      })
+      setBuildings([])
+      setLoading(false)
+      return
     }
+    const { data } = await supabase
+      .from('buildings')
+      .select('*')
+      .is('deleted_at', null)
+      .order('name')
+    const rows = (data ?? []) as Building[]
+
+    // Load org plan via profile → organization
+    Promise.resolve(
+      supabase
+        .from('profiles')
+        .select('organization_id, organizations(plan)')
+        .eq('id', session.user.id)
+        .single()
+    ).then(({ data: profileRow }) => {
+      const plan = (profileRow as { organizations?: { plan?: string } } | null)?.organizations?.plan ?? null
+      setOrgPlan(plan)
+    }).catch(() => {
+      // Query failed — default to 'free' so the paywall gate still activates
+      // rather than silently bypassing it with null
+      setOrgPlan('free')
+    })
+
     setBuildings(rows)
 
     // Restore persisted selection, or auto-select if single building
@@ -98,7 +97,7 @@ export function BuildingProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!selected) { setMyRole(null); return }
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { setMyRole('syndic'); return } // mock/dev: assume syndic
+      if (!session) { setMyRole(null); return }
       supabase
         .from('building_members')
         .select('role')

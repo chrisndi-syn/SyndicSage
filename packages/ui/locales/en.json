@@ -420,6 +420,19 @@
     "checkInsurance": "Upload insurance policy",
     "checkActe": "Upload acte de base",
     "checkMeeting": "Schedule a meeting",
+    "buildingLifecycle": "Building lifecycle",
+    "legalTrack": "Legal compliance",
+    "financialTrack": "Financial health",
+    "governanceTrack": "Governance",
+    "trackActeBase": "Acte de base uploaded",
+    "trackInsurance": "Insurance on file",
+    "trackBuildingReg": "Building registered",
+    "trackChargesSet": "Charges configured",
+    "trackNoOverdue": "No overdue charges",
+    "trackDocsFiled": "Documents filed",
+    "trackOwnersAdded": "Co-owners added",
+    "trackMeetingScheduled": "AG meeting scheduled",
+    "trackMinutesArchived": "Minutes archived",
     "events": {
       "chargeCreated": "Charge created:",
       "chargePaid": "Charge marked as paid",
@@ -583,7 +596,12 @@
     "noMessages": "No messages yet.",
     "noSubject": "(no subject)",
     "upcomingMeetings": "Upcoming meetings",
-    "recentDocuments": "Building documents"
+    "recentDocuments": "Building documents",
+    "payNow": "Pay now",
+    "download": "Download",
+    "paidOn": "Paid {{date}}",
+    "paymentProcessing": "Redirecting…",
+    "showLess": "Show less"
   },
   "roadmap": {
     "title": "Roadmap",
@@ -644,7 +662,18 @@
     "voteDescription": "Details (optional)",
     "yes": "Yes",
     "no": "No",
-    "abstain": "Abstain"
+    "abstain": "Abstain",
+    "minutesTitle": "Meeting Minutes",
+    "minutesCopy": "Copy text",
+    "minutesCopied": "Copied!",
+    "generateMinutes": "Generate minutes",
+    "lifecycle": {
+      "prepare": "Scheduled",
+      "agenda": "Agenda",
+      "hold": "Held",
+      "vote": "Voted",
+      "minutes": "Minutes"
+    }
   },
   "maintenance": {
     "title": "Maintenance",
