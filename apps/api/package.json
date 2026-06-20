@@ -20,7 +20,7 @@
     "@syndicsage/types": "workspace:*",
     "hono": "^4.4.0",
     "resend": "^6.12.4",
-    "stripe": "^22.2.0",
+    "stripe": "^22.2.2",
     "zod": "^3.23.0"
   },
   "devDependencies": {
