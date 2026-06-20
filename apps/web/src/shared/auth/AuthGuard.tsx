@@ -15,6 +15,9 @@ export function AuthGuard({ children }: Props) {
   const { orgPlan }          = useBuilding()
   const location             = useLocation()
 
+  // DEV BYPASS — remove before production deploy
+  if (import.meta.env.DEV) return <>{children}</>
+
   if (loading) return null
 
   if (!session) {
