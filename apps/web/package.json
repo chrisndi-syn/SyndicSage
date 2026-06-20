@@ -14,7 +14,7 @@
     "@supabase/supabase-js": "^2.106.1",
     "@syndicsage/types": "workspace:*",
     "@syndicsage/ui": "workspace:*",
-    "@tanstack/react-query": "^5.100.14",
+    "@tanstack/react-query": "^5.101.0",
     "i18next": "^26.3.0",
     "lucide-react": "^0.469.0",
     "qrcode.react": "^4.2.0",
