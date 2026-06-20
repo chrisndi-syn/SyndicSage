@@ -13,7 +13,7 @@
     "test:isolation": "vitest run src/__tests__/isolation"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.100.1",
+    "@anthropic-ai/sdk": "^0.105.0",
     "@hono/node-server": "^1.12.0",
     "@supabase/supabase-js": "^2.106.1",
     "@syndicsage/crypto": "workspace:*",
