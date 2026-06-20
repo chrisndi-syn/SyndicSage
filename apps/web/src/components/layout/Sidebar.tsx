@@ -9,7 +9,7 @@ import { theme } from '../../lib/theme'
 import {
   LayoutDashboard, Building2, Users, CreditCard,
   FileText, Ticket, Bell, Clock, Map, Vote,
-  CalendarDays, BarChart2, Globe, Sparkles,
+  CalendarDays, BarChart2, Globe,
   Settings, LogOut,
   Receipt, TrendingUp, PieChart,
   Shield, HardHat, FileEdit, UserCircle, Wrench,
@@ -93,7 +93,6 @@ export function Sidebar() {
         { to: '/meetings',    icon: <CalendarDays size={17} />, label: t('nav.meetings')   },
         { to: '/reports',     icon: <BarChart2    size={17} />, label: t('nav.reports')    },
         { to: '/invitations', icon: <Globe        size={17} />, label: t('nav.invitations')},
-        { to: '/ai',          icon: <Sparkles     size={17} />, label: t('nav.ai')         },
       ],
     },
   ]

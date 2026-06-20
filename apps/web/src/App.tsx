@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider }     from './shared/auth/AuthContext'
 import { BuildingProvider } from './shared/building/BuildingContext'
 import { AiSageProvider }   from './features/ai/AiSageContext'
@@ -86,9 +86,12 @@ export default function App() {
             <Route path="/meetings/:id/room" element={<AuthGuard><MeetingRoomPage /></AuthGuard>} />
             <Route path="/reports"       element={<AuthGuard><ReportsPage /></AuthGuard>} />
             <Route path="/invitations"   element={<AuthGuard><InvitationsPage /></AuthGuard>} />
-            <Route path="/portal"          element={<AuthGuard><PortalPage /></AuthGuard>} />
-            <Route path="/portal/charges"  element={<AuthGuard><PortalChargesPage /></AuthGuard>} />
-            <Route path="/portal/messages" element={<AuthGuard><MessagesPage /></AuthGuard>} />
+            <Route path="/portal"              element={<AuthGuard><PortalPage /></AuthGuard>} />
+            <Route path="/portal/charges"     element={<AuthGuard><PortalChargesPage /></AuthGuard>} />
+            <Route path="/portal/messages"    element={<AuthGuard><MessagesPage /></AuthGuard>} />
+            <Route path="/portal/requests"    element={<Navigate to="/tickets" replace />} />
+            <Route path="/portal/documents"   element={<Navigate to="/documents" replace />} />
+            <Route path="/ai"                 element={<Navigate to="/" replace />} />
 
             {/* Public — no AuthGuard (token validates identity) */}
             <Route path="/invite/accept" element={<AcceptInvitePage />} />
