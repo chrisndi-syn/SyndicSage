@@ -39,7 +39,7 @@ export function AiSagePanel() {
       clearPending()
       sendMessage(pendingPrompt)
     }
-  }, [pendingPrompt, isOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [pendingPrompt, isOpen, clearPending]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function sendMessage(text: string) {
     if (!text || loading) return

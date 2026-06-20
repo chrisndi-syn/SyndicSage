@@ -92,8 +92,8 @@ export default function PortalPage() {
         headers: { 'Authorization': `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ charge_id: chargeId }),
       })
-      const json = await res.json()
-      if (json.payment_url) window.location.href = json.payment_url
+      const json = await res.json() as { checkout_url?: string }
+      if (json.checkout_url && /^https:\/\//.test(json.checkout_url)) window.location.href = json.checkout_url
     } finally {
       setPayingId(null)
     }

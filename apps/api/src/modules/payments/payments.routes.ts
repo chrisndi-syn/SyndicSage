@@ -143,7 +143,9 @@ router.get('/:id', async (c) => {
 
 export async function handleMollieWebhook(body: Record<string, string>) {
   const id = body['id']
-  if (!id) return
+  // Mollie payment IDs always start with "tr_" followed by alphanumerics.
+  // Reject anything else before touching the DB or calling the Mollie API.
+  if (!id || !/^tr_[A-Za-z0-9]+$/.test(id)) return
 
   const MOLLIE_KEY = process.env['MOLLIE_API_KEY']
   if (!MOLLIE_KEY) return

@@ -43,6 +43,7 @@ export default function PortalChargesPage() {
 
   const [charges,   setCharges]   = useState<Charge[]>([])
   const [loading,   setLoading]   = useState(true)
+  const [fetchError, setFetchError] = useState(false)
   const [filter,    setFilter]    = useState<Filter>('all')
   const [payingId,  setPayingId]  = useState<string | null>(null)
 
@@ -63,7 +64,7 @@ export default function PortalChargesPage() {
           setCharges(data.charges ?? [])
           setLoading(false)
         })
-        .catch(() => setLoading(false))
+        .catch((err: unknown) => { console.error('[portal/charges]', err); setFetchError(true); setLoading(false) })
     })
   }, [building])
 
@@ -82,8 +83,8 @@ export default function PortalChargesPage() {
         headers: { 'Authorization': `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ charge_id: chargeId }),
       })
-      const json = await res.json() as { payment_url?: string }
-      if (json.payment_url) window.location.href = json.payment_url
+      const json = await res.json() as { checkout_url?: string }
+      if (json.checkout_url && /^https:\/\//.test(json.checkout_url)) window.location.href = json.checkout_url
     } finally {
       setPayingId(null)
     }
@@ -179,7 +180,10 @@ export default function PortalChargesPage() {
         {/* Charge list */}
         <div style={{ background: '#fff', borderRadius: 14, border: '1px solid rgba(0,0,0,0.07)', overflow: 'hidden' }}>
           {loading && <div style={{ padding: 24, color: '#6E6E73', fontSize: 13 }}>{t('common.loading')}</div>}
-          {!loading && filtered.length === 0 && (
+          {!loading && fetchError && (
+            <div style={{ padding: 24, textAlign: 'center', color: '#DC2626', fontSize: 13 }}>{t('common.error')}</div>
+          )}
+          {!loading && !fetchError && filtered.length === 0 && (
             <div style={{ padding: 24, textAlign: 'center', color: '#9CA3AF', fontSize: 13 }}>{t('common.noData')}</div>
           )}
           {filtered.map((charge, idx) => {
