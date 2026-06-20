@@ -601,7 +601,11 @@
     "download": "Télécharger",
     "paidOn": "Payé le {{date}}",
     "paymentProcessing": "Redirection…",
-    "showLess": "Voir moins"
+    "showLess": "Voir moins",
+    "chargesTitle": "Historique des charges",
+    "filterAll": "Tout",
+    "totalOutstanding": "Total à payer",
+    "backToPortal": "Retour au portail"
   },
   "roadmap": {
     "title": "Feuille de route",

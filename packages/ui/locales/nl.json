@@ -603,7 +603,11 @@
     "download": "Downloaden",
     "paidOn": "Betaald op {{date}}",
     "paymentProcessing": "Doorsturen…",
-    "showLess": "Minder tonen"
+    "showLess": "Minder tonen",
+    "chargesTitle": "Overzicht kosten",
+    "filterAll": "Alles",
+    "totalOutstanding": "Totaal te betalen",
+    "backToPortal": "Terug naar portaal"
   },
   "roadmap": {
     "title": "Werkplanning",

@@ -601,7 +601,11 @@
     "download": "Download",
     "paidOn": "Paid {{date}}",
     "paymentProcessing": "Redirecting…",
-    "showLess": "Show less"
+    "showLess": "Show less",
+    "chargesTitle": "Charge history",
+    "filterAll": "All",
+    "totalOutstanding": "Total outstanding",
+    "backToPortal": "Back to portal"
   },
   "roadmap": {
     "title": "Roadmap",

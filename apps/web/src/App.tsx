@@ -31,6 +31,7 @@ import MaintenancePage      from './features/maintenance/MaintenancePage'
 import ReportsPage          from './features/reports/ReportsPage'
 import InvitationsPage      from './features/invitations/InvitationsPage'
 import PortalPage           from './features/portal/PortalPage'
+import PortalChargesPage    from './features/portal/PortalChargesPage'
 import MessagesPage         from './features/portal/MessagesPage'
 import AcceptInvitePage     from './features/portal/AcceptInvitePage'
 import ProfilePage           from './features/profile/ProfilePage'
@@ -85,7 +86,8 @@ export default function App() {
             <Route path="/meetings/:id/room" element={<AuthGuard><MeetingRoomPage /></AuthGuard>} />
             <Route path="/reports"       element={<AuthGuard><ReportsPage /></AuthGuard>} />
             <Route path="/invitations"   element={<AuthGuard><InvitationsPage /></AuthGuard>} />
-            <Route path="/portal"        element={<AuthGuard><PortalPage /></AuthGuard>} />
+            <Route path="/portal"          element={<AuthGuard><PortalPage /></AuthGuard>} />
+            <Route path="/portal/charges"  element={<AuthGuard><PortalChargesPage /></AuthGuard>} />
             <Route path="/portal/messages" element={<AuthGuard><MessagesPage /></AuthGuard>} />
 
             {/* Public — no AuthGuard (token validates identity) */}
