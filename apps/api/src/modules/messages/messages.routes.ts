@@ -47,14 +47,25 @@ router.get('/', async (c) => {
     .limit(200)
 
   if (!isSyndic) {
-    // Residents only see messages they sent or that are in their threads
-    const { data: myThreads } = await supabase
+    // Fetch all message metadata in this building to determine visible threads
+    const { data: allMeta } = await supabase
       .from('messages')
-      .select('thread_id')
+      .select('id, thread_id, sender_user_id')
       .eq('building_id', buildingId)
-      .eq('sender_user_id', userId)
 
-    const threadIds = (myThreads ?? []).map((r: { thread_id: string }) => r.thread_id)
+    const meta = (allMeta ?? []) as { id: string; thread_id: string; sender_user_id: string }[]
+
+    // Threads the resident participated in (sent at least one message)
+    const myThreadIds = new Set(
+      meta.filter(m => m.sender_user_id === userId).map(m => m.thread_id)
+    )
+
+    // Syndic-initiated threads: root message (id === thread_id) not sent by this resident
+    const syndicThreadIds = new Set(
+      meta.filter(m => m.id === m.thread_id && m.sender_user_id !== userId).map(m => m.id)
+    )
+
+    const threadIds = [...new Set([...myThreadIds, ...syndicThreadIds])]
     if (threadIds.length === 0) return c.json([])
 
     query = query.in('thread_id', threadIds)
