@@ -134,48 +134,57 @@ export default function PortalRequestsPage() {
           </button>
         </div>
 
-        {/* New request form */}
+        {/* New request modal */}
         {showForm && (
-          <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.10)', borderRadius: 12,
-            padding: 20, marginBottom: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <div style={{ fontWeight: 600, fontSize: 15, color: '#111827' }}>{t('portal.newRequest')}</div>
-              <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                <X size={18} color="#6B7280" />
-              </button>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 5 }}>{t('tickets.type')}</label>
-                <select value={newType} onChange={e => setNewType(e.target.value)}
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #D1D5DB', fontSize: 14, background: '#fff' }}>
-                  {TICKET_TYPES.map(opt => (
-                    <option key={opt.value} value={opt.value}>{t(opt.labelKey)}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 5 }}>Title</label>
-                <input value={newTitle} onChange={e => setNewTitle(e.target.value)}
-                  placeholder="Brief description of the issue"
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #D1D5DB', fontSize: 14, boxSizing: 'border-box' }} />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 5 }}>Details</label>
-                <textarea value={newDesc} onChange={e => setNewDesc(e.target.value)}
-                  placeholder="Please describe the issue in detail…"
-                  rows={3}
-                  style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #D1D5DB', fontSize: 14, resize: 'vertical', boxSizing: 'border-box' }} />
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
-                <button onClick={() => setShowForm(false)}
-                  style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.12)', background: '#fff', fontSize: 13, cursor: 'pointer', color: '#374151' }}>
-                  {t('common.cancel')}
+          <div
+            onClick={() => setShowForm(false)}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 1000,
+              display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <div
+              onClick={e => e.stopPropagation()}
+              style={{ background: '#fff', borderRadius: 14, padding: 28, width: 480, maxWidth: '90vw',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.18)' }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                <div style={{ fontWeight: 700, fontSize: 16, color: '#111827' }}>{t('portal.newRequest')}</div>
+                <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                  <X size={18} color="#6B7280" />
                 </button>
-                <button onClick={handleSubmit} disabled={submitting || !newTitle.trim() || !newDesc.trim()}
-                  style={{ padding: '8px 18px', borderRadius: 8, border: 'none', background: '#111827', color: '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', opacity: (!newTitle.trim() || !newDesc.trim()) ? 0.5 : 1 }}>
-                  {submitting ? t('common.saving') : t('common.submit')}
-                </button>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 5 }}>{t('tickets.type')}</label>
+                  <select value={newType} onChange={e => setNewType(e.target.value)}
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #D1D5DB', fontSize: 14, background: '#fff' }}>
+                    {TICKET_TYPES.map(opt => (
+                      <option key={opt.value} value={opt.value}>{t(opt.labelKey)}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 5 }}>Title</label>
+                  <input value={newTitle} onChange={e => setNewTitle(e.target.value)}
+                    placeholder="Brief description of the issue"
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #D1D5DB', fontSize: 14, boxSizing: 'border-box' }} />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 5 }}>Details</label>
+                  <textarea value={newDesc} onChange={e => setNewDesc(e.target.value)}
+                    placeholder="Please describe the issue in detail…"
+                    rows={4}
+                    style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #D1D5DB', fontSize: 14, resize: 'vertical', boxSizing: 'border-box' }} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 4 }}>
+                  <button onClick={() => setShowForm(false)}
+                    style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.12)', background: '#fff', fontSize: 13, cursor: 'pointer', color: '#374151' }}>
+                    {t('common.cancel')}
+                  </button>
+                  <button onClick={handleSubmit} disabled={submitting || !newTitle.trim() || !newDesc.trim()}
+                    style={{ padding: '8px 18px', borderRadius: 8, border: 'none', background: '#1E3A5F', color: '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', opacity: (!newTitle.trim() || !newDesc.trim()) ? 0.5 : 1 }}>
+                    {submitting ? t('common.saving') : t('common.submit')}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
