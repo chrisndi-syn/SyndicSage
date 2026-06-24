@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { NavLink, useNavigate, useLocation } from 'react-router-dom'
+import { NavLink, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
 import { useBuilding } from '../../shared/building/BuildingContext'
@@ -40,7 +40,9 @@ export function Sidebar() {
   const location     = useLocation()
   const { myRole }   = useBuilding()
   const unreadCount  = useUnreadCount()
+  const [searchParams] = useSearchParams()
   const isResident   = myRole === 'co_owner' || myRole === 'renter'
+    || (location.pathname.startsWith('/portal') && searchParams.get('demo') === '1')
   const [pinned,   setPinned]   = useState(() => localStorage.getItem('syndicsage_sidebar_pinned') === '1')
   const [hovered,  setHovered]  = useState(false)
   const expanded = pinned || hovered
