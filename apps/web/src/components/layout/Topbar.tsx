@@ -3,11 +3,9 @@ import { useBuilding } from '../../shared/building/BuildingContext'
 import { theme }       from '../../lib/theme'
 import { ChevronDown, Plus, Check } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../../lib/supabase'
-
-const API_URL = import.meta.env['VITE_API_URL'] as string ?? 'http://localhost:3001'
 
 interface Props {
   title:     string
@@ -16,16 +14,20 @@ interface Props {
 
 export function Topbar({ title, subtitle }: Props) {
   const { user, session }                    = useAuth()
-  const { buildings, selected, setSelected } = useBuilding()
+  const { buildings, selected, setSelected, myRole } = useBuilding()
   const { t }                                = useTranslation()
   const navigate                             = useNavigate()
+  const location                             = useLocation()
   const [showSwitcher, setShowSwitcher]      = useState(false)
   const [showUserMenu, setShowUserMenu]      = useState(false)
   const [avatarUrl,    setAvatarUrl]         = useState<string | null>(null)
 
+  const isResident = myRole === 'co_owner' || myRole === 'renter' || location.pathname.startsWith('/portal')
+  const profilePath = isResident ? '/portal/profile' : '/profile'
+
   useEffect(() => {
     if (!session) return
-    fetch(`${API_URL}/api/v1/profile`, {
+    fetch('/api/v1/profile', {
       headers: { 'Authorization': `Bearer ${session.access_token}` },
     })
       .then(r => r.ok ? r.json() : null)
@@ -228,13 +230,13 @@ export function Topbar({ title, subtitle }: Props) {
                   </div>
                 )}
                 <button
-                  onClick={() => { setShowUserMenu(false); navigate('/profile') }}
+                  onClick={() => { setShowUserMenu(false); navigate(profilePath) }}
                   style={{ display: 'block', width: '100%', padding: '8px 14px', textAlign: 'left', background: 'transparent', border: 'none', fontSize: 13, color: theme.colors.text, cursor: 'pointer', fontFamily: 'inherit' }}
                 >
                   {t('nav.profile')}
                 </button>
                 <button
-                  onClick={async () => { setShowUserMenu(false); await supabase.auth.signOut() }}
+                  onClick={async () => { setShowUserMenu(false); await supabase.auth.signOut(); navigate('/login', { replace: true }) }}
                   style={{ display: 'block', width: '100%', padding: '8px 14px', textAlign: 'left', background: 'transparent', border: 'none', fontSize: 13, color: '#DC2626', cursor: 'pointer', fontFamily: 'inherit' }}
                 >
                   {t('auth.signOut')}

@@ -1,7 +1,10 @@
 // ── Portal routes — resident-facing data ──────────────────────
-// GET /api/v1/portal/me?building_id=  — resident snapshot
+// GET  /api/v1/portal/me?building_id=      — resident snapshot
+// GET  /api/v1/portal/profile?building_id= — resident profile
+// PATCH /api/v1/portal/profile             — update resident fields
 
 import { Hono }          from 'hono'
+import { z }             from 'zod'
 import type { UserRole } from '@syndicsage/types'
 import { authorize }        from '../../shared/authorize.js'
 import { Errors }           from '../../shared/errors.js'
@@ -100,6 +103,109 @@ router.get('/me', async (c) => {
     meetings:  meetings ?? [],
     documents: documents ?? [],
   })
+})
+
+// ── GET /profile — resident profile snapshot ──────────────────
+
+router.get('/profile', async (c) => {
+  const userId     = c.get('userId')
+  const member     = c.get('member')
+  const buildingId = c.get('buildingId')
+  if (!member || !buildingId) throw Errors.forbidden()
+
+  authorize(member.role as UserRole, 'charge.read.own')
+
+  const supabase = getSupabaseAdmin()
+
+  // Profile (auth user)
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name, email, preferred_language, avatar_url')
+    .eq('id', userId)
+    .single()
+
+  if (!profile) throw Errors.notFound('Profile not found')
+
+  // Member fields (resident-specific)
+  const { data: memberRow } = await supabase
+    .from('building_members')
+    .select('role, joined_at, left_at, occupant_count, mailing_address, unit_id')
+    .eq('id', member.id)
+    .single()
+
+  // Unit info (read-only)
+  let unitNumber: string | null = null
+  if (member.unit_id) {
+    const { data: unit } = await supabase
+      .from('units')
+      .select('unit_number')
+      .eq('id', member.unit_id)
+      .single()
+    unitNumber = (unit as { unit_number: string } | null)?.unit_number ?? null
+  }
+
+  // Building info
+  const { data: building } = await supabase
+    .from('buildings')
+    .select('name, address, city')
+    .eq('id', buildingId)
+    .single()
+
+  const row = memberRow as {
+    role: string; joined_at: string | null; left_at: string | null;
+    occupant_count: number | null; mailing_address: string | null
+  } | null
+
+  const prof = profile as { full_name: string; email: string; preferred_language?: string | null; avatar_url?: string | null }
+
+  return c.json({
+    full_name:          prof.full_name,
+    email:              prof.email,
+    preferred_language: prof.preferred_language ?? 'fr',
+    avatar_url:         prof.avatar_url ?? null,
+    role:               row?.role ?? member.role,
+    unit_number:        unitNumber,
+    joined_at:          row?.joined_at ?? null,
+    left_at:            row?.left_at ?? null,
+    occupant_count:     row?.occupant_count ?? null,
+    mailing_address:    row?.mailing_address ?? null,
+    building_name:      (building as { name: string } | null)?.name ?? null,
+    building_address:   building ? `${(building as { address: string; city: string }).address}, ${(building as { address: string; city: string }).city}` : null,
+  })
+})
+
+// ── PATCH /profile — update resident fields ───────────────────
+
+const PortalProfilePatchSchema = z.object({
+  mailing_address: z.string().max(300).nullable().optional(),
+  occupant_count:  z.number().int().min(1).max(99).nullable().optional(),
+  left_at:         z.string().datetime({ offset: true }).nullable().optional(),
+})
+
+router.patch('/profile', async (c) => {
+  const member     = c.get('member')
+  const buildingId = c.get('buildingId')
+  if (!member || !buildingId) throw Errors.forbidden()
+
+  authorize(member.role as UserRole, 'charge.read.own')
+
+  const body   = await c.req.json() as unknown
+  const parsed = PortalProfilePatchSchema.safeParse(body)
+  if (!parsed.success) throw Errors.badRequest('Invalid input')
+
+  const updates = parsed.data
+  if (Object.keys(updates).length === 0) throw Errors.badRequest('Nothing to update')
+
+  const supabase = getSupabaseAdmin()
+
+  const { error } = await supabase
+    .from('building_members')
+    .update(updates)
+    .eq('id', member.id)
+
+  if (error) throw Errors.internal()
+
+  return c.json({ ok: true })
 })
 
 export { router as portalRouter }
