@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { Shell } from '../../components/layout/Shell'
 import { Topbar } from '../../components/layout/Topbar'
 import { supabase } from '../../lib/supabase'
@@ -64,10 +65,8 @@ interface GdprRequest {
 
 // ── API helpers ───────────────────────────────────────────────
 
-const API_URL = import.meta.env['VITE_API_URL'] as string ?? 'http://localhost:3001'
-
 async function apiFetch(path: string, token: string, options?: RequestInit) {
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(path, {
     ...options,
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -106,6 +105,7 @@ const GDPR_STATUS_COLORS: Record<string, { bg: string; color: string }> = {
 
 export default function SettingsPage() {
   const { t }     = useTranslation()
+  const navigate  = useNavigate()
   const { session } = useAuth()
   const { myRole }  = useBuilding()
 
@@ -245,7 +245,10 @@ export default function SettingsPage() {
     finally { setRevokingOthers(false) }
   }
 
-  async function handleSignOut() { await supabase.auth.signOut() }
+  async function handleSignOut() {
+    await supabase.auth.signOut()
+    navigate('/login', { replace: true })
+  }
 
   // ── Org handler ────────────────────────────────────────────
 

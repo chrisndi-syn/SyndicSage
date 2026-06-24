@@ -16,10 +16,8 @@ interface ProfileData {
 
 // ── API helper ────────────────────────────────────────────────
 
-const API_URL = import.meta.env['VITE_API_URL'] as string ?? 'http://localhost:3001'
-
 async function apiFetch(path: string, token: string, options?: RequestInit) {
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(path, {
     ...options,
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -136,7 +134,7 @@ export default function ProfilePage() {
     try {
       const form = new FormData()
       form.append('avatar', file)
-      const res = await fetch(`${API_URL}/api/v1/profile/avatar`, {
+      const res = await fetch('/api/v1/profile/avatar', {
         method:  'POST',
         headers: { 'Authorization': `Bearer ${session.access_token}` },
         body:    form,
