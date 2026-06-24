@@ -633,7 +633,11 @@
     "joinOnline": "Join online",
     "proOnly": "Pro",
     "requestsSub": "Submit and track your maintenance requests",
-    "newRequest": "New request"
+    "newRequest": "New request",
+    "requestTitleLabel": "Title",
+    "requestTitlePlaceholder": "Brief description of the issue",
+    "requestDetailsLabel": "Details",
+    "requestDetailsPlaceholder": "Please describe the issue in detail…"
   },
   "roadmap": {
     "title": "Roadmap",

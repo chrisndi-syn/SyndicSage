@@ -635,7 +635,11 @@
     "joinOnline": "Online deelnemen",
     "proOnly": "Pro",
     "requestsSub": "Dien uw onderhoudsverzoeken in en volg ze op",
-    "newRequest": "Nieuw verzoek"
+    "newRequest": "Nieuw verzoek",
+    "requestTitleLabel": "Titel",
+    "requestTitlePlaceholder": "Korte beschrijving van het probleem",
+    "requestDetailsLabel": "Details",
+    "requestDetailsPlaceholder": "Beschrijf het probleem in detail…"
   },
   "roadmap": {
     "title": "Werkplanning",

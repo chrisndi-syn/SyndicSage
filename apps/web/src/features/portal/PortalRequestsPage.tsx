@@ -163,15 +163,15 @@ export default function PortalRequestsPage() {
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 5 }}>Title</label>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 5 }}>{t('portal.requestTitleLabel')}</label>
                   <input value={newTitle} onChange={e => setNewTitle(e.target.value)}
-                    placeholder="Brief description of the issue"
+                    placeholder={t('portal.requestTitlePlaceholder')}
                     style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #D1D5DB', fontSize: 14, boxSizing: 'border-box' }} />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 5 }}>Details</label>
+                  <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#374151', marginBottom: 5 }}>{t('portal.requestDetailsLabel')}</label>
                   <textarea value={newDesc} onChange={e => setNewDesc(e.target.value)}
-                    placeholder="Please describe the issue in detail…"
+                    placeholder={t('portal.requestDetailsPlaceholder')}
                     rows={4}
                     style={{ width: '100%', padding: '8px 12px', borderRadius: 8, border: '1px solid #D1D5DB', fontSize: 14, resize: 'vertical', boxSizing: 'border-box' }} />
                 </div>

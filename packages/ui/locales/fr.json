@@ -633,7 +633,11 @@
     "joinOnline": "Rejoindre en ligne",
     "proOnly": "Pro",
     "requestsSub": "Soumettez et suivez vos demandes de maintenance",
-    "newRequest": "Nouvelle demande"
+    "newRequest": "Nouvelle demande",
+    "requestTitleLabel": "Titre",
+    "requestTitlePlaceholder": "Brève description du problème",
+    "requestDetailsLabel": "Détails",
+    "requestDetailsPlaceholder": "Veuillez décrire le problème en détail…"
   },
   "roadmap": {
     "title": "Feuille de route",
