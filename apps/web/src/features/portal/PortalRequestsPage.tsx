@@ -120,7 +120,7 @@ export default function PortalRequestsPage() {
           <button
             onClick={() => !isDemoMode && setShowForm(true)}
             disabled={isDemoMode}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#111827',
+            style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#1E3A5F',
               color: '#fff', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13,
               fontWeight: 500, cursor: isDemoMode ? 'default' : 'pointer', opacity: isDemoMode ? 0.5 : 1 }}
           >
