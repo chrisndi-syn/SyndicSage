@@ -2,7 +2,6 @@
 
 import { supabase }       from '../../lib/supabase'
 import { apiFetch }       from '../../lib/api'
-import { MOCK_TICKETS }   from '../../lib/mockData'
 
 export interface Ticket {
   id:              string
@@ -20,9 +19,6 @@ export interface Ticket {
 }
 
 export async function fetchTickets(buildingId: string): Promise<Ticket[]> {
-  if (buildingId.startsWith('mock-')) {
-    return MOCK_TICKETS[buildingId] ?? []
-  }
   const { data, error } = await supabase
     .from('tickets')
     .select('*')

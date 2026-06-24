@@ -95,7 +95,12 @@
     "insurance": "Verzekeringen",
     "contractors": "Aannemers",
     "templates": "Briefsjablonen",
-    "maintenance": "Onderhoud"
+    "maintenance": "Onderhoud",
+    "groupManagement":   "Beheer",
+    "groupCommunication":"Communicatie",
+    "groupAccounting":   "Boekhouding",
+    "groupGovernance":   "Bestuur",
+    "groupPortal":       "Portaal"
   },
   "profile": {
     "title": "Mijn profiel",
@@ -811,5 +816,36 @@
     "members": "Leden",
     "stripe": "Stripe-ID",
     "signedUp": "Aangemeld op"
+  },
+  "journey": {
+    "title": "Uw Traject",
+    "subtitle": "Platformvoortgang",
+    "progress": "Algemene voortgang",
+    "stagesComplete": "fasen voltooid",
+    "currentStageHint": "Bezig met: {{stage}}",
+    "allDone": "Alle fasen voltooid — u heeft alles ontgrendeld!",
+    "stageLabel": "Fase {{n}}",
+    "complete": "Voltooid",
+    "continueStage": "Doorgaan",
+    "gateTitle": "Sectie vergrendeld",
+    "gateDesc": "U moet de vorige fase voltooien voordat u deze sectie kunt ontgrendelen.",
+    "gateRequires": "Voltooi eerst «{{stage}}»",
+    "proRequired": "Pro-abonnement vereist",
+    "viewJourney": "Traject bekijken",
+    "stage1Title": "Fundament",
+    "stage1Desc": "Stel uw gebouw in, voeg uw eigenaars toe en maak uw eerste aanrekening. Alles begint hier.",
+    "stage2Title": "Financiën",
+    "stage2Desc": "Registreer uw eerste uitgave om de volledige boekhouding te ontgrendelen — budget, inkomsten en financieel bilan.",
+    "stage3Title": "Bestuur",
+    "stage3Desc": "Plan uw eerste vergadering om stemmen, rapporten en de volledige AV-levenscyclus te ontgrendelen.",
+    "stage4Title": "Gemeenschap",
+    "stage4Desc": "Nodig uw mede-eigenaars uit om het bewonersportaal, berichtenuitwisseling en de communicatiehub te ontgrendelen.",
+    "task1a": "Een gebouw toevoegen",
+    "task1b": "Minstens één eigenaar toevoegen",
+    "task1c": "Een aanrekening aanmaken",
+    "task2a": "Uw eerste uitgave registreren",
+    "task3a": "Een vergadering plannen",
+    "task4a": "Upgraden naar Pro",
+    "task4b": "Fase 3 voltooien"
   }
 }

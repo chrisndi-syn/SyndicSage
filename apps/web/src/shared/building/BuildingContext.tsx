@@ -9,7 +9,6 @@ import {
 } from 'react'
 import type { Building } from '@syndicsage/types'
 import { supabase } from '../../lib/supabase'
-import { MOCK_BUILDINGS } from '../../lib/mockData'
 
 const STORAGE_KEY = 'syndicsage_selected_building'
 
@@ -46,14 +45,6 @@ export function BuildingProvider({ children }: { children: ReactNode }) {
     setLoading(true)
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
-      if (import.meta.env.DEV) {
-        setBuildings([MOCK_BUILDINGS[0]!])
-        setSelectedState(MOCK_BUILDINGS[0]!)
-        setMyRole('syndic')
-        setOrgPlan('pro')
-        setLoading(false)
-        return
-      }
       setBuildings([])
       setLoading(false)
       return

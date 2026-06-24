@@ -95,7 +95,12 @@
     "insurance": "Insurance",
     "contractors": "Contractors",
     "templates": "Letter Templates",
-    "maintenance": "Maintenance"
+    "maintenance": "Maintenance",
+    "groupManagement":   "Management",
+    "groupCommunication":"Communication",
+    "groupAccounting":   "Accounting",
+    "groupGovernance":   "Governance",
+    "groupPortal":       "Portal"
   },
   "profile": {
     "title": "My Profile",
@@ -809,5 +814,36 @@
     "members": "Members",
     "stripe": "Stripe ID",
     "signedUp": "Signed up"
+  },
+  "journey": {
+    "title": "Your Journey",
+    "subtitle": "Platform progression",
+    "progress": "Overall progress",
+    "stagesComplete": "stages complete",
+    "currentStageHint": "Currently on: {{stage}}",
+    "allDone": "All stages complete — you've unlocked everything!",
+    "stageLabel": "Stage {{n}}",
+    "complete": "Complete",
+    "continueStage": "Continue",
+    "gateTitle": "Section locked",
+    "gateDesc": "You need to complete the previous stage before unlocking this section.",
+    "gateRequires": "Complete «{{stage}}» first",
+    "proRequired": "Pro plan required",
+    "viewJourney": "View Journey",
+    "stage1Title": "Foundation",
+    "stage1Desc": "Set up your building, add your owners, and create your first charge. Everything starts here.",
+    "stage2Title": "Finances",
+    "stage2Desc": "Record your first expense to unlock full accounting — budget tracking, income, and your financial bilan.",
+    "stage3Title": "Governance",
+    "stage3Desc": "Schedule your first meeting to unlock voting, reports, and the full AG lifecycle.",
+    "stage4Title": "Community",
+    "stage4Desc": "Invite your co-owners to unlock the resident portal, messaging, and the communication hub.",
+    "task1a": "Add a building",
+    "task1b": "Add at least one owner",
+    "task1c": "Create a charge",
+    "task2a": "Log your first expense",
+    "task3a": "Schedule a meeting",
+    "task4a": "Upgrade to Pro",
+    "task4b": "Complete Stage 3"
   }
 }

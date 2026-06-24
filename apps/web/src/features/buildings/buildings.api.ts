@@ -5,13 +5,12 @@
 import type { Building } from '@syndicsage/types'
 import { supabase }       from '../../lib/supabase'
 import { apiFetch }       from '../../lib/api'
-import { MOCK_BUILDINGS }  from '../../lib/mockData'
 
 // ── Reads (Supabase direct) ────────────────────────────────────
 
 export async function fetchBuildings(): Promise<Building[]> {
   const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return MOCK_BUILDINGS
+  if (!session) return []
 
   const { data, error } = await supabase
     .from('buildings')

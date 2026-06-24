@@ -85,10 +85,6 @@ export default function DocumentsPage() {
   }
 
   async function handleDownload(doc: Document) {
-    if (building?.id.startsWith('mock-')) {
-      alert('Download not available in demo mode.')
-      return
-    }
     try {
       const url = await download.mutateAsync(doc.id)
       window.open(url, '_blank', 'noopener')

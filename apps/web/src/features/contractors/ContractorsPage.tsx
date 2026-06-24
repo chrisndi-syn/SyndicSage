@@ -41,7 +41,7 @@ const CONTRACT_STATUS_COLORS: Record<string, { bg: string; color: string }> = {
 export default function ContractorsPage() {
   const { t } = useTranslation()
   const { selected: building } = useBuilding()
-  const orgId = building?.organization_id ?? 'mock-org-1'
+  const orgId = building?.organization_id ?? ''
 
   const [tab, setTab] = useState<Tab>('contractors')
 

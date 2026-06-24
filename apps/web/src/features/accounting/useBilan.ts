@@ -6,11 +6,10 @@ const qk = (buildingId: string, year: number) => ['bilan', buildingId, year]
 
 export function useBilan(buildingId: string | null | undefined, year: number) {
   const { session } = useAuth()
-  const isMock = buildingId?.startsWith('mock-') ?? false
   return useQuery({
     queryKey: qk(buildingId ?? '', year),
     queryFn:  () => fetchBilan(session?.access_token ?? '', buildingId!, year),
-    enabled:  !!buildingId && (!!session || isMock),
+    enabled:  !!buildingId && !!session,
   })
 }
 

@@ -2,12 +2,13 @@
 
 import { useTranslation }  from 'react-i18next'
 import { useNavigate }     from 'react-router-dom'
-import { ChevronRight, AlertTriangle, CheckCircle2, Circle, CalendarDays, Users, CreditCard, FileText, Scale, Banknote, Vote } from 'lucide-react'
+import { ChevronRight, AlertTriangle, CheckCircle2, Circle, CalendarDays, Users, CreditCard, FileText, Scale, Banknote, Vote, Map } from 'lucide-react'
 import { Shell }           from '../../components/layout/Shell'
 import { Topbar }          from '../../components/layout/Topbar'
 import { useBuilding }     from '../../shared/building/BuildingContext'
 import { useAuth }         from '../../shared/auth/AuthContext'
 import { useDocuments }    from '../documents/useDocuments'
+import { useJourney }     from '../journey/JourneyContext'
 import { useCharges }      from '../charges/useCharges'
 import { useMeetings }     from '../meetings/useMeetings'
 import { theme }           from '../../lib/theme'
@@ -231,6 +232,7 @@ export default function DashboardPage() {
   const meta = user?.user_metadata ?? {}
   const name = firstName(meta['full_name'] as string, user?.email)
 
+  const { stages }               = useJourney()
   const { data: docs     = [] } = useDocuments(selected?.id)
   const { data: charges  = [] } = useCharges(selected?.id)
   const { data: meetings = [] } = useMeetings(selected?.id)
@@ -299,7 +301,7 @@ export default function DashboardPage() {
   return (
     <Shell>
       <Topbar title={t('nav.dashboard')} subtitle={selected?.name} />
-      <div style={{ padding: 24, maxWidth: 900, display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
 
         {/* ── Greeting hero ── */}
         <div style={{
@@ -361,6 +363,59 @@ export default function DashboardPage() {
             </p>
           )}
         </div>
+
+        {/* ── Journey teaser ── */}
+        {(() => {
+          const doneCount    = stages.filter(s => s.status === 'done').length
+          const currentStage = stages.find(s => s.status === 'current')
+          const allDone      = doneCount === stages.length
+          return (
+            <div
+              onClick={() => navigate('/journey')}
+              style={{
+                background:   '#fff',
+                border:       '1px solid rgba(30,58,95,0.08)',
+                borderRadius: 14, padding: '14px 18px',
+                cursor:       'pointer', display: 'flex',
+                alignItems:   'center', gap: 14,
+                boxShadow:    '0 1px 4px rgba(0,0,0,0.04)',
+                transition:   'box-shadow 0.15s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 4px 16px rgba(30,58,95,0.10)')}
+              onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)')}
+            >
+              <div style={{
+                width: 38, height: 38, borderRadius: 10, flexShrink: 0,
+                background: allDone ? 'rgba(22,163,74,0.10)' : 'rgba(245,158,11,0.10)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: allDone ? '#16A34A' : theme.colors.amber,
+              }}>
+                <Map size={18} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: theme.colors.navy, marginBottom: 6 }}>
+                  {t('journey.title')} — {doneCount}/{stages.length} {t('journey.stagesComplete')}
+                </div>
+                <div style={{ height: 5, background: '#F3F4F6', borderRadius: 99, overflow: 'hidden' }}>
+                  <div style={{
+                    height: '100%', borderRadius: 99,
+                    width: `${Math.round(doneCount / stages.length * 100)}%`,
+                    background: allDone
+                      ? '#16A34A'
+                      : `linear-gradient(90deg, ${theme.colors.amber}, #fbbf24)`,
+                    transition: 'width 0.5s',
+                  }} />
+                </div>
+                {currentStage && (
+                  <div style={{ fontSize: 11, color: '#6E6E73', marginTop: 5 }}>
+                    {t('journey.currentStageHint', { stage: t(currentStage.titleKey) })}
+                  </div>
+                )}
+              </div>
+              <ChevronRight size={16} color="#C7C7CC" style={{ flexShrink: 0 }} />
+            </div>
+          )
+        })()}
 
         {/* ── Actions required ── */}
         {actions.length > 0 && (

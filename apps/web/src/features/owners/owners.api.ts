@@ -2,7 +2,6 @@
 
 import { supabase }    from '../../lib/supabase'
 import { apiFetch }    from '../../lib/api'
-import { MOCK_OWNERS } from '../../lib/mockData'
 
 export interface OwnerWithUnit {
   id:                 string
@@ -29,7 +28,7 @@ export interface OwnerWithUnit {
 
 export async function fetchOwners(buildingId: string): Promise<OwnerWithUnit[]> {
   const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return MOCK_OWNERS[buildingId] ?? []
+  if (!session) return []
 
   const { data, error } = await supabase
     .from('owners')

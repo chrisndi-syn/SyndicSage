@@ -10,34 +10,6 @@ import { Topbar }              from '../../components/layout/Topbar'
 import { useBuilding }         from '../../shared/building/BuildingContext'
 import { supabase }            from '../../lib/supabase'
 
-// ── Mock portal data ──────────────────────────────────────────
-const MOCK_PORTAL_DATA = {
-  'mock-building-1': {
-    building: { id: 'mock-building-1', name: 'Résidence les Acacias', address: 'Rue des Acacias 12', city: 'Bruxelles', ag_date: '2026-09-15' },
-    unit: { unit_number: '3B', floor: 3, unit_type: 'apartment', ownership_share: 75 },
-    charges: [
-      { id: 'c1', title: 'Provision Q2 2026', amount: 480, status: 'pending',  due_date: '2026-06-30', paid_date: null,         period: 'quarterly' },
-      { id: 'c2', title: 'Provision Q1 2026', amount: 480, status: 'paid',     due_date: '2026-03-31', paid_date: '2026-03-28', period: 'quarterly' },
-      { id: 'c3', title: 'Provision Q4 2025', amount: 460, status: 'paid',     due_date: '2025-12-31', paid_date: '2025-12-29', period: 'quarterly' },
-      { id: 'c4', title: 'Provision Q3 2025', amount: 460, status: 'paid',     due_date: '2025-09-30', paid_date: '2025-09-25', period: 'quarterly' },
-      { id: 'c5', title: 'Travaux ascenseur — quote-part',  amount: 3375, status: 'overdue', due_date: '2026-05-15', paid_date: null, period: 'oneTime' },
-    ],
-    meetings: [
-      { id: 'mtg-1', title: 'Assemblée Générale Ordinaire 2026', date: '2026-09-15T18:00:00Z', status: 'scheduled', agenda: '1. Approbation des comptes\n2. Budget 2027\n3. Rénovation toiture' },
-    ],
-    documents: [
-      { id: 'doc-1', name: 'PV AG 2025.pdf',          category: 'minutes',  created_at: '2026-01-15T00:00:00Z', download_url: null },
-      { id: 'doc-2', name: 'Budget 2026.pdf',          category: 'budget',   created_at: '2026-01-10T00:00:00Z', download_url: null },
-      { id: 'doc-3', name: 'Règlement de copropriété', category: 'legal',    created_at: '2025-06-01T00:00:00Z', download_url: null },
-      { id: 'doc-4', name: 'Acte de base.pdf',         category: 'acte_de_base', created_at: '2025-06-01T00:00:00Z', download_url: null },
-    ],
-    messages: [
-      { id: 'msg-1', subject: 'Bruit au 3ème étage', body: 'Bonjour, merci pour votre signalement.', read_at: null, created_at: '2026-06-03T08:45:00Z', thread_id: 'msg-1', sender_user_id: 'syndic-1' },
-      { id: 'msg-2', subject: 'Travaux ascenseur — planning', body: 'Les travaux débuteront le 15 juin.', read_at: '2026-06-01T10:00:00Z', created_at: '2026-05-30T14:00:00Z', thread_id: 'msg-2', sender_user_id: 'syndic-1' },
-    ],
-  },
-}
-
 interface PortalData {
   building:  { name: string; address: string; city: string; ag_date: string | null }
   unit:      { unit_number: string; floor: number | null; unit_type: string; ownership_share: number } | null
@@ -62,10 +34,6 @@ export default function PortalPage() {
 
   useEffect(() => {
     if (!building) return
-    if (building.id.startsWith('mock-')) {
-      setData((MOCK_PORTAL_DATA as Record<string, PortalData>)[building.id] ?? null)
-      return
-    }
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) return
       fetch(`/api/v1/portal/me?building_id=${building.id}`, {
@@ -79,10 +47,6 @@ export default function PortalPage() {
 
   async function handlePayNow(chargeId: string) {
     if (!building) return
-    if (building.id.startsWith('mock-')) {
-      alert('Demo mode: in production this opens a Mollie payment page.')
-      return
-    }
     setPayingId(chargeId)
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -101,10 +65,6 @@ export default function PortalPage() {
 
   async function handleDownload(doc: PortalData['documents'][number]) {
     if (!building) return
-    if (building.id.startsWith('mock-')) {
-      alert(`Demo mode: "${doc.name}" would download here in production.`)
-      return
-    }
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
     const res = await fetch(`/api/v1/portal/document/${doc.id}/url?building_id=${building.id}`, {

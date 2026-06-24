@@ -23,11 +23,8 @@ export const DOCUMENT_CATEGORIES = [
 ] as const
 
 export async function fetchDocuments(buildingId: string): Promise<Document[]> {
-  if (buildingId.startsWith('mock-')) {
-    return MOCK_DOCUMENTS[buildingId] ?? []
-  }
   const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return MOCK_DOCUMENTS[buildingId] ?? []
+  if (!session) return []
 
   const { data, error } = await supabase
     .from('documents')
@@ -94,64 +91,3 @@ export async function apiDeleteDocument(
   })
 }
 
-// ── Mock data ─────────────────────────────────────────────────
-const MOCK_DOCUMENTS: Record<string, Document[]> = {
-  'mock-building-1': [
-    {
-      id:               'mock-doc-1',
-      building_id:      'mock-building-1',
-      organization_id:  'mock-org-1',
-      name:             'AG Minutes — May 2026',
-      category:         'minutes',
-      visibility:       'all_residents',
-      storage_path:     'mock/path/doc1.pdf',
-      file_size:        142500,
-      mime_type:        'application/pdf',
-      uploaded_by:      'mock-user-1',
-      virus_scanned_at: new Date().toISOString(),
-      created_at:       new Date(Date.now() - 7 * 86400000).toISOString(),
-    },
-    {
-      id:               'mock-doc-2',
-      building_id:      'mock-building-1',
-      organization_id:  'mock-org-1',
-      name:             'Annual Budget 2026',
-      category:         'budget',
-      visibility:       'all_residents',
-      storage_path:     'mock/path/doc2.pdf',
-      file_size:        89000,
-      mime_type:        'application/pdf',
-      uploaded_by:      'mock-user-1',
-      virus_scanned_at: new Date().toISOString(),
-      created_at:       new Date(Date.now() - 14 * 86400000).toISOString(),
-    },
-    {
-      id:               'mock-doc-3',
-      building_id:      'mock-building-1',
-      organization_id:  'mock-org-1',
-      name:             'Insurance Policy — AXA 2026',
-      category:         'insurance',
-      visibility:       'syndic_only',
-      storage_path:     'mock/path/doc3.pdf',
-      file_size:        215000,
-      mime_type:        'application/pdf',
-      uploaded_by:      'mock-user-1',
-      virus_scanned_at: new Date().toISOString(),
-      created_at:       new Date(Date.now() - 30 * 86400000).toISOString(),
-    },
-    {
-      id:               'mock-doc-4',
-      building_id:      'mock-building-1',
-      organization_id:  'mock-org-1',
-      name:             'Lift Maintenance Contract',
-      category:         'contract',
-      visibility:       'syndic_only',
-      storage_path:     'mock/path/doc4.pdf',
-      file_size:        67000,
-      mime_type:        'application/pdf',
-      uploaded_by:      'mock-user-1',
-      virus_scanned_at: new Date().toISOString(),
-      created_at:       new Date(Date.now() - 60 * 86400000).toISOString(),
-    },
-  ],
-}

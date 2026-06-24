@@ -9,11 +9,10 @@ const qk = (buildingId: string, year: number) => ['budget-lines', buildingId, ye
 
 export function useBudgetLines(buildingId: string | null | undefined, year: number) {
   const { session } = useAuth()
-  const isMock = buildingId?.startsWith('mock-') ?? false
   return useQuery({
     queryKey: qk(buildingId ?? '', year),
     queryFn:  () => fetchBudgetLines(session?.access_token ?? '', buildingId!, year),
-    enabled:  !!buildingId && (!!session || isMock),
+    enabled:  !!buildingId && !!session,
   })
 }
 

@@ -2,7 +2,6 @@
 
 import { supabase }               from '../../lib/supabase'
 import { apiFetch }               from '../../lib/api'
-import { MOCK_INSURANCE_POLICIES, MOCK_INSURANCE_CLAIMS } from '../../lib/mockData'
 
 export interface InsurancePolicy {
   id:                    string
@@ -42,9 +41,6 @@ export interface InsuranceClaim {
 }
 
 export async function fetchInsurancePolicies(buildingId: string): Promise<InsurancePolicy[]> {
-  if (buildingId.startsWith('mock-')) {
-    return MOCK_INSURANCE_POLICIES[buildingId] ?? []
-  }
   const { data, error } = await supabase
     .from('insurance_policies')
     .select('*')
@@ -56,10 +52,6 @@ export async function fetchInsurancePolicies(buildingId: string): Promise<Insura
 }
 
 export async function fetchInsuranceClaims(buildingId: string, policyId?: string): Promise<InsuranceClaim[]> {
-  if (buildingId.startsWith('mock-')) {
-    const all = MOCK_INSURANCE_CLAIMS[buildingId] ?? []
-    return policyId ? all.filter(c => c.policy_id === policyId) : all
-  }
   let query = supabase
     .from('insurance_claims')
     .select('*')

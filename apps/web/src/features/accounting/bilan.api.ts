@@ -1,5 +1,4 @@
 import { apiFetch }   from '../../lib/api'
-import { MOCK_BILAN } from '../../lib/mockData'
 
 export interface BilanSummary {
   year:                  number
@@ -19,9 +18,6 @@ export interface BilanSummary {
 export async function fetchBilan(
   token: string, buildingId: string, year: number,
 ): Promise<BilanSummary> {
-  if (buildingId.startsWith('mock-')) {
-    return MOCK_BILAN[buildingId] ?? { year, building_id: buildingId, bank_vue: 0, bank_epargne: 0, total_receivables: 0, total_actif: 0, reserve_fund_balance: 0, total_income: 0, total_expenses: 0, net_result: 0, total_passif: 0, expenses_by_code: {} }
-  }
   return apiFetch<BilanSummary>(
     `/api/v1/bilan?building_id=${buildingId}&year=${year}`, token,
   )

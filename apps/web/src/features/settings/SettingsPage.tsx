@@ -82,36 +82,6 @@ async function apiFetch(path: string, token: string, options?: RequestInit) {
   return res.json()
 }
 
-// ── Mock data (dev only) ──────────────────────────────────────
-
-const MOCK_ORG: OrgData = {
-  id: 'mock-org-1', name: 'SyndicSage Demo', vat_number: 'BE0123456789',
-  plan: 'pro', created_at: '2026-01-01T00:00:00Z',
-}
-
-const MOCK_MEMBERS: MemberRow[] = [
-  { id: 'm1', user_id: 'u1', building_id: 'mock-building-1', building_name: 'Résidence du Parc', role: 'syndic',   joined_at: '2026-01-15T10:00:00Z', profile: { full_name: 'Chris Ndiyalama', email: 'chris@syndicsage.com' } },
-  { id: 'm2', user_id: 'u2', building_id: 'mock-building-1', building_name: 'Résidence du Parc', role: 'co_owner', joined_at: '2026-02-01T09:00:00Z', profile: { full_name: 'Sophie Leroy',     email: 'sophie@example.com'     } },
-  { id: 'm3', user_id: 'u3', building_id: 'mock-building-1', building_name: 'Résidence du Parc', role: 'renter',   joined_at: '2026-03-10T14:00:00Z', profile: { full_name: 'Marc Dupont',       email: 'marc@example.com'       } },
-]
-
-const MOCK_FLAGS: FeatureFlag[] = [
-  { key: 'uploads_enabled', enabled: true,  description: 'Allow document uploads'   },
-  { key: 'logins_enabled',  enabled: true,  description: 'Allow new user logins'    },
-  { key: 'exports_enabled', enabled: false, description: 'Allow data exports'       },
-]
-
-const MOCK_AUDIT: AuditEntry[] = [
-  { id: 'a1', user_id: 'u1', user_name: 'Chris Ndiyalama', building_id: 'mock-building-1', action: 'charge_create',  resource_type: 'charge',  resource_id: 'c1', created_at: '2026-06-03T10:00:00Z' },
-  { id: 'a2', user_id: 'u2', user_name: 'Sophie Leroy',    building_id: 'mock-building-1', action: 'document_upload',resource_type: 'document', resource_id: 'd1', created_at: '2026-06-02T15:30:00Z' },
-  { id: 'a3', user_id: 'u1', user_name: 'Chris Ndiyalama', building_id: null,              action: 'login',          resource_type: 'session',  resource_id: null, created_at: '2026-06-01T08:00:00Z' },
-]
-
-const MOCK_GDPR: GdprRequest[] = [
-  { id: 'g1', user_id: 'u2', type: 'access',  status: 'pending',    notes: null,            deadline_at: '2026-07-03T00:00:00Z', created_at: '2026-06-03T09:00:00Z', profile: { full_name: 'Sophie Leroy', email: 'sophie@example.com' } },
-  { id: 'g2', user_id: 'u3', type: 'erasure', status: 'processing', notes: 'In progress',   deadline_at: '2026-06-28T00:00:00Z', created_at: '2026-05-29T11:00:00Z', profile: { full_name: 'Marc Dupont',  email: 'marc@example.com'   } },
-]
-
 // ── Tab names ─────────────────────────────────────────────────
 
 type Tab = 'sessions' | 'team' | 'org' | 'audit' | 'flags' | 'gdpr'
@@ -173,8 +143,6 @@ export default function SettingsPage() {
   // Shared error
   const [errorMsg, setErrorMsg] = useState('')
 
-  const isMock = !session
-
   // ── Load sessions ──────────────────────────────────────────
 
   const loadSessions = useCallback(async () => {
@@ -196,7 +164,7 @@ export default function SettingsPage() {
   // ── Load org ───────────────────────────────────────────────
 
   const loadOrg = useCallback(async () => {
-    if (!session) { setOrg(MOCK_ORG); return }
+    if (!session) return
     try {
       const data = await apiFetch('/api/v1/settings/org', session.access_token) as OrgData
       setOrg(data)
@@ -208,7 +176,7 @@ export default function SettingsPage() {
   // ── Load members ───────────────────────────────────────────
 
   const loadMembers = useCallback(async () => {
-    if (!session) { setMembers(MOCK_MEMBERS); return }
+    if (!session) return
     try {
       const data = await apiFetch('/api/v1/settings/members', session.access_token) as MemberRow[]
       setMembers(data)
@@ -218,7 +186,7 @@ export default function SettingsPage() {
   // ── Load feature flags ─────────────────────────────────────
 
   const loadFlags = useCallback(async () => {
-    if (!session) { setFlags(MOCK_FLAGS); return }
+    if (!session) return
     try {
       const data = await apiFetch('/api/v1/settings/feature-flags', session.access_token) as FeatureFlag[]
       setFlags(data)
@@ -228,7 +196,7 @@ export default function SettingsPage() {
   // ── Load audit log ─────────────────────────────────────────
 
   const loadAudit = useCallback(async (page: number) => {
-    if (!session) { setAuditRows(MOCK_AUDIT); return }
+    if (!session) return
     try {
       const res = await apiFetch(`/api/v1/settings/audit-log?page=${page}&limit=50`, session.access_token) as { rows: AuditEntry[] }
       setAuditRows(res.rows)
@@ -238,7 +206,7 @@ export default function SettingsPage() {
   // ── Load GDPR ──────────────────────────────────────────────
 
   const loadGdpr = useCallback(async () => {
-    if (!session) { setGdprRows(MOCK_GDPR); return }
+    if (!session) return
     try {
       const data = await apiFetch('/api/v1/settings/gdpr', session.access_token) as GdprRequest[]
       setGdprRows(data)
@@ -311,7 +279,7 @@ export default function SettingsPage() {
   // ── Flag handler ───────────────────────────────────────────
 
   async function handleToggleFlag(key: string, current: boolean) {
-    if (!session) { setFlags(f => f.map(x => x.key === key ? { ...x, enabled: !x.enabled } : x)); return }
+    if (!session) return
     setTogglingFlag(key)
     try {
       await apiFetch(`/api/v1/settings/feature-flags/${key}`, session.access_token, {
@@ -326,7 +294,7 @@ export default function SettingsPage() {
   // ── GDPR handler ───────────────────────────────────────────
 
   async function handleGdprStatus(id: string, status: string) {
-    if (!session) { setGdprRows(r => r.map(x => x.id === id ? { ...x, status } : x)); return }
+    if (!session) return
     setProcessingId(id)
     try {
       await apiFetch(`/api/v1/settings/gdpr/${id}`, session.access_token, {
@@ -342,7 +310,7 @@ export default function SettingsPage() {
 
   const otherSessions  = sessions.filter(s => !s.is_current)
   const currentSession = sessions.find(s => s.is_current)
-  const isSyndic       = myRole === 'syndic' || isMock
+  const isSyndic       = myRole === 'syndic'
 
   const TABS: { key: Tab; label: string; syndicOnly?: boolean }[] = [
     { key: 'sessions', label: t('settings.sessions.title') },

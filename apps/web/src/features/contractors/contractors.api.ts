@@ -2,7 +2,6 @@
 
 import { supabase }        from '../../lib/supabase'
 import { apiFetch }        from '../../lib/api'
-import { MOCK_CONTRACTORS, MOCK_SUPPLIER_CONTRACTS } from '../../lib/mockData'
 
 export interface Contractor {
   id:              string
@@ -37,9 +36,6 @@ export interface SupplierContract {
 }
 
 export async function fetchContractors(organizationId: string): Promise<Contractor[]> {
-  if (organizationId.startsWith('mock-')) {
-    return MOCK_CONTRACTORS[organizationId] ?? []
-  }
   const { data, error } = await supabase
     .from('contractors')
     .select('*')
@@ -51,9 +47,6 @@ export async function fetchContractors(organizationId: string): Promise<Contract
 }
 
 export async function fetchSupplierContracts(buildingId: string): Promise<SupplierContract[]> {
-  if (buildingId.startsWith('mock-')) {
-    return MOCK_SUPPLIER_CONTRACTS[buildingId] ?? []
-  }
   const { data, error } = await supabase
     .from('supplier_contracts')
     .select('*')

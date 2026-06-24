@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider }     from './shared/auth/AuthContext'
 import { BuildingProvider } from './shared/building/BuildingContext'
 import { AiSageProvider }   from './features/ai/AiSageContext'
+import { JourneyProvider }  from './features/journey/JourneyContext'
+import JourneyPage          from './features/journey/JourneyPage'
 import { AuthGuard }        from './shared/auth/AuthGuard'
 import LoginPage            from './features/auth/LoginPage'
 import AuthCallbackPage     from './features/auth/AuthCallbackPage'
@@ -45,6 +47,7 @@ export default function App() {
       <AuthProvider>
         <BuildingProvider>
           <AiSageProvider>
+          <JourneyProvider>
           <Routes>
             {/* Public */}
             <Route path="/login"         element={<LoginPage />} />
@@ -61,6 +64,7 @@ export default function App() {
             <Route path="/admin/customers" element={<AuthGuard><CustomersPage /></AuthGuard>} />
 
             {/* Protected app */}
+            <Route path="/journey"   element={<AuthGuard><JourneyPage /></AuthGuard>} />
             <Route path="/"          element={<AuthGuard><DashboardPage /></AuthGuard>} />
             <Route path="/buildings"     element={<AuthGuard><BuildingsPage /></AuthGuard>} />
             <Route path="/buildings/:id" element={<AuthGuard><BuildingProfilePage /></AuthGuard>} />
@@ -96,6 +100,7 @@ export default function App() {
             {/* Public — no AuthGuard (token validates identity) */}
             <Route path="/invite/accept" element={<AcceptInvitePage />} />
           </Routes>
+          </JourneyProvider>
           </AiSageProvider>
         </BuildingProvider>
       </AuthProvider>

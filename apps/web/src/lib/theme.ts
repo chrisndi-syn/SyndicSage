@@ -26,6 +26,6 @@ export const theme = {
   radiusSm:     9,
   topbarH:      52,
   sidebarW:     52,
-  sidebarOpen:  224,
+  sidebarOpen:  220,
   transition:   '0.22s cubic-bezier(.4,0,.2,1)',
 } as const

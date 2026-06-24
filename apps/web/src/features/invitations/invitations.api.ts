@@ -19,7 +19,6 @@ export interface Invitation {
 }
 
 export async function fetchInvitations(buildingId: string): Promise<Invitation[]> {
-  if (buildingId.startsWith('mock-')) return MOCK_INVITATIONS[buildingId] ?? []
   return apiFetch<Invitation[]>(`/api/v1/invitations?building_id=${buildingId}`, '')
 }
 
@@ -50,22 +49,3 @@ export async function apiAcceptInvitation(authToken: string, inviteToken: string
   })
 }
 
-// ── Mock data ──────────────────────────────────────────────────
-const MOCK_INVITATIONS: Record<string, Invitation[]> = {
-  'mock-building-1': [
-    {
-      id: 'inv-1', building_id: 'mock-building-1', organization_id: 'mock-org-1',
-      invited_by: 'user-1', email: 'jean.dupont@example.com', role: 'co_owner',
-      unit_id: null, token: 'mock-token-1',
-      status: 'pending', expires_at: '2026-06-10T00:00:00Z',
-      accepted_at: null, created_at: '2026-06-03T10:00:00Z', deleted_at: null,
-    },
-    {
-      id: 'inv-2', building_id: 'mock-building-1', organization_id: 'mock-org-1',
-      invited_by: 'user-1', email: 'sophie.martin@example.com', role: 'renter',
-      unit_id: null, token: 'mock-token-2',
-      status: 'accepted', expires_at: '2026-06-08T00:00:00Z',
-      accepted_at: '2026-06-04T09:00:00Z', created_at: '2026-06-01T10:00:00Z', deleted_at: null,
-    },
-  ],
-}

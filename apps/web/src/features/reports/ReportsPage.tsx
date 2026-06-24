@@ -6,38 +6,20 @@ import { Shell }          from '../../components/layout/Shell'
 import { Topbar }         from '../../components/layout/Topbar'
 import { useBuilding }    from '../../shared/building/BuildingContext'
 
-// ── Mock report data ──────────────────────────────────────────
-const MOCK_REPORTS: Record<string, ReturnType<typeof buildMockReport>> = {}
-
-function buildMockReport(buildingId: string) {
-  return {
-    building: {
-      name: buildingId === 'mock-building-1' ? 'Résidence les Acacias' : 'Copropriété du Parc',
-      unit_count: buildingId === 'mock-building-1' ? 24 : 12,
-      annual_budget: buildingId === 'mock-building-1' ? 48000 : 24000,
-      reserve_fund_balance: buildingId === 'mock-building-1' ? 12400 : 5800,
-      ag_date: buildingId === 'mock-building-1' ? '2026-09-15' : '2026-11-20',
-      mandate_expiry: '2027-01-01',
-    },
-    charges: { total: 48000, paid: 36800, pending: 11200, count: 24 },
-    accounting: { expenses: 22450, income: 40100, net: 17650, year: 2026 },
-    tickets: { open: 3, resolved: 12, total: 15 },
-    recentMeetings: [
-      { title: 'AG 2026', date: '2026-09-15T18:00:00Z', status: 'scheduled' },
-      { title: 'AGE Ascenseur', date: '2026-04-10T18:00:00Z', status: 'completed' },
-    ],
-    unitCount: buildingId === 'mock-building-1' ? 24 : 12,
+interface ReportData {
+  building: {
+    name: string; unit_count: number; annual_budget: number;
+    reserve_fund_balance: number; ag_date: string | null; mandate_expiry: string | null;
   }
+  charges:    { total: number; paid: number; pending: number; count: number }
+  accounting: { expenses: number; income: number; net: number; year: number }
+  tickets:    { open: number; resolved: number; total: number }
+  recentMeetings: Array<{ title: string; date: string; status: string }>
+  unitCount: number
 }
 
-MOCK_REPORTS['mock-building-1'] = buildMockReport('mock-building-1')
-MOCK_REPORTS['mock-building-2'] = buildMockReport('mock-building-2')
-
-function useReport(buildingId: string | undefined) {
+function useReport(buildingId: string | undefined): { data: ReportData | null; isLoading: boolean } {
   if (!buildingId) return { data: null, isLoading: false }
-  if (buildingId.startsWith('mock-')) {
-    return { data: MOCK_REPORTS[buildingId] ?? null, isLoading: false }
-  }
   // Real fetch would go here — use apiFetch
   return { data: null, isLoading: false }
 }
@@ -141,7 +123,7 @@ export default function ReportsPage() {
             <StatCard
               label={t('reports.mandateExpiry')}
               value={`${daysMandateLeft}d`}
-              sub={report.building.mandate_expiry}
+              sub={report.building.mandate_expiry ?? undefined}
               accent={daysMandateLeft > 180 ? '#15803D' : daysMandateLeft > 60 ? '#B45309' : '#DC2626'}
             />
           )}

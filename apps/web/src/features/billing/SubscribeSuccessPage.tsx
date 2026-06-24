@@ -8,7 +8,6 @@ export default function SubscribeSuccessPage() {
   const navigate          = useNavigate()
   const [params]          = useSearchParams()
   const { refetch }       = useBuilding()
-  const isMock            = params.get('mock') === '1'
 
   // Re-fetch org plan so BuildingContext reflects the new paid plan
   useEffect(() => {
@@ -46,7 +45,7 @@ export default function SubscribeSuccessPage() {
         {t('billing.successTitle')}
       </h1>
       <p style={{ margin: '0 0 8px', fontSize: 16, color: 'rgba(255,255,255,0.7)', maxWidth: 400, lineHeight: 1.5 }}>
-        {isMock ? t('billing.successSubtitleMock', { plan }) : t('billing.successSubtitle')}
+        {t('billing.successSubtitle')}
       </p>
       <p style={{ margin: 0, fontSize: 13, color: 'rgba(255,255,255,0.35)' }}>
         {t('billing.successRedirect')}

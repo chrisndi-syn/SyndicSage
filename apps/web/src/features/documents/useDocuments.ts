@@ -22,11 +22,8 @@ export function useUploadDocument(buildingId: string) {
       visibility: string
     }) => {
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session && !buildingId.startsWith('mock-')) throw new Error('Not authenticated')
-      if (buildingId.startsWith('mock-')) {
-        return { id: `mock-doc-${Date.now()}`, building_id: buildingId, name: vars.name } as any
-      }
-      return apiUploadDocument(session!.access_token, buildingId, vars.file, vars.name, vars.category, vars.visibility)
+      if (!session) throw new Error('Not authenticated')
+      return apiUploadDocument(session.access_token, buildingId, vars.file, vars.name, vars.category, vars.visibility)
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['documents', buildingId] }),
   })

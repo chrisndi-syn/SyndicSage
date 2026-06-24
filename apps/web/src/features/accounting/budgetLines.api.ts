@@ -1,5 +1,4 @@
 import { apiFetch }           from '../../lib/api'
-import { MOCK_BUDGET_LINES }  from '../../lib/mockData'
 
 export interface BudgetLineWithActual {
   id:              string
@@ -16,9 +15,6 @@ export interface BudgetLineWithActual {
 export async function fetchBudgetLines(
   token: string, buildingId: string, year: number,
 ): Promise<BudgetLineWithActual[]> {
-  if (buildingId.startsWith('mock-')) {
-    return (MOCK_BUDGET_LINES[buildingId] ?? []).filter(l => l.year === year)
-  }
   return apiFetch<BudgetLineWithActual[]>(
     `/api/v1/budget-lines?building_id=${buildingId}&year=${year}`, token,
   )

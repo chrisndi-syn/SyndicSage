@@ -9,15 +9,6 @@ import { Topbar }              from '../../components/layout/Topbar'
 import { useBuilding }         from '../../shared/building/BuildingContext'
 import { supabase }            from '../../lib/supabase'
 
-// ── Mock data (mirrors PortalPage) ───────────────────────────────
-const MOCK_CHARGES: Charge[] = [
-  { id: 'c1', title: 'Provision Q2 2026',               amount: 480,  status: 'pending', due_date: '2026-06-30', paid_date: null,         period: 'quarterly' },
-  { id: 'c2', title: 'Provision Q1 2026',               amount: 480,  status: 'paid',    due_date: '2026-03-31', paid_date: '2026-03-28', period: 'quarterly' },
-  { id: 'c3', title: 'Provision Q4 2025',               amount: 460,  status: 'paid',    due_date: '2025-12-31', paid_date: '2025-12-29', period: 'quarterly' },
-  { id: 'c4', title: 'Provision Q3 2025',               amount: 460,  status: 'paid',    due_date: '2025-09-30', paid_date: '2025-09-25', period: 'quarterly' },
-  { id: 'c5', title: 'Travaux ascenseur — quote-part',  amount: 3375, status: 'overdue', due_date: '2026-05-15', paid_date: null,         period: 'oneTime' },
-]
-
 interface Charge {
   id:         string
   title:      string
@@ -49,11 +40,6 @@ export default function PortalChargesPage() {
 
   useEffect(() => {
     if (!building) return
-    if (building.id.startsWith('mock-')) {
-      setCharges(MOCK_CHARGES)
-      setLoading(false)
-      return
-    }
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) { setLoading(false); return }
       fetch(`/api/v1/portal/me?building_id=${building.id}`, {
@@ -70,10 +56,6 @@ export default function PortalChargesPage() {
 
   async function handlePayNow(chargeId: string) {
     if (!building) return
-    if (building.id.startsWith('mock-')) {
-      alert('Demo mode: in production this opens a Mollie payment page.')
-      return
-    }
     setPayingId(chargeId)
     try {
       const { data: { session } } = await supabase.auth.getSession()

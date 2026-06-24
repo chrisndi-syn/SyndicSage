@@ -2,7 +2,6 @@
 
 import { supabase }      from '../../lib/supabase'
 import { apiFetch }      from '../../lib/api'
-import { MOCK_EXPENSES } from '../../lib/mockData'
 
 export interface Expense {
   id:              string
@@ -19,9 +18,6 @@ export interface Expense {
 }
 
 export async function fetchExpenses(buildingId: string, year: number): Promise<Expense[]> {
-  if (buildingId.startsWith('mock-')) {
-    return (MOCK_EXPENSES[buildingId] ?? []).filter(e => e.date.startsWith(String(year)))
-  }
   const { data, error } = await supabase
     .from('expenses')
     .select('*')

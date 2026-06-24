@@ -95,7 +95,12 @@
     "insurance": "Assurances",
     "contractors": "Prestataires",
     "templates": "Modèles de lettres",
-    "maintenance": "Maintenance"
+    "maintenance": "Maintenance",
+    "groupManagement":   "Gestion",
+    "groupCommunication":"Communication",
+    "groupAccounting":   "Comptabilité",
+    "groupGovernance":   "Gouvernance",
+    "groupPortal":       "Portail"
   },
   "profile": {
     "title": "Mon profil",
@@ -809,5 +814,36 @@
     "members": "Membres",
     "stripe": "ID Stripe",
     "signedUp": "Inscrit le"
+  },
+  "journey": {
+    "title": "Votre Parcours",
+    "subtitle": "Progression sur la plateforme",
+    "progress": "Progression globale",
+    "stagesComplete": "étapes terminées",
+    "currentStageHint": "En cours : {{stage}}",
+    "allDone": "Toutes les étapes sont terminées — vous avez tout débloqué !",
+    "stageLabel": "Étape {{n}}",
+    "complete": "Terminé",
+    "continueStage": "Continuer",
+    "gateTitle": "Section verrouillée",
+    "gateDesc": "Vous devez terminer l'étape précédente avant de débloquer cette section.",
+    "gateRequires": "Terminez d'abord «{{stage}}»",
+    "proRequired": "Formule Pro requise",
+    "viewJourney": "Voir le parcours",
+    "stage1Title": "Fondation",
+    "stage1Desc": "Configurez votre immeuble, ajoutez vos copropriétaires et créez votre première charge. Tout commence ici.",
+    "stage2Title": "Finances",
+    "stage2Desc": "Enregistrez votre première dépense pour débloquer la comptabilité complète — budget, revenus et bilan financier.",
+    "stage3Title": "Gouvernance",
+    "stage3Desc": "Planifiez votre première assemblée pour débloquer les votes, les rapports et le cycle de vie AG complet.",
+    "stage4Title": "Communauté",
+    "stage4Desc": "Invitez vos copropriétaires pour débloquer le portail résidents, la messagerie et le hub de communication.",
+    "task1a": "Ajouter un immeuble",
+    "task1b": "Ajouter au moins un propriétaire",
+    "task1c": "Créer une charge",
+    "task2a": "Enregistrer votre première dépense",
+    "task3a": "Planifier une assemblée",
+    "task4a": "Passer à la formule Pro",
+    "task4b": "Terminer l'étape 3"
   }
 }

@@ -27,7 +27,7 @@ const CATEGORY_COLORS: Record<string, { bg: string; color: string }> = {
 export default function LetterTemplatesPage() {
   const { t } = useTranslation()
   const { selected: building } = useBuilding()
-  const orgId = building?.organization_id ?? 'mock-org-1'
+  const orgId = building?.organization_id ?? ''
 
   const { data: templates = [], isLoading, error } = useLetterTemplates(orgId, building?.id)
 

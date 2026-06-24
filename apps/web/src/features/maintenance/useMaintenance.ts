@@ -44,10 +44,7 @@ export function useMarkDone(buildingId: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => {
-      if (!session) {
-        // Dev mode mock: just invalidate
-        return Promise.resolve({ ok: true, next_due_date: '' })
-      }
+      if (!session) throw new Error('Not authenticated')
       return apiMarkDone(session.access_token, buildingId, id)
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: qk(buildingId) }),

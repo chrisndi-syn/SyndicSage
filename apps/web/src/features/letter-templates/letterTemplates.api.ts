@@ -2,7 +2,6 @@
 
 import { supabase }              from '../../lib/supabase'
 import { apiFetch }              from '../../lib/api'
-import { MOCK_LETTER_TEMPLATES } from '../../lib/mockData'
 
 export interface LetterTemplate {
   id:              string
@@ -18,10 +17,6 @@ export interface LetterTemplate {
 }
 
 export async function fetchLetterTemplates(organizationId: string, buildingId?: string): Promise<LetterTemplate[]> {
-  if (organizationId.startsWith('mock-')) {
-    const all = MOCK_LETTER_TEMPLATES[organizationId] ?? []
-    return buildingId ? all.filter(t => t.building_id === null || t.building_id === buildingId) : all
-  }
   let query = supabase
     .from('letter_templates')
     .select('*')
