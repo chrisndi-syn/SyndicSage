@@ -633,7 +633,9 @@
     "noMeetings": "Geen geplande vergaderingen",
     "viewAgenda": "Agenda bekijken",
     "joinOnline": "Online deelnemen",
-    "proOnly": "Pro"
+    "proOnly": "Pro",
+    "requestsSub": "Dien uw onderhoudsverzoeken in en volg ze op",
+    "newRequest": "Nieuw verzoek"
   },
   "roadmap": {
     "title": "Werkplanning",

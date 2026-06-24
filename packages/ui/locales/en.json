@@ -631,7 +631,9 @@
     "noMeetings": "No upcoming meetings",
     "viewAgenda": "View agenda",
     "joinOnline": "Join online",
-    "proOnly": "Pro"
+    "proOnly": "Pro",
+    "requestsSub": "Submit and track your maintenance requests",
+    "newRequest": "New request"
   },
   "roadmap": {
     "title": "Roadmap",

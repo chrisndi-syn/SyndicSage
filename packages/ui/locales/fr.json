@@ -631,7 +631,9 @@
     "noMeetings": "Aucune assemblée prévue",
     "viewAgenda": "Voir l'ordre du jour",
     "joinOnline": "Rejoindre en ligne",
-    "proOnly": "Pro"
+    "proOnly": "Pro",
+    "requestsSub": "Soumettez et suivez vos demandes de maintenance",
+    "newRequest": "Nouvelle demande"
   },
   "roadmap": {
     "title": "Feuille de route",

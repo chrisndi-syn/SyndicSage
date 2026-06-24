@@ -67,7 +67,7 @@ export function Sidebar() {
         { to: '/portal/messages',  icon: <Bell            size={16} />, label: t('portal.messages'), badge: unreadCount || undefined },
         { to: '/portal/requests',  icon: <Ticket          size={16} />, label: t('portal.requests') },
         { to: '/portal/documents', icon: <FileText        size={16} />, label: t('nav.documents') },
-        { to: '/meetings',         icon: <CalendarDays    size={16} />, label: t('nav.meetings') },
+        { to: '/portal/meetings',  icon: <CalendarDays    size={16} />, label: t('nav.meetings') },
       ],
     },
   ]

@@ -34,6 +34,9 @@ import ReportsPage          from './features/reports/ReportsPage'
 import InvitationsPage      from './features/invitations/InvitationsPage'
 import PortalPage           from './features/portal/PortalPage'
 import PortalChargesPage    from './features/portal/PortalChargesPage'
+import PortalRequestsPage   from './features/portal/PortalRequestsPage'
+import PortalDocumentsPage  from './features/portal/PortalDocumentsPage'
+import PortalMeetingsPage   from './features/portal/PortalMeetingsPage'
 import MessagesPage         from './features/portal/MessagesPage'
 import AcceptInvitePage     from './features/portal/AcceptInvitePage'
 import ProfilePage           from './features/profile/ProfilePage'
@@ -93,8 +96,9 @@ export default function App() {
             <Route path="/portal"              element={<AuthGuard><PortalPage /></AuthGuard>} />
             <Route path="/portal/charges"     element={<AuthGuard><PortalChargesPage /></AuthGuard>} />
             <Route path="/portal/messages"    element={<AuthGuard><MessagesPage /></AuthGuard>} />
-            <Route path="/portal/requests"    element={<Navigate to="/tickets" replace />} />
-            <Route path="/portal/documents"   element={<Navigate to="/documents" replace />} />
+            <Route path="/portal/requests"    element={<AuthGuard><PortalRequestsPage /></AuthGuard>} />
+            <Route path="/portal/documents"   element={<AuthGuard><PortalDocumentsPage /></AuthGuard>} />
+            <Route path="/portal/meetings"    element={<AuthGuard><PortalMeetingsPage /></AuthGuard>} />
             <Route path="/ai"                 element={<Navigate to="/" replace />} />
 
             {/* Public — no AuthGuard (token validates identity) */}
