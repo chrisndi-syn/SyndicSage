@@ -69,24 +69,31 @@ export default function PortalRequestsPage() {
   }, [building, isDemoMode])
 
   async function handleSubmit() {
-    if (!building || !newTitle.trim() || !newDesc.trim()) return
+    if (!newTitle.trim() || !newDesc.trim()) return
     setSubmitting(true)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
-      const res = await fetch(`/api/v1/tickets?building_id=${building.id}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: newType, title: newTitle.trim(), description: newDesc.trim() }),
-      })
-      if (res.ok) {
-        const created = await res.json() as TicketRow
-        setTickets(prev => [created, ...prev])
-        setShowForm(false)
-        setNewTitle('')
-        setNewDesc('')
-        setNewType('complaint')
+      if (isDemoMode) {
+        // Demo: add locally without API call
+        const fake: TicketRow = { id: Date.now().toString(), title: newTitle.trim(), type: newType, status: 'open', description: newDesc.trim(), created_at: new Date().toISOString() }
+        setTickets(prev => [fake, ...prev])
+      } else {
+        if (!building) return
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) return
+        const res = await fetch(`/api/v1/tickets?building_id=${building.id}`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: newType, title: newTitle.trim(), description: newDesc.trim() }),
+        })
+        if (res.ok) {
+          const created = await res.json() as TicketRow
+          setTickets(prev => [created, ...prev])
+        }
       }
+      setShowForm(false)
+      setNewTitle('')
+      setNewDesc('')
+      setNewType('complaint')
     } finally {
       setSubmitting(false)
     }
@@ -118,11 +125,10 @@ export default function PortalRequestsPage() {
             </div>
           </div>
           <button
-            onClick={() => !isDemoMode && setShowForm(true)}
-            disabled={isDemoMode}
+            onClick={() => setShowForm(true)}
             style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#1E3A5F',
               color: '#fff', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13,
-              fontWeight: 500, cursor: isDemoMode ? 'default' : 'pointer', opacity: isDemoMode ? 0.5 : 1 }}
+              fontWeight: 500, cursor: 'pointer' }}
           >
             <Plus size={14} /> {t('portal.newRequest')}
           </button>
