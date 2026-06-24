@@ -507,9 +507,9 @@ export function Sidebar() {
         flexShrink: 0,
       }}>
         {([
-          { to: '/profile',  icon: <UserCircle size={16} />, label: t('nav.profile'),  isLink: true  },
-          { to: '/settings', icon: <Settings   size={16} />, label: t('nav.settings'), isLink: true  },
-          { to: null,        icon: <LogOut     size={16} />, label: t('auth.signOut'),  isLink: false },
+          { to: isResident ? '/portal/profile'   : '/profile',  icon: <UserCircle size={16} />, label: t('nav.profile'),  isLink: true  },
+          { to: isResident ? '/portal/settings'  : '/settings', icon: <Settings   size={16} />, label: t('nav.settings'), isLink: true  },
+          { to: null,                                            icon: <LogOut     size={16} />, label: t('auth.signOut'),  isLink: false },
         ] as const).map((item, i) => {
           const inner = (isActive = false) => (
             <>

@@ -99,6 +99,8 @@ export default function App() {
             <Route path="/portal/requests"    element={<AuthGuard><PortalRequestsPage /></AuthGuard>} />
             <Route path="/portal/documents"   element={<AuthGuard><PortalDocumentsPage /></AuthGuard>} />
             <Route path="/portal/meetings"    element={<AuthGuard><PortalMeetingsPage /></AuthGuard>} />
+            <Route path="/portal/profile"     element={<AuthGuard><ProfilePage /></AuthGuard>} />
+            <Route path="/portal/settings"    element={<AuthGuard><SettingsPage /></AuthGuard>} />
             <Route path="/ai"                 element={<Navigate to="/" replace />} />
 
             {/* Public — no AuthGuard (token validates identity) */}
