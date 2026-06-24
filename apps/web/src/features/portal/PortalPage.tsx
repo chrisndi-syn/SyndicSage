@@ -184,7 +184,7 @@ export default function PortalPage() {
       title: t('portal.messagesSection'),
       badge: unreadMessages > 0 ? unreadMessages : undefined,
       buttons: [
-        { label: t('portal.openMessages'), icon: <MessageSquare size={14} />, onClick: () => navigate('/inbox') },
+        { label: t('portal.openMessages'), icon: <MessageSquare size={14} />, onClick: () => navigate('/portal/messages') },
       ],
     },
     {
@@ -213,7 +213,7 @@ export default function PortalPage() {
           })
         : t('portal.noMeetings'),
       buttons: [
-        ...(nextMeeting ? [{ label: t('portal.viewAgenda'), icon: <CalendarDays size={14} />, onClick: () => navigate('/meetings') }] : []),
+        ...(nextMeeting ? [{ label: t('portal.viewAgenda'), icon: <CalendarDays size={14} />, onClick: () => navigate('/portal/meetings') }] : []),
         { label: t('portal.joinOnline'), icon: <Video size={14} />, pro: true, disabled: true },
       ],
     },
