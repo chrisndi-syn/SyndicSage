@@ -93,7 +93,7 @@ export default function PortalPage() {
     try {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
-      const res = await fetch(`/api/v1/payments/create?building_id=${building.id}`, {
+      const res = await fetch(`/api/v1/payments?building_id=${building.id}`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${session.access_token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ charge_id: chargeId }),
