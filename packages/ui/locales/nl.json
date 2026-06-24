@@ -638,6 +638,7 @@
     "meetingsSection": "Vergaderingen",
     "meetingsSub": "Volgende: {{date}} om {{time}}",
     "noMeetings": "Geen geplande vergaderingen",
+    "notAvailableForRenters": "Deze sectie is niet beschikbaar voor huurders.",
     "viewAgenda": "Agenda bekijken",
     "joinOnline": "Online deelnemen",
     "proOnly": "Pro",

@@ -636,6 +636,7 @@
     "meetingsSection": "Assemblées",
     "meetingsSub": "Prochaine : {{date}} à {{time}}",
     "noMeetings": "Aucune assemblée prévue",
+    "notAvailableForRenters": "Cette section n'est pas disponible pour les locataires.",
     "viewAgenda": "Voir l'ordre du jour",
     "joinOnline": "Rejoindre en ligne",
     "proOnly": "Pro",

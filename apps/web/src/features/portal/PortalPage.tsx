@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslation }      from 'react-i18next'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { CreditCard, CalendarDays, FileText, MessageSquare, Download, AlertCircle, Video } from 'lucide-react'
 import { Shell }               from '../../components/layout/Shell'
 import { Topbar }              from '../../components/layout/Topbar'
@@ -61,9 +61,9 @@ function firstName(fullName?: string | null, email?: string | null): string {
 export default function PortalPage() {
   const { t }  = useTranslation()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const isDemoMode = searchParams.get('demo') === '1'
-  const { selected: building } = useBuilding()
+  const { selected: building, myRole } = useBuilding()
+  const isDemoMode = myRole !== 'co_owner' && myRole !== 'renter'
+  const isRenter   = myRole === 'renter'
   const { user } = useAuth()
   const [data, setData]     = useState<PortalData | null>(isDemoMode ? DEMO_DATA : null)
   const [payingId, setPayingId] = useState<string | null>(null)
@@ -155,7 +155,7 @@ export default function PortalPage() {
   }
 
   const sections: Array<{ icon: React.ReactNode; iconBg: string; iconColor: string; title: string; sub?: string; badge?: number; buttons: BtnDef[] }> = [
-    {
+    ...(!isRenter ? [{
       icon: <CreditCard size={20} />,
       iconBg: 'rgba(59,130,246,0.10)',
       iconColor: '#2563EB',
@@ -176,7 +176,7 @@ export default function PortalPage() {
         }] : []),
         { label: t('portal.viewAll'), icon: <FileText size={14} />, onClick: () => navigate('/portal/charges') },
       ],
-    },
+    }] : []),
     {
       icon: <MessageSquare size={20} />,
       iconBg: 'rgba(59,130,246,0.10)',
@@ -201,7 +201,7 @@ export default function PortalPage() {
         { label: t('portal.browseAll'), icon: <FileText size={14} />, onClick: () => navigate('/portal/documents') },
       ],
     },
-    {
+    ...(!isRenter ? [{
       icon: <CalendarDays size={20} />,
       iconBg: 'rgba(59,130,246,0.10)',
       iconColor: '#2563EB',
@@ -216,7 +216,7 @@ export default function PortalPage() {
         ...(nextMeeting ? [{ label: t('portal.viewAgenda'), icon: <CalendarDays size={14} />, onClick: () => navigate('/portal/meetings') }] : []),
         { label: t('portal.joinOnline'), icon: <Video size={14} />, pro: true, disabled: true },
       ],
-    },
+    }] : []),
   ]
 
   return (
@@ -327,8 +327,8 @@ export default function PortalPage() {
       {/* ── Full detail sections ── */}
       <div style={{ marginTop: 48, display: 'flex', flexDirection: 'column', gap: 40 }}>
 
-        {/* Charges */}
-        <div>
+        {/* Charges — co_owner only */}
+        {!isRenter && <div>
           <div style={{ fontSize: 17, fontWeight: 700, color: '#111827', marginBottom: 4 }}>{t('portal.chargesSection')}</div>
           <div style={{ fontSize: 13, color: '#6B7280', marginBottom: 16 }}>
             {pendingTotal > 0
@@ -366,7 +366,7 @@ export default function PortalPage() {
             )
           })}
           {data.charges.length === 0 && <div style={{ fontSize: 14, color: '#9CA3AF', paddingTop: 16 }}>{t('common.noData')}</div>}
-        </div>
+        </div>}
 
         {/* Messages */}
         <div>
@@ -409,8 +409,8 @@ export default function PortalPage() {
           {data.documents.length === 0 && <div style={{ fontSize: 14, color: '#9CA3AF', paddingTop: 16 }}>{t('common.noData')}</div>}
         </div>
 
-        {/* Meetings */}
-        <div>
+        {/* Meetings — co_owner only */}
+        {!isRenter && <div>
           <div style={{ fontSize: 17, fontWeight: 700, color: '#111827', marginBottom: 16 }}>{t('portal.meetingsSection')}</div>
           {data.meetings.map((m, i) => (
             <div key={m.id} style={{ display: 'flex', gap: 16, alignItems: 'flex-start', padding: '14px 0', borderTop: i === 0 ? '1px solid rgba(0,0,0,0.08)' : 'none', borderBottom: '1px solid rgba(0,0,0,0.08)' }}>
@@ -428,7 +428,7 @@ export default function PortalPage() {
             </div>
           ))}
           {data.meetings.length === 0 && <div style={{ fontSize: 14, color: '#9CA3AF', paddingTop: 16 }}>{t('portal.noMeetings')}</div>}
-        </div>
+        </div>}
 
       </div>
     </Shell>

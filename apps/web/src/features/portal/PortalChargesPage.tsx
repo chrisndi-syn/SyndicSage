@@ -82,6 +82,15 @@ export default function PortalChargesPage() {
     }
   }
 
+  if (myRole === 'renter') {
+    return (
+      <Shell>
+        <Topbar title={t('portal.chargesTitle')} subtitle={building?.name} />
+        <div style={{ padding: 48, textAlign: 'center', color: '#9CA3AF', fontSize: 14 }}>{t('portal.notAvailableForRenters')}</div>
+      </Shell>
+    )
+  }
+
   if (!building && !isDemoMode) {
     return (
       <Shell>

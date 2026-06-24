@@ -636,6 +636,7 @@
     "meetingsSection": "Meetings",
     "meetingsSub": "Next: {{date}} at {{time}}",
     "noMeetings": "No upcoming meetings",
+    "notAvailableForRenters": "This section is not available for renters.",
     "viewAgenda": "View agenda",
     "joinOnline": "Join online",
     "proOnly": "Pro",

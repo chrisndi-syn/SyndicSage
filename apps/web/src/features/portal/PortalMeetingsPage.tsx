@@ -62,6 +62,15 @@ export default function PortalMeetingsPage() {
     })
   }, [building, isDemoMode])
 
+  if (myRole === 'renter') {
+    return (
+      <Shell>
+        <Topbar title={t('portal.meetingsSection')} subtitle={building?.name} />
+        <div style={{ padding: 48, textAlign: 'center', color: '#9CA3AF', fontSize: 14 }}>{t('portal.notAvailableForRenters')}</div>
+      </Shell>
+    )
+  }
+
   function MeetingCard({ meeting, past }: { meeting: MeetingRow; past?: boolean }) {
     const isOpen = expanded === meeting.id
     const isLive = meeting.status === 'in_progress'
