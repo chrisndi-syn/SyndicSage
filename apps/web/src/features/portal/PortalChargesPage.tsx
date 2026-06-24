@@ -19,6 +19,14 @@ interface Charge {
   period:     string
 }
 
+const DEMO_CHARGES: Charge[] = [
+  { id: '1', title: 'Charges communes Q2 2025', amount: 320, status: 'overdue',  due_date: '2025-04-01', paid_date: null,         period: 'quarterly' },
+  { id: '2', title: 'Charges communes Q3 2025', amount: 320, status: 'pending',  due_date: '2025-07-01', paid_date: null,         period: 'quarterly' },
+  { id: '3', title: 'Charges communes Q1 2025', amount: 310, status: 'paid',     due_date: '2025-01-01', paid_date: '2025-01-08', period: 'quarterly' },
+  { id: '4', title: 'Fonds de réserve 2025',    amount: 150, status: 'paid',     due_date: '2025-01-01', paid_date: '2025-01-08', period: 'annual'    },
+  { id: '5', title: 'Charges communes Q4 2024', amount: 305, status: 'paid',     due_date: '2024-10-01', paid_date: '2024-10-05', period: 'quarterly' },
+]
+
 const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
   pending:  { bg: 'rgba(245,158,11,0.10)', color: '#B45309' },
   paid:     { bg: 'rgba(34,197,94,0.10)',  color: '#15803D' },
@@ -30,7 +38,8 @@ type Filter = 'all' | 'pending' | 'overdue' | 'paid'
 export default function PortalChargesPage() {
   const { t }    = useTranslation()
   const navigate = useNavigate()
-  const { selected: building } = useBuilding()
+  const { selected: building, myRole } = useBuilding()
+  const isDemoMode = myRole !== 'co_owner' && myRole !== 'renter'
 
   const [charges,   setCharges]   = useState<Charge[]>([])
   const [loading,   setLoading]   = useState(true)
@@ -39,6 +48,7 @@ export default function PortalChargesPage() {
   const [payingId,  setPayingId]  = useState<string | null>(null)
 
   useEffect(() => {
+    if (isDemoMode) { setCharges(DEMO_CHARGES); setLoading(false); return }
     if (!building) return
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) { setLoading(false); return }
@@ -52,10 +62,10 @@ export default function PortalChargesPage() {
         })
         .catch((err: unknown) => { console.error('[portal/charges]', err); setFetchError(true); setLoading(false) })
     })
-  }, [building])
+  }, [building, isDemoMode])
 
   async function handlePayNow(chargeId: string) {
-    if (!building) return
+    if (isDemoMode || !building) return
     setPayingId(chargeId)
     try {
       const { data: { session } } = await supabase.auth.getSession()
@@ -72,7 +82,7 @@ export default function PortalChargesPage() {
     }
   }
 
-  if (!building) {
+  if (!building && !isDemoMode) {
     return (
       <Shell>
         <Topbar title={t('portal.chargesTitle')} />
@@ -100,7 +110,7 @@ export default function PortalChargesPage() {
 
   return (
     <Shell>
-      <Topbar title={t('portal.chargesTitle')} subtitle={building.name} />
+      <Topbar title={t('portal.chargesTitle')} subtitle={building?.name ?? 'Résidence Les Érables'} />
       <div style={{ padding: 24 }}>
 
         {/* Back + summary */}
