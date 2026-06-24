@@ -1,7 +1,7 @@
 // ── Dashboard page ────────────────────────────────────────────
 
 import { useTranslation }  from 'react-i18next'
-import { useNavigate }     from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import { ChevronRight, AlertTriangle, CheckCircle2, Circle, CalendarDays, Users, CreditCard, FileText, Scale, Banknote, Vote, Map } from 'lucide-react'
 import { Shell }           from '../../components/layout/Shell'
 import { Topbar }          from '../../components/layout/Topbar'
@@ -223,11 +223,14 @@ function LifecycleTrack({
 
 // ── Main page ──────────────────────────────────────────────────
 
+// ── Main page ──────────────────────────────────────────────────
+
 export default function DashboardPage() {
   const { t }                            = useTranslation()
   const navigate                         = useNavigate()
   const { user }                         = useAuth()
-  const { buildings, selected, loading } = useBuilding()
+  const { buildings, selected, loading, myRole } = useBuilding()
+  const isResident = myRole === 'co_owner' || myRole === 'renter'
 
   const meta = user?.user_metadata ?? {}
   const name = firstName(meta['full_name'] as string, user?.email)
@@ -236,6 +239,9 @@ export default function DashboardPage() {
   const { data: docs     = [] } = useDocuments(selected?.id)
   const { data: charges  = [] } = useCharges(selected?.id)
   const { data: meetings = [] } = useMeetings(selected?.id)
+
+  // Residents go straight to the portal page
+  if (isResident) return <Navigate to="/portal" replace />
 
   if (loading) {
     return (

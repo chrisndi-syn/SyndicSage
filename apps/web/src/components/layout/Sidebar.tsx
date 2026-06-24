@@ -12,7 +12,7 @@ import {
   Settings, LogOut,
   Receipt, TrendingUp, PieChart,
   Shield, HardHat, FileEdit, UserCircle, Wrench,
-  ChevronDown, Lock, Pin, PinOff,
+  ChevronDown, Lock, Pin, PinOff, Eye,
 } from 'lucide-react'
 import { useJourney } from '../../features/journey/JourneyContext'
 
@@ -348,31 +348,31 @@ export function Sidebar() {
                   alignItems:     'center',
                   justifyContent: 'space-between',
                   width:          '100%',
-                  padding:        '7px 14px',
+                  padding:        '8px 16px 6px',
                   border:         'none',
                   background:     'transparent',
                   cursor:         'pointer',
-                  marginTop:      4,
+                  marginTop:      8,
                 }}
               >
-                <span style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                  <span style={{ color: 'rgba(30,58,95,0.55)', display: 'flex', alignItems: 'center' }}>
-                    {unlocked ? group.icon : <Lock size={14} />}
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ color: '#9CA3AF', display: 'flex', alignItems: 'center' }}>
+                    {unlocked ? group.icon : <Lock size={13} />}
                   </span>
                   <span style={{
-                    fontSize:      10,
-                    fontWeight:    700,
-                    color:         'rgba(30,58,95,0.55)',
+                    fontSize:      11,
+                    fontWeight:    600,
+                    color:         '#9CA3AF',
                     textTransform: 'uppercase',
-                    letterSpacing: '0.08em',
+                    letterSpacing: '0.07em',
                     whiteSpace:    'nowrap',
                   }}>
                     {group.label}
                   </span>
                 </span>
                 <ChevronDown
-                  size={12}
-                  color="rgba(30,58,95,0.4)"
+                  size={11}
+                  color="#C4C9D4"
                   style={{
                     transform:  isOpen ? 'rotate(0deg)' : 'rotate(-90deg)',
                     transition: `transform ${theme.transition}`,
@@ -384,7 +384,7 @@ export function Sidebar() {
               {/* Section items */}
               <div style={{
                 overflow:   'hidden',
-                maxHeight:  isOpen ? group.items.length * 36 + 8 + 'px' : '0px',
+                maxHeight:  isOpen ? group.items.length * 38 + 4 + 'px' : '0px',
                 transition: `max-height ${theme.transition}`,
               }}>
                 {group.items.map(item => (
@@ -395,14 +395,13 @@ export function Sidebar() {
                     style={({ isActive }) => ({
                       display:        'flex',
                       alignItems:     'center',
-                      gap:            9,
-                      height:         34,
-                      padding:        '0 10px 0 12px',
-                      margin:         '1px 8px',
-                      borderRadius:   7,
+                      gap:            10,
+                      height:         36,
+                      padding:        '0 14px',
                       textDecoration: 'none',
-                      background:     isActive ? theme.colors.amberActive : 'transparent',
-                      transition:     'background 0.12s',
+                      borderLeft:     isActive ? `3px solid ${theme.colors.amber}` : '3px solid transparent',
+                      background:     isActive ? 'rgba(245,158,11,0.06)' : 'transparent',
+                      transition:     'background 0.12s, border-color 0.12s',
                     })}
                   >
                     {({ isActive }) => (
@@ -410,7 +409,7 @@ export function Sidebar() {
                         <span style={{
                           width:          18, flexShrink: 0,
                           display:        'flex', alignItems: 'center', justifyContent: 'center',
-                          color:          isActive ? theme.colors.amber : 'rgba(30,58,95,0.4)',
+                          color:          isActive ? theme.colors.amber : '#9CA3AF',
                           position:       'relative',
                         }}>
                           {item.icon}
@@ -424,9 +423,9 @@ export function Sidebar() {
                           )}
                         </span>
                         <span style={{
-                          fontSize:     12.5,
+                          fontSize:     13,
                           fontWeight:   isActive ? 600 : 400,
-                          color:        isActive ? theme.colors.amber : 'rgba(30,58,95,0.8)',
+                          color:        isActive ? theme.colors.amber : '#374151',
                           flex:         1,
                           minWidth:     0,
                           overflow:     'hidden',
@@ -438,8 +437,8 @@ export function Sidebar() {
                         {item.badge && item.badge > 0 && (
                           <span style={{
                             background: '#ef4444', color: '#fff',
-                            borderRadius: 99, fontSize: 9.5, fontWeight: 700,
-                            padding: '0 5px', lineHeight: '15px', flexShrink: 0,
+                            borderRadius: 99, fontSize: 10, fontWeight: 700,
+                            padding: '0 5px', lineHeight: '16px', flexShrink: 0,
                           }}>
                             {item.badge}
                           </span>
@@ -456,6 +455,49 @@ export function Sidebar() {
 
       </nav>
 
+      {/* Preview portal — syndic only */}
+      {!isResident && (
+        <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+          <button
+            onClick={() => navigate('/portal?demo=1')}
+            title="Preview resident portal"
+            style={{
+              display:        'flex',
+              alignItems:     'center',
+              justifyContent: expanded ? 'flex-start' : 'center',
+              gap:            10,
+              height:         36,
+              padding:        expanded ? '0 14px' : '0 6px',
+              border:         'none',
+              borderLeft:     `3px solid transparent`,
+              background:     'transparent',
+              cursor:         'pointer',
+              width:          '100%',
+              transition:     `padding ${theme.transition}`,
+            }}
+          >
+            <span style={{
+              width: 22, height: 22, flexShrink: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: theme.colors.amber,
+            }}>
+              <Eye size={15} />
+            </span>
+            <span style={{
+              fontSize:   13, fontWeight: 500,
+              color:      theme.colors.amber,
+              opacity:    expanded ? 1 : 0,
+              maxWidth:   expanded ? 160 : 0,
+              overflow:   'hidden',
+              transition: `opacity ${theme.transition}, max-width ${theme.transition}`,
+              whiteSpace: 'nowrap',
+            }}>
+              Preview Portal
+            </span>
+          </button>
+        </div>
+      )}
+
       {/* Bottom — profile, settings, logout */}
       <div style={{
         borderTop:  '1px solid rgba(30,58,95,0.08)',
@@ -470,16 +512,16 @@ export function Sidebar() {
           const inner = (isActive = false) => (
             <>
               <span style={{
-                width:    28, height: 28, flexShrink: 0,
+                width:    22, height: 22, flexShrink: 0,
                 display:  'flex', alignItems: 'center', justifyContent: 'center',
-                color:    isActive ? theme.colors.amber : 'rgba(30,58,95,0.4)',
+                color:    isActive ? theme.colors.amber : '#9CA3AF',
               }}>
                 {item.icon}
               </span>
               <span style={{
-                fontSize:   12.5,
+                fontSize:   13,
                 fontWeight: isActive ? 600 : 400,
-                color:      isActive ? theme.colors.amber : 'rgba(30,58,95,0.7)',
+                color:      isActive ? theme.colors.amber : '#374151',
                 opacity:    expanded ? 1 : 0,
                 maxWidth:   expanded ? 160 : 0,
                 overflow:   'hidden',
@@ -497,11 +539,9 @@ export function Sidebar() {
             justifyContent: expanded ? 'flex-start' : 'center',
             gap:            10,
             height:         36,
-            padding:        expanded ? '0 12px' : '0 6px',
-            margin:         '1px 6px',
-            borderRadius:   8,
+            padding:        expanded ? '0 14px' : '0 6px',
             cursor:         'pointer',
-            transition:     `background 0.12s, padding ${theme.transition}, justify-content ${theme.transition}`,
+            transition:     `background 0.12s, padding ${theme.transition}`,
           } as const
 
           if (item.isLink) {
@@ -512,7 +552,8 @@ export function Sidebar() {
                 style={({ isActive }) => ({
                   ...sharedStyle,
                   textDecoration: 'none',
-                  background:     isActive ? theme.colors.amberActive : 'transparent',
+                  borderLeft:     isActive ? `3px solid ${theme.colors.amber}` : '3px solid transparent',
+                  background:     isActive ? 'rgba(245,158,11,0.06)' : 'transparent',
                 })}
               >
                 {({ isActive }) => inner(isActive)}
@@ -528,7 +569,8 @@ export function Sidebar() {
                 ...sharedStyle,
                 border:     'none',
                 background: 'transparent',
-                width:      'calc(100% - 12px)',
+                width:      '100%',
+                borderLeft: '3px solid transparent',
               }}
             >
               {inner()}
