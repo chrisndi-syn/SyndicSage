@@ -230,7 +230,14 @@
     "acte_de_base": "Basisakte",
     "other": "Overige",
     "scanning": "Viruscontrole bezig…",
-    "empty": "Nog geen documenten."
+    "empty": "Nog geen documenten.",
+    "cat_minutes": "Notulen",
+    "cat_legal": "Juridisch",
+    "cat_budget": "Budget",
+    "cat_contract": "Contract",
+    "cat_insurance": "Verzekering",
+    "cat_maintenance": "Onderhoud",
+    "cat_other": "Overige"
   },
   "tickets": {
     "title": "Tickets",

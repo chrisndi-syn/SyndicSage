@@ -228,7 +228,14 @@
     "acte_de_base": "Acte de base",
     "other": "Autre",
     "scanning": "Analyse antivirus en cours…",
-    "empty": "Aucun document."
+    "empty": "Aucun document.",
+    "cat_minutes": "Procès-verbaux",
+    "cat_legal": "Juridique",
+    "cat_budget": "Budget",
+    "cat_contract": "Contrat",
+    "cat_insurance": "Assurance",
+    "cat_maintenance": "Maintenance",
+    "cat_other": "Autre"
   },
   "tickets": {
     "title": "Tickets",

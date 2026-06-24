@@ -228,7 +228,14 @@
     "acte_de_base": "Acte de base",
     "other": "Other",
     "scanning": "Scanning for viruses…",
-    "empty": "No documents yet."
+    "empty": "No documents yet.",
+    "cat_minutes": "Minutes",
+    "cat_legal": "Legal",
+    "cat_budget": "Budget",
+    "cat_contract": "Contract",
+    "cat_insurance": "Insurance",
+    "cat_maintenance": "Maintenance",
+    "cat_other": "Other"
   },
   "tickets": {
     "title": "Tickets",
