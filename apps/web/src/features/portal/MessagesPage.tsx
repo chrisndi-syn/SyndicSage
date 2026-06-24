@@ -1,13 +1,20 @@
-// ── Messages page (all roles) ───────────────────────────────────
+// ── Messages page (co-owner portal) ─────────────────────────────
 
 import { useState }       from 'react'
 import { useTranslation } from 'react-i18next'
-import { MessageSquare, Send, X } from 'lucide-react'
+import { useNavigate }    from 'react-router-dom'
+import { MessageSquare, Send, X, ArrowLeft } from 'lucide-react'
 import { Shell }          from '../../components/layout/Shell'
 import { Topbar }         from '../../components/layout/Topbar'
 import { useBuilding }    from '../../shared/building/BuildingContext'
 import { useMessages, useSendMessage, useMarkRead } from '../messages/useMessages'
 import type { Message }   from '../messages/messages.api'
+
+const DEMO_MESSAGES: Message[] = [
+  { id: 't1m1', thread_id: 't1', subject: 'Travaux ascenseur — semaine du 12 mai', body: "Les travaux de maintenance de l'ascenseur auront lieu du 12 au 14 mai. Merci pour votre compréhension.", read_at: null, created_at: '2025-05-08T09:00:00', sender_user_id: 'syndic', building_id: 'demo', organization_id: 'demo' },
+  { id: 't2m1', thread_id: 't2', subject: 'Rappel — AG du 15 juin', body: "Nous vous rappelons que l'Assemblée Générale se tiendra le 15 juin à 18h. Ordre du jour en pièce jointe.", read_at: null, created_at: '2025-05-01T10:00:00', sender_user_id: 'syndic', building_id: 'demo', organization_id: 'demo' },
+  { id: 't3m1', thread_id: 't3', subject: 'Décompte annuel 2024 disponible', body: 'Votre décompte annuel 2024 est disponible dans la section Documents.', read_at: '2025-02-10T10:00:00', created_at: '2025-02-05T14:00:00', sender_user_id: 'syndic', building_id: 'demo', organization_id: 'demo' },
+]
 
 type Thread = { threadId: string; subject: string | null; messages: Message[] }
 
@@ -32,10 +39,13 @@ function groupByThread(messages: Message[]): Thread[] {
 }
 
 export default function MessagesPage() {
-  const { t } = useTranslation()
-  const { selected: building } = useBuilding()
+  const { t }      = useTranslation()
+  const navigate   = useNavigate()
+  const { selected: building, myRole } = useBuilding()
+  const isDemoMode = myRole !== 'co_owner' && myRole !== 'renter'
 
-  const { data: messages = [], isLoading } = useMessages(building?.id)
+  const { data: realMessages = [], isLoading } = useMessages(isDemoMode ? null : building?.id)
+  const messages    = isDemoMode ? DEMO_MESSAGES : realMessages
   const sendMessage = useSendMessage(building?.id ?? '')
   const markRead    = useMarkRead(building?.id ?? '')
 
@@ -45,7 +55,7 @@ export default function MessagesPage() {
   const [newSubject,   setNewSubject]   = useState('')
   const [newBody,      setNewBody]      = useState('')
 
-  if (!building) {
+  if (!building && !isDemoMode) {
     return (
       <Shell>
         <Topbar title={t('messages.title')} />
@@ -81,15 +91,22 @@ export default function MessagesPage() {
 
   return (
     <Shell>
-      <Topbar title={t('messages.title')} subtitle={building.name} />
+      <Topbar title={t('messages.title')} subtitle={building?.name ?? 'Résidence Les Érables'} />
       <div style={{ display: 'flex', height: 'calc(100vh - 56px)', overflow: 'hidden' }}>
 
         {/* Thread list */}
         <div style={{ width: 280, flexShrink: 0, borderRight: '1px solid rgba(0,0,0,0.07)', display: 'flex', flexDirection: 'column', background: '#FAFAFA' }}>
-          <div style={{ padding: '12px', borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
+          <div style={{ padding: '12px', borderBottom: '1px solid rgba(0,0,0,0.07)', display: 'flex', flexDirection: 'column', gap: 8 }}>
             <button
-              onClick={() => { setShowNew(true); setActiveThread(null) }}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, background: '#1E3A5F', color: '#fff', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500 }}
+              onClick={() => navigate('/portal')}
+              style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280', fontSize: 12, padding: 0 }}
+            >
+              <ArrowLeft size={13} /> {t('portal.backToPortal')}
+            </button>
+            <button
+              onClick={() => { if (!isDemoMode) { setShowNew(true); setActiveThread(null) } }}
+              disabled={isDemoMode}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '8px 14px', borderRadius: 8, background: '#1E3A5F', color: '#fff', border: 'none', cursor: isDemoMode ? 'default' : 'pointer', fontSize: 13, fontWeight: 500, opacity: isDemoMode ? 0.5 : 1 }}
             >
               <MessageSquare size={14} /> {t('messages.newMessage')}
             </button>
@@ -183,20 +200,22 @@ export default function MessagesPage() {
               </div>
 
               {/* Reply box */}
-              <div style={{ borderTop: '1px solid rgba(0,0,0,0.07)', padding: '12px 24px', display: 'flex', gap: 10, background: '#fff' }}>
-                <textarea
-                  value={replyBody}
-                  onChange={e => setReplyBody(e.target.value)}
-                  placeholder={t('messages.replyPlaceholder')}
-                  rows={2}
-                  style={{ flex: 1, padding: '9px 12px', borderRadius: 8, border: '1px solid #D1D1D6', fontSize: 14, resize: 'none', boxSizing: 'border-box' }}
-                  onKeyDown={e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleReply() }}
-                />
-                <button onClick={handleReply} disabled={sendMessage.isPending || !replyBody.trim()}
-                  style={{ padding: '9px 16px', borderRadius: 8, border: 'none', background: '#1E3A5F', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, opacity: !replyBody.trim() ? 0.6 : 1 }}>
-                  <Send size={14} /> {t('messages.send')}
-                </button>
-              </div>
+              {!isDemoMode && (
+                <div style={{ borderTop: '1px solid rgba(0,0,0,0.07)', padding: '12px 24px', display: 'flex', gap: 10, background: '#fff' }}>
+                  <textarea
+                    value={replyBody}
+                    onChange={e => setReplyBody(e.target.value)}
+                    placeholder={t('messages.replyPlaceholder')}
+                    rows={2}
+                    style={{ flex: 1, padding: '9px 12px', borderRadius: 8, border: '1px solid #D1D1D6', fontSize: 14, resize: 'none', boxSizing: 'border-box' }}
+                    onKeyDown={e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleReply() }}
+                  />
+                  <button onClick={handleReply} disabled={sendMessage.isPending || !replyBody.trim()}
+                    style={{ padding: '9px 16px', borderRadius: 8, border: 'none', background: '#1E3A5F', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500, opacity: !replyBody.trim() ? 0.6 : 1 }}>
+                    <Send size={14} /> {t('messages.send')}
+                  </button>
+                </div>
+              )}
             </>
           ) : (
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF' }}>
