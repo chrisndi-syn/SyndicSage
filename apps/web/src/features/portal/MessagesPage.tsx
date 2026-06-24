@@ -2,8 +2,7 @@
 
 import { useState }       from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate }    from 'react-router-dom'
-import { MessageSquare, Send, X, ArrowLeft } from 'lucide-react'
+import { MessageSquare, Send, X } from 'lucide-react'
 import { Shell }          from '../../components/layout/Shell'
 import { Topbar }         from '../../components/layout/Topbar'
 import { useBuilding }    from '../../shared/building/BuildingContext'
@@ -40,7 +39,6 @@ function groupByThread(messages: Message[]): Thread[] {
 
 export default function MessagesPage() {
   const { t }      = useTranslation()
-  const navigate   = useNavigate()
   const { selected: building, myRole } = useBuilding()
   const isDemoMode = myRole !== 'co_owner' && myRole !== 'renter'
 
@@ -97,12 +95,6 @@ export default function MessagesPage() {
         {/* Thread list */}
         <div style={{ width: 280, flexShrink: 0, borderRight: '1px solid rgba(0,0,0,0.07)', display: 'flex', flexDirection: 'column', background: '#FAFAFA' }}>
           <div style={{ padding: '12px', borderBottom: '1px solid rgba(0,0,0,0.07)', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <button
-              onClick={() => navigate('/portal')}
-              style={{ display: 'flex', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280', fontSize: 12, padding: 0 }}
-            >
-              <ArrowLeft size={13} /> {t('portal.backToPortal')}
-            </button>
             <button
               onClick={() => { if (!isDemoMode) { setShowNew(true); setActiveThread(null) } }}
               disabled={isDemoMode}
