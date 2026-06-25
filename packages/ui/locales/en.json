@@ -34,7 +34,10 @@
     "selectBuilding": "Select a building to view data.",
     "total": "Total",
     "enable": "Enable",
-    "disable": "Disable"
+    "disable": "Disable",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "saved": "Saved"
   },
   "auth": {
     "signIn": "Sign in",
@@ -664,7 +667,19 @@
     "profileBuilding": "Building",
     "profileReadOnly": "This field cannot be changed.",
     "profileNoUnit": "No unit assigned",
-    "profileSaved": "Changes saved"
+    "profileSaved": "Changes saved",
+    "paymentHistory": "Payment history",
+    "paymentHistorySub": "Your online payment receipts",
+    "paymentHistoryTotal": "Total paid online",
+    "paymentHistoryCount": "Payments made",
+    "paymentHistoryEmpty": "No online payments yet.",
+    "paymentHistoryUnknownCharge": "Unknown charge",
+    "txnStatus_paid": "Paid",
+    "txnStatus_open": "Pending",
+    "txnStatus_pending": "Processing",
+    "txnStatus_failed": "Failed",
+    "txnStatus_expired": "Expired",
+    "txnStatus_cancelled": "Cancelled"
   },
   "roadmap": {
     "title": "Roadmap",

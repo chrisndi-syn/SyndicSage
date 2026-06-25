@@ -9,6 +9,7 @@ import { handleAiExtract }        from './jobs/aiExtract.js'
 import { handleAiSummarize }      from './jobs/aiSummarize.js'
 import { handleAiEmbed }          from './jobs/aiEmbed.js'
 import { handleAnomalyDetection } from './jobs/anomalyDetection.js'
+import { handleChargeReminders }  from './jobs/chargeReminders.js'
 
 const REDIS_URL  = process.env['REDIS_URL'] ?? 'redis://localhost:6379'
 const QUEUE_NAME = 'syndicsage'
@@ -35,6 +36,7 @@ const worker = new Worker(
       case 'ai_summarize':       return handleAiSummarize(job.data)
       case 'ai_embed':           return handleAiEmbed(job.data)
       case 'anomaly_detection':  return handleAnomalyDetection(job.data)
+      case 'charge_reminders':   return handleChargeReminders(job.data)
       default:
         // Throw so BullMQ marks the job as failed and retries/dead-letters it
         // rather than silently completing and losing the job.
@@ -70,3 +72,14 @@ void queue.add(
 )
 
 console.log('[worker] Scheduled: anomaly_detection (hourly)')
+
+void queue.add(
+  'charge_reminders',
+  {},
+  {
+    repeat:  { pattern: '0 8 * * *' },   // every day at 08:00
+    jobId:   'charge_reminders_daily',
+  },
+)
+
+console.log('[worker] Scheduled: charge_reminders (daily 08:00)')

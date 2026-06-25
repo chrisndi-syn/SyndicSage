@@ -740,7 +740,7 @@ export type AIEmbedding = z.infer<typeof AIEmbeddingSchema>
 export const WorkerJobTypeSchema = z.enum([
   'send_email', 'scan_file', 'generate_pdf', 'send_notification',
   'process_export', 'ai_extract', 'ai_summarize', 'ai_embed',
-  'anomaly_detection',
+  'anomaly_detection', 'charge_reminders',
 ])
 export type WorkerJobType = z.infer<typeof WorkerJobTypeSchema>
 

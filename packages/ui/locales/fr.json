@@ -34,7 +34,10 @@
     "selectBuilding": "Sélectionnez un immeuble pour afficher les données.",
     "total": "Total",
     "enable": "Activer",
-    "disable": "Désactiver"
+    "disable": "Désactiver",
+    "enabled": "Activé",
+    "disabled": "Désactivé",
+    "saved": "Enregistré"
   },
   "auth": {
     "signIn": "Se connecter",
@@ -664,7 +667,19 @@
     "profileBuilding": "Immeuble",
     "profileReadOnly": "Ce champ ne peut pas être modifié.",
     "profileNoUnit": "Aucun appartement attribué",
-    "profileSaved": "Modifications enregistrées"
+    "profileSaved": "Modifications enregistrées",
+    "paymentHistory": "Historique des paiements",
+    "paymentHistorySub": "Vos reçus de paiement en ligne",
+    "paymentHistoryTotal": "Total payé en ligne",
+    "paymentHistoryCount": "Paiements effectués",
+    "paymentHistoryEmpty": "Aucun paiement en ligne pour le moment.",
+    "paymentHistoryUnknownCharge": "Charge inconnue",
+    "txnStatus_paid": "Payé",
+    "txnStatus_open": "En cours",
+    "txnStatus_pending": "En traitement",
+    "txnStatus_failed": "Échoué",
+    "txnStatus_expired": "Expiré",
+    "txnStatus_cancelled": "Annulé"
   },
   "roadmap": {
     "title": "Feuille de route",

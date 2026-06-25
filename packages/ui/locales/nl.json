@@ -34,7 +34,10 @@
     "selectBuilding": "Selecteer een gebouw om gegevens te bekijken.",
     "total": "Totaal",
     "enable": "Activeren",
-    "disable": "Deactiveren"
+    "disable": "Deactiveren",
+    "enabled": "Ingeschakeld",
+    "disabled": "Uitgeschakeld",
+    "saved": "Opgeslagen"
   },
   "auth": {
     "signIn": "Aanmelden",
@@ -666,7 +669,19 @@
     "profileBuilding": "Gebouw",
     "profileReadOnly": "Dit veld kan niet worden gewijzigd.",
     "profileNoUnit": "Geen appartement toegewezen",
-    "profileSaved": "Wijzigingen opgeslagen"
+    "profileSaved": "Wijzigingen opgeslagen",
+    "paymentHistory": "Betalingshistoriek",
+    "paymentHistorySub": "Uw online betalingsontvangsten",
+    "paymentHistoryTotal": "Totaal online betaald",
+    "paymentHistoryCount": "Betalingen gedaan",
+    "paymentHistoryEmpty": "Nog geen online betalingen.",
+    "paymentHistoryUnknownCharge": "Onbekende aanrekening",
+    "txnStatus_paid": "Betaald",
+    "txnStatus_open": "Lopend",
+    "txnStatus_pending": "Verwerking",
+    "txnStatus_failed": "Mislukt",
+    "txnStatus_expired": "Verlopen",
+    "txnStatus_cancelled": "Geannuleerd"
   },
   "roadmap": {
     "title": "Werkplanning",

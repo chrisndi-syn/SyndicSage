@@ -1,15 +1,16 @@
 // ── Charges page ──────────────────────────────────────────────
 
-import { useState }       from 'react'
-import { useTranslation } from 'react-i18next'
-import { CreditCard, Sparkles } from 'lucide-react'
-import { Shell }          from '../../components/layout/Shell'
-import { Topbar }         from '../../components/layout/Topbar'
-import { useBuilding }    from '../../shared/building/BuildingContext'
+import { useState, useEffect }  from 'react'
+import { useTranslation }        from 'react-i18next'
+import { CreditCard, Sparkles, Bell } from 'lucide-react'
+import { Shell }                 from '../../components/layout/Shell'
+import { Topbar }                from '../../components/layout/Topbar'
+import { useBuilding }           from '../../shared/building/BuildingContext'
 import { useCharges, useMarkPaid, useDeleteCharge } from './useCharges'
-import { ChargeModal }    from './ChargeModal'
-import { useOwners }      from '../owners/useOwners'
-import { useAiSage }      from '../ai/AiSageContext'
+import { ChargeModal }           from './ChargeModal'
+import { useOwners }             from '../owners/useOwners'
+import { useAiSage }             from '../ai/AiSageContext'
+import { useUpdateBuilding }     from '../buildings/useBuildings'
 import type { ChargeWithOwner, StatusFilter } from './charges.api'
 
 export default function ChargesPage() {
@@ -20,12 +21,24 @@ export default function ChargesPage() {
 
   const { data: charges = [], isLoading, error } = useCharges(building?.id, filter)
   const { data: owners = [] } = useOwners(building?.id)
-  const markPaid    = useMarkPaid(building?.id ?? '')
-  const deleteCharge = useDeleteCharge(building?.id ?? '')
+  const markPaid      = useMarkPaid(building?.id ?? '')
+  const deleteCharge  = useDeleteCharge(building?.id ?? '')
+  const updateBuilding = useUpdateBuilding()
 
   const [showModal,      setShowModal]      = useState(false)
   const [editCharge,     setEditCharge]     = useState<ChargeWithOwner | undefined>()
   const [confirmDelete,  setConfirmDelete]  = useState<ChargeWithOwner | null>(null)
+
+  // Reminder settings local state (synced from building on mount / building change)
+  const [remindEnabled, setRemindEnabled] = useState(false)
+  const [remindDays,    setRemindDays]    = useState(7)
+  const [remindSaved,   setRemindSaved]   = useState(false)
+
+  useEffect(() => {
+    if (!building) return
+    setRemindEnabled((building as { auto_remind_enabled?: boolean }).auto_remind_enabled ?? false)
+    setRemindDays((building as { auto_remind_days?: number }).auto_remind_days ?? 7)
+  }, [building?.id])
 
   if (!building) {
     return (
@@ -145,6 +158,85 @@ export default function ChargesPage() {
           </div>
         )}
       </div>
+
+        {/* ── Reminder settings ───────────────────────── */}
+        <div style={{ padding: '0 24px 24px' }}>
+        <div style={{
+          background: '#fff', borderRadius: 10,
+          border: '1px solid rgba(60,60,67,0.10)', padding: '18px 20px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+            <Bell size={16} color="#1E3A5F" />
+            <span style={{ fontSize: 14, fontWeight: 600, color: '#1E3A5F' }}>{t('buildings.autoReminders')}</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+            {/* Toggle */}
+            <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+              <div
+                onClick={() => setRemindEnabled(v => !v)}
+                style={{
+                  width: 40, height: 22, borderRadius: 99, cursor: 'pointer', flexShrink: 0,
+                  background: remindEnabled ? '#F59E0B' : '#D1D5DB',
+                  position: 'relative', transition: 'background 0.15s',
+                }}
+              >
+                <div style={{
+                  position: 'absolute', top: 3, left: remindEnabled ? 21 : 3,
+                  width: 16, height: 16, borderRadius: '50%', background: '#fff',
+                  transition: 'left 0.15s', boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                }} />
+              </div>
+              <span style={{ fontSize: 13, color: remindEnabled ? '#1E3A5F' : '#9CA3AF' }}>
+                {remindEnabled ? t('common.enabled') : t('common.disabled')}
+              </span>
+            </label>
+
+            {/* Days input */}
+            {remindEnabled && (
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input
+                  type="number"
+                  min={1} max={90}
+                  value={remindDays}
+                  onChange={e => {
+                    const v = parseInt(e.target.value, 10)
+                    if (!isNaN(v) && v >= 1 && v <= 90) setRemindDays(v)
+                  }}
+                  style={{
+                    width: 60, padding: '5px 8px', borderRadius: 6,
+                    border: '1px solid rgba(60,60,67,0.2)', fontSize: 13,
+                    textAlign: 'center', color: '#1E3A5F',
+                  }}
+                />
+                <span style={{ fontSize: 13, color: '#6E6E73' }}>{t('buildings.autoReminderDays')}</span>
+              </label>
+            )}
+
+            {/* Save */}
+            <button
+              onClick={() => {
+                if (!building) return
+                updateBuilding.mutate(
+                  { id: building.id, body: { auto_remind_enabled: remindEnabled, auto_remind_days: remindDays } },
+                  { onSuccess: () => { setRemindSaved(true); setTimeout(() => setRemindSaved(false), 2500) } },
+                )
+              }}
+              disabled={updateBuilding.isPending}
+              style={{
+                padding: '6px 16px', background: '#1E3A5F', border: 'none', borderRadius: 6,
+                color: '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer',
+                opacity: updateBuilding.isPending ? 0.6 : 1,
+              }}
+            >
+              {updateBuilding.isPending ? t('common.saving') : t('common.save')}
+            </button>
+
+            {remindSaved && (
+              <span style={{ fontSize: 12, color: '#15803D' }}>{t('common.saved')}</span>
+            )}
+          </div>
+        </div>
+        </div>
 
       {showModal && building && (
         <ChargeModal

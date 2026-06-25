@@ -64,6 +64,7 @@ export function Sidebar() {
       items: [
         { to: '/portal',           icon: <LayoutDashboard size={16} />, label: t('portal.home') },
         ...(!isRenter ? [{ to: '/portal/charges',  icon: <CreditCard   size={16} />, label: t('portal.myCharges') }] : []),
+        ...(!isRenter ? [{ to: '/portal/payments', icon: <Receipt      size={16} />, label: t('portal.paymentHistory') }] : []),
         { to: '/portal/messages',  icon: <Bell            size={16} />, label: t('portal.messages'), badge: unreadCount || undefined },
         { to: '/portal/requests',  icon: <Ticket          size={16} />, label: t('portal.requests') },
         { to: '/portal/documents', icon: <FileText        size={16} />, label: t('nav.documents') },

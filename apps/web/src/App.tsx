@@ -41,6 +41,7 @@ import MessagesPage         from './features/portal/MessagesPage'
 import AcceptInvitePage     from './features/portal/AcceptInvitePage'
 import ProfilePage           from './features/profile/ProfilePage'
 import PortalProfilePage     from './features/portal/PortalProfilePage'
+import PortalPaymentsPage   from './features/portal/PortalPaymentsPage'
 import SubscribePage        from './features/billing/SubscribePage'
 import SubscribeSuccessPage from './features/billing/SubscribeSuccessPage'
 import CustomersPage        from './features/admin/CustomersPage'
@@ -101,6 +102,7 @@ export default function App() {
             <Route path="/portal/documents"   element={<AuthGuard><PortalDocumentsPage /></AuthGuard>} />
             <Route path="/portal/meetings"    element={<AuthGuard><PortalMeetingsPage /></AuthGuard>} />
             <Route path="/portal/profile"     element={<AuthGuard><PortalProfilePage /></AuthGuard>} />
+            <Route path="/portal/payments"    element={<AuthGuard><PortalPaymentsPage /></AuthGuard>} />
             <Route path="/portal/settings"    element={<AuthGuard><SettingsPage /></AuthGuard>} />
             <Route path="/ai"                 element={<Navigate to="/" replace />} />
 

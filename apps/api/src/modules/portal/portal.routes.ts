@@ -174,6 +174,30 @@ router.get('/profile', async (c) => {
   })
 })
 
+// ── GET /payments — resident payment transaction history ──────
+
+router.get('/payments', async (c) => {
+  const userId     = c.get('userId')
+  const member     = c.get('member')
+  const buildingId = c.get('buildingId')
+  if (!member || !buildingId) throw Errors.forbidden()
+
+  authorize(member.role as UserRole, 'charge.read.own')
+
+  const supabase = getSupabaseAdmin()
+
+  // Join payment_transactions with charges to get the charge title
+  const { data: transactions } = await supabase
+    .from('payment_transactions')
+    .select('id, amount, status, provider, created_at, updated_at, charge_id, charges(title, due_date)')
+    .eq('building_id', buildingId)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(50)
+
+  return c.json(transactions ?? [])
+})
+
 // ── PATCH /profile — update resident fields ───────────────────
 
 const PortalProfilePatchSchema = z.object({
