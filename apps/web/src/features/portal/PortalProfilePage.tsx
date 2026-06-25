@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18n from '../../lib/i18n'
-import { Shell }   from '../../components/layout/Shell'
-import { Topbar }  from '../../components/layout/Topbar'
-import { useAuth } from '../../shared/auth/AuthContext'
+import { Shell }      from '../../components/layout/Shell'
+import { Topbar }     from '../../components/layout/Topbar'
+import { useAuth }    from '../../shared/auth/AuthContext'
+import { useBuilding } from '../../shared/building/BuildingContext'
 
 // ── Types ─────────────────────────────────────────────────────
 
@@ -48,8 +49,9 @@ function formatDate(iso: string | null): string {
 // ── Component ─────────────────────────────────────────────────
 
 export default function PortalProfilePage() {
-  const { t }       = useTranslation()
-  const { session } = useAuth()
+  const { t }          = useTranslation()
+  const { session }    = useAuth()
+  const { selected: building } = useBuilding()
 
   const [profile,  setProfile]  = useState<PortalProfile | null>(null)
   const [loading,  setLoading]  = useState(true)
@@ -82,9 +84,10 @@ export default function PortalProfilePage() {
 
   const loadProfile = useCallback(async () => {
     if (!session) { setLoading(false); return }
+    if (!building) return  // wait for building to load
     setLoading(true)
     try {
-      const data = await apiFetch('/api/v1/portal/profile', session.access_token) as PortalProfile
+      const data = await apiFetch(`/api/v1/portal/profile?building_id=${building.id}`, session.access_token) as PortalProfile
       setProfile(data)
       setNameValue(data.full_name)
       setAddressValue(data.mailing_address ?? '')
@@ -95,7 +98,7 @@ export default function PortalProfilePage() {
     } finally {
       setLoading(false)
     }
-  }, [session, t])
+  }, [session, building, t])
 
   useEffect(() => { loadProfile() }, [loadProfile])
 
@@ -135,7 +138,7 @@ export default function PortalProfilePage() {
       const occupants = occupantsValue.trim() === '' ? null : parseInt(occupantsValue, 10)
       const leftAt    = leftAtValue.trim() === '' ? null : new Date(leftAtValue).toISOString()
 
-      await apiFetch('/api/v1/portal/profile', session.access_token, {
+      await apiFetch(`/api/v1/portal/profile?building_id=${building!.id}`, session.access_token, {
         method: 'PATCH',
         body:   JSON.stringify({
           mailing_address: addressValue.trim() || null,

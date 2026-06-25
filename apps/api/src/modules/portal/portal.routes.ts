@@ -129,7 +129,7 @@ router.get('/profile', async (c) => {
   // Member fields (resident-specific)
   const { data: memberRow } = await supabase
     .from('building_members')
-    .select('role, joined_at, left_at, occupant_count, mailing_address, unit_id')
+    .select('role, joined_at, left_at, occupant_count, mailing_address')
     .eq('id', member.id)
     .single()
 
