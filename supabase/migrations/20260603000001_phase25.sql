@@ -32,8 +32,7 @@ CREATE TABLE gdpr_requests (
                                )),
   requested_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   -- 30-day deadline per GDPR Article 12
-  deadline_at      TIMESTAMPTZ NOT NULL GENERATED ALWAYS AS
-                               (requested_at + INTERVAL '30 days') STORED,
+  deadline_at      TIMESTAMPTZ NOT NULL DEFAULT NOW() + INTERVAL '30 days',
   processed_by     UUID        REFERENCES auth.users,
   processed_at     TIMESTAMPTZ,
   notes            TEXT,

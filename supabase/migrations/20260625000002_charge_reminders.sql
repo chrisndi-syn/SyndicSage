@@ -17,5 +17,7 @@ CREATE INDEX IF NOT EXISTS idx_reminder_log_charge   ON charge_reminder_log (cha
 CREATE INDEX IF NOT EXISTS idx_reminder_log_building ON charge_reminder_log (building_id);
 CREATE INDEX IF NOT EXISTS idx_reminder_log_sent     ON charge_reminder_log (sent_date);
 
--- Payment transactions: add user_id to RLS so residents can read their own
--- (already covered by existing policy, this is a no-op safety measure)
+ALTER TABLE charge_reminder_log ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "reminder_log_staff" ON charge_reminder_log
+  FOR ALL USING (is_member(building_id, ARRAY['syndic','co_syndic']));
