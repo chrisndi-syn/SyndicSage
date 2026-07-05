@@ -54,11 +54,11 @@ WHERE b.id = r.building_id
 ALTER TABLE vote_casts
   ADD COLUMN IF NOT EXISTS organization_id UUID REFERENCES organizations ON DELETE CASCADE;
 
-UPDATE vc
+UPDATE vote_casts vc
 SET organization_id = v.organization_id
-FROM vote_casts vc
-JOIN votes v ON v.id = vc.vote_id
-WHERE vc.organization_id IS NULL;
+FROM votes v
+WHERE v.id = vc.vote_id
+  AND vc.organization_id IS NULL;
 
 -- ── Meeting attendees ─────────────────────────────────────────
 -- Tracks who joined a Daily.co meeting room and when.

@@ -53,7 +53,7 @@ CREATE POLICY "expenses_insert" ON expenses FOR INSERT WITH CHECK (
 CREATE POLICY "expenses_update" ON expenses FOR UPDATE USING (
   is_member(building_id, ARRAY['syndic','co_syndic'])
 );
-CREATE POLICY "expenses_delete" ON expenses FOR UPDATE USING (
+CREATE POLICY "expenses_delete" ON expenses FOR DELETE USING (
   is_member(building_id, ARRAY['syndic','co_syndic'])
 );
 

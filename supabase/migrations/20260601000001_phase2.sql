@@ -33,7 +33,8 @@ CREATE POLICY "feature_flags_write" ON feature_flags
 INSERT INTO feature_flags (key, enabled, description) VALUES
   ('uploads_enabled',  true, 'Allow document uploads'),
   ('logins_enabled',   true, 'Allow new user logins'),
-  ('exports_enabled',  true, 'Allow data exports');
+  ('exports_enabled',  true, 'Allow data exports')
+ON CONFLICT (key) DO NOTHING;
 
 -- ── KBO number on buildings ───────────────────────────────────
 ALTER TABLE buildings ADD COLUMN IF NOT EXISTS vme_number TEXT;
