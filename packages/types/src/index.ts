@@ -517,13 +517,17 @@ export type Meeting = z.infer<typeof MeetingSchema>
 export const VoteStatusSchema = z.enum(['open', 'closed'])
 export type VoteStatus = z.infer<typeof VoteStatusSchema>
 
+export const VoteMajorityTypeSchema = z.enum(['simple_50', 'two_thirds', 'four_fifths'])
+export type VoteMajorityType = z.infer<typeof VoteMajorityTypeSchema>
+
 export const VoteSchema = z.object({
-  id:          uuid,
-  meeting_id:  uuid,
-  building_id: uuid,
-  question:    z.string().min(1),
-  status:      VoteStatusSchema,
-  created_at:  isoDate,
+  id:             uuid,
+  meeting_id:     uuid,
+  building_id:    uuid,
+  question:       z.string().min(1),
+  status:         VoteStatusSchema,
+  majority_type:  VoteMajorityTypeSchema,
+  created_at:     isoDate,
 })
 export type Vote = z.infer<typeof VoteSchema>
 

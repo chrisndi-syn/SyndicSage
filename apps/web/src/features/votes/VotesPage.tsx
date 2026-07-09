@@ -10,6 +10,8 @@ import { useBuilding }       from '../../shared/building/BuildingContext'
 import { useMeetings, useVotes } from '../meetings/useMeetings'
 import type { Meeting, Vote } from '../meetings/meetings.api'
 
+type MajorityType = 'simple_50' | 'two_thirds' | 'four_fifths'
+
 function tallyVotes(casts: { choice: string; vote_weight: number }[]) {
   let yes = 0, no = 0, abstain = 0
   for (const c of casts) {
@@ -19,6 +21,12 @@ function tallyVotes(casts: { choice: string; vote_weight: number }[]) {
   }
   const total = yes + no + abstain || 1
   return { yes, no, abstain, total, yesPct: Math.round(yes / total * 100) }
+}
+
+function isPassed(tally: { yes: number; no: number; total: number }, type: MajorityType): boolean {
+  const threshold = type === 'two_thirds' ? 2 / 3 : type === 'four_fifths' ? 4 / 5 : 0.5
+  const denominator = type === 'simple_50' ? tally.total : (tally.yes + tally.no) || 1
+  return tally.yes / denominator > threshold
 }
 
 function VoteCard({ vote }: { vote: Vote }) {
@@ -70,10 +78,15 @@ function VoteCard({ vote }: { vote: Vote }) {
         ))}
       </div>
 
+      {/* Majority type */}
+      <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: 6 }}>
+        {t(`meetings.majority_${vote.majority_type ?? 'simple_50'}`)}
+      </div>
+
       {/* Result */}
       {!isOpen && (vote.vote_casts ?? []).length > 0 && (
-        <div style={{ marginTop: 10, fontSize: 12, fontWeight: 600, color: tally.yes >= tally.no ? '#15803D' : '#DC2626' }}>
-          {tally.yes >= tally.no ? `✓ ${t('meetings.voteApproved')}` : `✗ ${t('meetings.voteRejected')}`}
+        <div style={{ marginTop: 6, fontSize: 12, fontWeight: 600, color: isPassed(tally, (vote.majority_type ?? 'simple_50') as MajorityType) ? '#15803D' : '#DC2626' }}>
+          {isPassed(tally, (vote.majority_type ?? 'simple_50') as MajorityType) ? `✓ ${t('meetings.majorityReached')}` : `✗ ${t('meetings.majorityNotReached')}`}
           {' '}— {tally.yesPct}% {t('meetings.yes')} · {(vote.vote_casts ?? []).length} {t('meetings.voters')}
         </div>
       )}

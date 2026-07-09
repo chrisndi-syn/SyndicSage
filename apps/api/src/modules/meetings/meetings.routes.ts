@@ -33,9 +33,13 @@ const MeetingInput = z.object({
   agenda: z.string().max(5000).optional(),
 })
 
+const VALID_MAJORITY_TYPES = ['simple_50', 'two_thirds', 'four_fifths'] as const
+type MajorityType = typeof VALID_MAJORITY_TYPES[number]
+
 const VoteInput = z.object({
-  question:    z.string().min(1).max(500),
-  description: z.string().max(1000).optional(),
+  question:      z.string().min(1).max(500),
+  description:   z.string().max(1000).optional(),
+  majority_type: z.enum(VALID_MAJORITY_TYPES).optional().default('simple_50'),
 })
 
 const VALID_CHOICES = ['yes', 'no', 'abstain'] as const
@@ -186,6 +190,7 @@ router.post('/:id/votes', async (c) => {
       organization_id: member.organization_id,
       question:        parsed.data.question,
       description:     parsed.data.description ?? null,
+      majority_type:   parsed.data.majority_type,
       status:          'open',
       vote_opened_at:  new Date().toISOString(),
     })

@@ -15,6 +15,8 @@ interface LocationState {
   token?:   string | null
 }
 
+type MajorityType = 'simple_50' | 'two_thirds' | 'four_fifths'
+
 function tallyVotes(casts: { choice: string; vote_weight: number }[]) {
   let yes = 0, no = 0, abstain = 0
   for (const c of casts) {
@@ -24,6 +26,19 @@ function tallyVotes(casts: { choice: string; vote_weight: number }[]) {
   }
   const total = yes + no + abstain || 1
   return { yes, no, abstain, total, yesPct: Math.round(yes / total * 100) }
+}
+
+function majorityThreshold(type: MajorityType): number {
+  if (type === 'two_thirds')   return 2 / 3
+  if (type === 'four_fifths')  return 4 / 5
+  return 0.5
+}
+
+function isPassed(tally: { yes: number; no: number; total: number }, type: MajorityType): boolean {
+  const threshold = majorityThreshold(type)
+  // abstains excluded from denominator for qualified/exceptional majorities (Belgian VME law)
+  const denominator = type === 'simple_50' ? tally.total : (tally.yes + tally.no) || 1
+  return tally.yes / denominator > threshold
 }
 
 export default function MeetingRoomPage() {
@@ -45,8 +60,9 @@ export default function MeetingRoomPage() {
   const closeVote   = useCloseVote(building?.id ?? '', meetingId ?? '')
 
   const [showNewVote, setShowNewVote] = useState(false)
-  const [voteQuestion, setVoteQuestion]     = useState('')
-  const [voteDescription, setVoteDescription] = useState('')
+  const [voteQuestion, setVoteQuestion]         = useState('')
+  const [voteDescription, setVoteDescription]   = useState('')
+  const [voteMajority, setVoteMajority]         = useState<'simple_50' | 'two_thirds' | 'four_fifths'>('simple_50')
 
   const roomUrl = state.roomUrl ?? meeting?.daily_room_url
   const iframeUrl = roomUrl && state.token
@@ -62,9 +78,10 @@ export default function MeetingRoomPage() {
 
   async function handleCreateVote() {
     if (!voteQuestion.trim() || !meetingId) return
-    await createVote.mutateAsync({ question: voteQuestion.trim(), description: voteDescription.trim() || undefined })
+    await createVote.mutateAsync({ question: voteQuestion.trim(), description: voteDescription.trim() || undefined, majority_type: voteMajority })
     setVoteQuestion('')
     setVoteDescription('')
+    setVoteMajority('simple_50')
     setShowNewVote(false)
   }
 
@@ -209,9 +226,14 @@ export default function MeetingRoomPage() {
                       </button>
                     )}
 
+                    {/* Majority type badge */}
+                    <div style={{ fontSize: 10, color: '#6E6E73', marginBottom: isOpen ? 6 : 0, marginTop: -4 }}>
+                      {t(`meetings.majority_${vote.majority_type ?? 'simple_50'}`)}
+                    </div>
+
                     {!isOpen && (
-                      <div style={{ fontSize: 11, color: '#15803D', fontWeight: 500 }}>
-                        {t('meetings.voteClosed')} — {tally.yes >= tally.no ? t('meetings.voteApproved') : t('meetings.voteRejected')} ({tally.yesPct}% {t('meetings.yes')})
+                      <div style={{ fontSize: 11, fontWeight: 500, color: isPassed(tally, (vote.majority_type ?? 'simple_50') as MajorityType) ? '#15803D' : '#DC2626' }}>
+                        {t('meetings.voteClosed')} — {isPassed(tally, (vote.majority_type ?? 'simple_50') as MajorityType) ? t('meetings.majorityReached') : t('meetings.majorityNotReached')} ({tally.yesPct}% {t('meetings.yes')})
                       </div>
                     )}
                   </div>
@@ -238,6 +260,15 @@ export default function MeetingRoomPage() {
                 <input value={voteQuestion} onChange={e => setVoteQuestion(e.target.value)}
                   placeholder={t('meetings.voteQuestionPlaceholder')}
                   style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #D1D1D6', fontSize: 14, boxSizing: 'border-box' }} />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#3C3C43', marginBottom: 5 }}>{t('meetings.majorityType')}</label>
+                <select value={voteMajority} onChange={e => setVoteMajority(e.target.value as typeof voteMajority)}
+                  style={{ width: '100%', padding: '9px 12px', borderRadius: 8, border: '1px solid #D1D1D6', fontSize: 14, boxSizing: 'border-box', background: '#fff' }}>
+                  <option value="simple_50">{t('meetings.majority_simple_50')}</option>
+                  <option value="two_thirds">{t('meetings.majority_two_thirds')}</option>
+                  <option value="four_fifths">{t('meetings.majority_four_fifths')}</option>
+                </select>
               </div>
               <div>
                 <label style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#3C3C43', marginBottom: 5 }}>{t('meetings.voteDescription')}</label>

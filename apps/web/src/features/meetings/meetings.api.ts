@@ -21,6 +21,8 @@ export interface Meeting {
   deleted_at:      string | null
 }
 
+export type VoteMajorityType = 'simple_50' | 'two_thirds' | 'four_fifths'
+
 export interface Vote {
   id:              string
   meeting_id:      string
@@ -28,6 +30,7 @@ export interface Vote {
   organization_id: string
   question:        string
   description:     string | null
+  majority_type:   VoteMajorityType
   status:          'open' | 'closed'
   vote_opened_at:  string | null
   vote_closed_at:  string | null
@@ -88,8 +91,9 @@ export async function fetchVotes(buildingId: string, meetingId: string): Promise
 }
 
 export interface VoteBody {
-  question:     string
-  description?: string
+  question:      string
+  description?:  string
+  majority_type?: VoteMajorityType
 }
 
 export async function apiCreateVote(token: string, buildingId: string, meetingId: string, body: VoteBody): Promise<Vote> {
